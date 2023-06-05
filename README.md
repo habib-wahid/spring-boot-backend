@@ -16,7 +16,15 @@ This module primarily consists of the processes of PNR generation, flight bookin
 - [Features](#features)
 
 ## Background
-This section will consist some introductory idea about a PSS system. 
+A Passenger Service System or PSS is a network of software applications that help airlines manage all the passenger-related operations from ticketing to boarding.
+
+The PSS comprises three main modules.
+* An airline or central reservation system contains information on schedules, fares, and reservations, manages booking requests, generates PNRs, and issues tickets.
+* An airline inventory system controls the availability of seats and manages fare groups.
+* A departure control system manages passenger-related activities in the airport, e.g., processing check-ins, controlling baggage, printing boarding passes, etc.
+
+Additionally, a PSS can include such optional components as a revenue management solution, retailing platform, and an NDC offer and order management platform.
+
 
 ## Technology Stack
 This repository is built upon following technologies:
@@ -36,8 +44,6 @@ To get started with this project, you will need to have the following installed 
 * Maven 3+
 * Docker
 * Any Java IDE(IntelliJ Recommended)
-
-
 
 ## Project Setup
 
