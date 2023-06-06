@@ -14,6 +14,7 @@ This module primarily consists of the processes of PNR generation, flight bookin
 - [Technology Stack](#technology-stack)
 - [Getting Started](#getting-started)
 - [Project Setup](#project-setup)
+- [Instructions for Pushing Changes](#instruction-for-pushing-changes)
 
 
 ## Background
@@ -76,6 +77,21 @@ To build and run the project, follow these steps:
 
 To run redis, use this command:
 `docker run --name my-redis-container -p 7001:6379 -d redis` (add `sudo` before the command if you are on Ubuntu.)
+
+## Instruction for pushing changes
+To make any changes or to update your changes to the code base, please follow the given instructions(The first three should be followed each time you are assigned a new task and need to edit the codebase):
+* Go to the master branch using `git checkout master` or `git switch master` on the terminal
+* Update the master branch using `git pull origin master` on the terminal
+* create a new local branch using `git checkout -b <branchname>` or `git switch -c <branchname>`. Make sure that your branch name should be meaningful and it should give some idea about your assigned task.
+* Add the changes.
+* stage your changes using this: `git add [filename1] [filename2]`
+* commit your changes using this: `git commit -m "commit message"`. Your commit message should indicate what you have included in this commit.
+* Then push your changes using: `git push`. Your newly created branch will be automatically added into the remote repository.
+* Go to the remote repository. Go to 'Pull Requests'.
+* After then, create a new pull request by hitting the button 'New Pull Request'.
+* Select your branch from the top-down list, and then click on 'Create pull request'.
+
+When your pull request is approved by everyone, it will be merged by the scrum master.
 
 
 
