@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: pss-pricing
+  datasource:
+    url: jdbc:postgresql://###:5432/###
+    username: ###
+    password: ###
+  data:
+    redis:
+      host: ###
+      port: 7001
+      hashkey: ###
+
+application:
+  security:
+    jwt:
+      secret-key: ###
+      expiration: ###
+      refresh-token:
+        expiration: ###
+server:
+  port: ###
+
+useExpiringMapToBlackListAccessToken: false
