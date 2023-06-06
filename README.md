@@ -6,7 +6,7 @@ It consists of the common source code which will be used across the three module
 This module primarily consists of the processes of aircraft management, listing available airports, flight management, and flight scheduling.
 ### Pricing Module
 This module primarily consists of the processes of fare management, classes management, and tax and penalty generation.
-## Sales Module
+### Sales Module
 This module primarily consists of the processes of PNR generation, flight booking, customer search, agency management, and cash box management.
 ## Table of Contents
 - [BackGround](#background)
