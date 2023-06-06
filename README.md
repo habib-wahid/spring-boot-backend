@@ -81,12 +81,12 @@ To run redis, use this command:
 ## Instruction for pushing changes
 To make any changes or to update your changes to the code base, please follow the given instructions(The first three should be followed each time you are assigned a new task and need to edit the codebase):
 * Go to the master branch using `git checkout master` or `git switch master` on the terminal
-* Update the master branch using `git pull origin master` on the terminal
+* Update the master branch using `git pull` on the terminal
 * create a new local branch using `git checkout -b <branchname>` or `git switch -c <branchname>`. Make sure that your branch name should be meaningful and it should give some idea about your assigned task.
 * Add the changes.
 * stage your changes using this: `git add [filename1] [filename2]`
 * commit your changes using this: `git commit -m "commit message"`. Your commit message should indicate what you have included in this commit.
-* Then push your changes using: `git push`. Your newly created branch will be automatically added into the remote repository.
+* Then push your changes using: `git push -u origin <branchname>`. Your newly created branch will be automatically added into the remote repository.
 * Go to the remote repository. Go to 'Pull Requests'.
 * After then, create a new pull request by hitting the button 'New Pull Request'.
 * Select your branch from the top-down list, and then click on 'Create pull request'.
