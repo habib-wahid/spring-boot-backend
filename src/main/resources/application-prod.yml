@@ -20,5 +20,7 @@ application:
         expiration: ###
 server:
   port: ###
+  servlet:
+    context-path: /pss/module_name
 
 useExpiringMapToBlackListAccessToken: false

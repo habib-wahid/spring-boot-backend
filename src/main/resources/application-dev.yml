@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/pss_inventory
-    username: admin
-    password: admin
+    url: jdbc:postgresql://localhost:5432/pss
+    username: postgres
+    password: postgres
   data:
     redis:
       host: localhost
@@ -17,8 +17,17 @@ application:
       refresh-token:
         expiration: 604800000 # 7 days
 
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+    url: /v3/api-docs
+
 server:
   port: 8080
-
+  servlet:
+    context-path: /pss/pricing
 useExpiringMapToBlackListAccessToken: false
 
