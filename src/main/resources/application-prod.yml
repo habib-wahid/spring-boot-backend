@@ -5,18 +5,6 @@ spring:
     url: jdbc:postgresql://###:5432/###
     username: ###
     password: ###
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-  cache:
-    type: redis
   data:
     redis:
       host: ###
