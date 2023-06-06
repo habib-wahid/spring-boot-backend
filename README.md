@@ -10,10 +10,11 @@ This module primarily consists of the processes of fare management, classes mana
 This module primarily consists of the processes of PNR generation, flight booking, customer search, agency management, and cash box management.
 ## Table of Contents
 - [BackGround](#background)
+- [Features](#features)
 - [Technology Stack](#technology-stack)
 - [Getting Started](#getting-started)
 - [Project Setup](#project-setup)
-- [Features](#features)
+
 
 ## Background
 A Passenger Service System or PSS is a network of software applications that help airlines manage all the passenger-related operations from ticketing to boarding.
@@ -25,16 +26,25 @@ The PSS comprises three main modules.
 
 Additionally, a PSS can include such optional components as a revenue management solution, retailing platform, and an NDC offer and order management platform.
 
+## Features
+- Flight Scheduling & management
+- Addition of aircraft types and aircrafts
+- Pricing of ticket
+- Fare management & tax and penalty generation
+- PNR generation
+- Quick Sale of ticket
+- Ticket search
+- Flight Search
+- Customer management
+- Passenger listing
 
 ## Technology Stack
 This repository is built upon following technologies:
 * Spring Boot 3
 * Spring Data JPA as Data Access Layer
 * Spring Security
-* Lombok
 * Postgresql as default database
 * JWT for authentication & authorization
-* Spring Validation 
 * Spring Data Redis for caching
 
 ## Getting Started
@@ -65,17 +75,6 @@ To build and run the project, follow these steps:
 -> The application will be available at http://localhost:8080.
 
 
-## Features
-- Flight Scheduling & management
-- Addition of aircraft types and aircrafts
-- Pricing of ticket 
-- Fare management & tax and penalty generation
-- PNR generation 
-- Quick Sale of ticket
-- Ticket search
-- Flight Search
-- Customer management
-- Passenger listing
 
 
 
