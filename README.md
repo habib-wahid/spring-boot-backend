@@ -1,4 +1,4 @@
-# Backend For Passenger Service System
+# Passenger Service System
 This project is intended to be used the backend for Passenger Service System for Airlines Reservations System. 
 
 It consists of the common source code which will be used across the three modules:
