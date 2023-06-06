@@ -74,8 +74,8 @@ To build and run the project, follow these steps:
 
 -> The application will be available at http://localhost:8080.
 
-
-
+To run redis, use this command:
+`docker run --name my-redis-container -p 7001:6379 -d redis` (add `sudo` before the command if you are on Ubuntu.)
 
 
 
