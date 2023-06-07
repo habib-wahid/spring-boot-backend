@@ -28,6 +28,42 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+  dcs-service:
+    build: ./dcs-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+
+  ipa-service:
+    build: ./ipa-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+
+  reporting-service:
+    build: ./reporting-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+
+  sales-service:
+    build: ./sales-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+
 
 networks:
   postgres:

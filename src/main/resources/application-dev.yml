@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/pss_inventory
+    url: jdbc:postgresql://postgres-sql:5432/pss_inventory
     username: admin
     password: admin
   data:

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/pss_report
+    url: jdbc:postgresql://postgres-sql:5432/pss_report
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
