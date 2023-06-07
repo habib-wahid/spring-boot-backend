@@ -2,7 +2,7 @@ spring:
   application:
     name: pss-pricing
   profiles:
-    active: dev
+    active: docker
   datasource:
     driver-class-name: org.postgresql.Driver
   jpa:
