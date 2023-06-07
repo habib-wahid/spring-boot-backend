@@ -1,4 +1,4 @@
-package com.usb.pss.reportingservice;
+package com.usb.pss.reportservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
