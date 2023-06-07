@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://postgres-sql:5432/pss_ipa
+    url: jdbc:postgresql://localhost:5432/pss_ipa
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
