@@ -1,9 +1,9 @@
 package com.usb.pss.ipaservice.config;
 
-import com.usb.pss.ipaservice.inventory.model.enums.Permission;
-import com.usb.pss.ipaservice.inventory.model.enums.Role;
-import com.usb.pss.ipaservice.inventory.service.JwtAccessDeniedHandler;
-import com.usb.pss.ipaservice.inventory.service.JwtAuthenticationEntryPoint;
+import com.usb.pss.ipaservice.admin.model.enums.Permission;
+import com.usb.pss.ipaservice.admin.model.enums.Role;
+import com.usb.pss.ipaservice.admin.service.JwtAccessDeniedHandler;
+import com.usb.pss.ipaservice.admin.service.JwtAuthenticationEntryPoint;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

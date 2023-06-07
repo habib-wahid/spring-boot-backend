@@ -1,6 +1,6 @@
 package com.usb.pss.ipaservice.config;
 
-import com.usb.pss.ipaservice.inventory.repository.UserRepository;
+import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

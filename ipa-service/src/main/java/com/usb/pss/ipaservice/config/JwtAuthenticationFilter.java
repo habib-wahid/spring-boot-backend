@@ -1,10 +1,10 @@
 package com.usb.pss.ipaservice.config;
 
-import com.usb.pss.ipaservice.inventory.dto.custom.JwtUserDto;
-import com.usb.pss.ipaservice.inventory.repository.TokenRepository;
-import com.usb.pss.ipaservice.inventory.service.JwtService;
-import com.usb.pss.ipaservice.inventory.service.LogoutService;
-import com.usb.pss.ipaservice.inventory.service.UserDetailServiceImpl;
+import com.usb.pss.ipaservice.admin.dto.JwtUserDto;
+import com.usb.pss.ipaservice.admin.repository.TokenRepository;
+import com.usb.pss.ipaservice.admin.service.JwtService;
+import com.usb.pss.ipaservice.admin.service.LogoutService;
+import com.usb.pss.ipaservice.admin.service.UserDetailServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
