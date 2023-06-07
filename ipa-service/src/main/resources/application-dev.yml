@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/pss_inventory
+    url: jdbc:postgresql://localhost:5432/pss_ipa
     username: admin
     password: admin
   data:
@@ -15,7 +15,7 @@ spring:
 application:
   security:
     jwt:
-      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      signing-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
@@ -32,6 +32,7 @@ springdoc:
 server:
   port: 8080
   servlet:
-    context-path: /pss/pricing
+    context-path: /pss/ipa
+
 useExpiringMapToBlackListAccessToken: false
 

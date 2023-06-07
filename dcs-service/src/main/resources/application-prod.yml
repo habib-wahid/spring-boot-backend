@@ -1,6 +1,4 @@
 spring:
-  application:
-    name: pss-pricing
   datasource:
     url: jdbc:postgresql://###:5432/###
     username: ###
@@ -24,6 +22,6 @@ application:
 server:
   port: ###
   servlet:
-    context-path: /pss/module_name
+    context-path: /pss/dcs
 
 useExpiringMapToBlackListAccessToken: false

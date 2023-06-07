@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/pss_inventory
+    url: jdbc:postgresql://localhost:5432/pss_dcs
     username: admin
     password: admin
   data:
@@ -32,6 +32,7 @@ springdoc:
 server:
   port: 8080
   servlet:
-    context-path: /pss/pricing
+    context-path: /pss/dcs
+
 useExpiringMapToBlackListAccessToken: false
 
