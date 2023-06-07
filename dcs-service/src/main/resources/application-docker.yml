@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/pss_ipa
+    url: jdbc:postgresql://postgres-sql:5432/pss_dcs
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -31,6 +31,6 @@ application:
       refresh-token:
         expiration: 604800000 # 7 days
 server:
-  port: 8081
+  port: 8084
 
 useExpiringMapToBlackListAccessToken: false
