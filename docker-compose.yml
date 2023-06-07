@@ -70,13 +70,6 @@ services:
     networks:
       - pss
 
-
-
-
-
-
-
-
 networks:
   pss:
     driver: bridge
