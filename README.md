@@ -20,14 +20,13 @@ A PSS primarily comprises four main services:
 * <b>Sales:</b> This module comprises Customer management, Cash-box management, Agent and Corporate customer management, single & group ticketing.
 * <b>DCS:</b> This module offers departure control system and messaging for communication.
 
-Additionally, a PSS can include such optional components as a revenue management solution, retailing platform, and an NDC offer and order management platform.
 
 ## Microservices
 
 Our project is composed of 4 microservices. They are listed below:
 ### Admin, Inventory & Pricing
 The major operations of this microservice are:
-* Managing authentication & authorization based on role
+* Managing authentication & authorization
 * Cabin, Aircraft & Airport Management
 * Flight Scheduling management
 * PRBDs & Offer template
@@ -44,7 +43,7 @@ The main responsibilities of this microservice are:
 * External Agency & Corporate Customer management
 
 ### Reporting
-The primary task of this microservice is to generate static and dynamic report in real time.
+The primary task of this microservice is to generate reports.
 
 ### DCS
 The main operations of this microservice are:
@@ -65,12 +64,9 @@ The main operations of this microservice are:
 
 ## Technology Stack
 This repository is built upon following technologies:
-* Spring Boot 3
-* Spring Data JPA as Data Access Layer
-* Spring Security
-* Postgresql 
-* JWT for authentication & authorization
-* Spring Data Redis
+* Spring Boot
+* Postgresql
+* Redis
 
 ## Getting Started
 To get started with this project, you will need to have the following installed on your local machine:
@@ -86,19 +82,13 @@ To build and run the project, follow these steps:
 
 * Clone the repository: `git clone https://github.com/mdgiasuddin/pss-backend-application.git`
 * Navigate to the project directory. The directory name is pss-backend-application.
-* Install postgres and pgadmin by executing this command: `docker compose up -d`. (add sudo if you are on Ubuntu)
-* Install and run redis using this command: `docker run --name my-redis-container -p 7001:6379 -d redis`.(add `sudo` before the command if you are on Ubuntu.)
-* Open your browser and go to this [link](http://localhost:5050). It will open the pgadmin web view on your browser.
-* Add a new server under servers if no server exists.
-* After adding a server, create a login group named admin. Give it superuser privileges. Make sure the username and password both is 'admin'.
-* Add database "pss_inventory" under "admin" login group.
 * Open the project using any IDE. 
 * First go to the settings of your IDE. Set the Maven home path to the path you have installed Maven in your system instead of using the maven-wrapper.
 * Open the terminal in your IDE.
 * Then build the project.
 * Finally, run the project.
 
--> The application will be available at http://localhost:8080.
+The application will be available at http://localhost:8080/swagger-ui/index.html.
 
 
 ## Instruction for pushing changes
@@ -117,7 +107,7 @@ To make any changes or to update your changes to the code base, please follow th
    * Select your branch from the top-down list, and then click on 'Create pull request'.
 
 
-When your pull request is approved by everyone, it will be merged by the scrum master.
+When your pull request is approved, it will be merged.
 
 
 
