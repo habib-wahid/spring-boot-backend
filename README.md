@@ -80,8 +80,32 @@ To get started with this project, you will need to have the following installed 
 
 To build and run the project, follow these steps:
 
-* Clone the repository: `git clone https://github.com/mdgiasuddin/pss-backend-application.git`
-* Navigate to the project directory. The directory name is pss-backend-application.
+### Repository Cloning
+Clone the repository: `git clone https://github.com/mdgiasuddin/pss-backend-application.git`.
+
+### Set up Maven Settings
+* You need to define the maven settings for the project in the settings.xml file of the .m2 directory. 
+* You need to add the following to mirrors section of settings.xml file
+```
+<mirror>
+      <mirrorOf>*</mirrorOf>
+      <name>Mirror</name>
+      <url><server-IP-Address:server-port>>repository/mirror</url>
+      <id>mirror</id>
+</mirror>
+```
+Please note that the repository url will be that of remote server.
+* Now, you need to add the following to servers section of settings.xml file
+```
+<server>
+    <id>mirror</id>
+    <username>server-username</username>
+    <password>server-password</password>
+</server>
+```
+Please note that, the username and password will be that of server's.
+
+### Set up Project in the IDE
 * Open the project using any IDE. 
 * First go to the settings of your IDE. Set the Maven home path to the path you have installed Maven in your system instead of using the maven-wrapper.
 * Open the terminal in your IDE.
