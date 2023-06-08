@@ -31,8 +31,7 @@ springdoc:
 
 server:
   port: 8080
-  servlet:
-    context-path: /pss/ipa
+
 
 useExpiringMapToBlackListAccessToken: false
 
