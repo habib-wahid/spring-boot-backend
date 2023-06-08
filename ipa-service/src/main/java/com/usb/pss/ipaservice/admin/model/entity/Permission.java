@@ -44,6 +44,8 @@ public class Permission {
     @JoinColumn(name = "parent_id")
     public Permission parentId;
 
+    private String username;
+
     @Column(name = "sort_order_id")
     private int sortOrderId;
 

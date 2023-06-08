@@ -17,4 +17,5 @@ public class PermissionDto {
     public Long parentId;
     private int sortOrderId;
     private boolean active;
+    private String username;
 }
