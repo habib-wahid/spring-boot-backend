@@ -114,6 +114,8 @@ Please note that, the username and password will be that of server's.
 
 The application will be available at http://localhost:8080/swagger-ui/index.html.
 
+To run redis, use this command:
+`docker run --name my-redis-container -p 7001:6379 -d redis` (add `sudo` before the command if you are on Ubuntu.)
 
 ## Instruction for pushing changes
 To make any changes or to update your changes to the code base, please follow the given instructions(The first three should be followed each time you are assigned a new task and need to edit the codebase):
