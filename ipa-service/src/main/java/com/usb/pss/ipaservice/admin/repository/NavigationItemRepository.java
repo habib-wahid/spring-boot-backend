@@ -1,9 +1,9 @@
 package com.usb.pss.ipaservice.admin.repository;
 
 import com.usb.pss.ipaservice.admin.model.entity.NavigationItem;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -11,12 +11,10 @@ public interface NavigationItemRepository extends JpaRepository<NavigationItem, 
 
 
     @Query(
-            nativeQuery = true,
-            value = "select ni.* from navigation_item ni " +
-                    "inner join permission p on ni.permission_id = p.id " +
-                    "where p.username=:userName"
+            "select ni from NavigationItem ni inner join Permission p on ni.permissionId = p.id" +
+                    " where p.username = :user_name"
     )
     List<NavigationItem> getByUserPermission(
-            @Param("userName") String userName
+            @Param("user_name") String userName
     );
 }
