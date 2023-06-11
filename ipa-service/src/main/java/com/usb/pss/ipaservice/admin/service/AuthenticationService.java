@@ -1,13 +1,12 @@
 package com.usb.pss.ipaservice.admin.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.usb.pss.ipaservice.admin.dto.AuthenticationRequest;
-import com.usb.pss.ipaservice.admin.dto.AuthenticationResponse;
-import com.usb.pss.ipaservice.admin.dto.RegisterRequest;
-import com.usb.pss.ipaservice.admin.dto.UserDto;
+import com.usb.pss.ipaservice.admin.dto.*;
+import com.usb.pss.ipaservice.admin.model.entity.NavigationItem;
 import com.usb.pss.ipaservice.admin.model.entity.Token;
 import com.usb.pss.ipaservice.admin.model.enums.TokenType;
 import com.usb.pss.ipaservice.admin.model.entity.User;
+import com.usb.pss.ipaservice.admin.repository.NavigationItemRepository;
 import com.usb.pss.ipaservice.admin.repository.TokenRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.utils.GenericResponse;
@@ -21,7 +20,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.Console;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final NavigationItemRepository navigationItemRepository;
 
 //    public AuthenticationResponse register(RegisterRequest request) {
     public GenericResponse register(RegisterRequest request) {
@@ -65,6 +67,17 @@ public class AuthenticationService {
             var jwtToken = jwtService.generateToken(user);
             var refreshToken = jwtService.generateRefreshToken(user);
 
+            String userName = user.getUsername();
+            List<NavigationItem> list = navigationItemRepository.getByUserPermission(userName);
+            List<NavigationItemResponse> navigationItems = list.stream().map(item -> {
+                return NavigationItemResponse.builder()
+                        .url(item.getUrl())
+                        .key(item.getKey())
+                        .label(item.getLabel())
+                        .icon(item.getIcon())
+                        .build();
+            }).toList();
+
             saveUserToken(user, refreshToken);
             return AuthenticationResponse.builder()
                     .accessToken(jwtToken)
@@ -76,6 +89,7 @@ public class AuthenticationService {
                             user.getEmail(),
                             user.getUsername(),
                             ""))
+                    .navigationItemList(navigationItems)
                     .build();
         } catch (Exception ex) {
             AuthenticationResponse authenticationResponse = new AuthenticationResponse();
