@@ -31,7 +31,7 @@ public class RoleService {
         Role role = new Role();
         BeanUtils.copyProperties(request, role);
         try {
-//            roleRepository.save(role);
+            roleRepository.save(role);
             return new GenericResponse();
         } catch (Exception ex) {
             return new GenericResponse(ResponseCode.SERVICE_ERROR.getCode(), "Service error");
@@ -56,7 +56,7 @@ public class RoleService {
             if (request != null && request.userRoleDtoList != null && request.userRoleDtoList.size() > 0) {
                     for (UserRoleDto dto :
                             request.userRoleDtoList) {
-                        UserRole userRole = new UserRole();
+                        UserRole userRole;
                         Optional<Role> roleEntity = roleRepository.findById(dto.getRoleId());
                         Optional<User> userEntity = userRepository.findById(dto.getUserId());
                         if (userEntity.isPresent() && roleEntity.isPresent()) {
@@ -64,7 +64,7 @@ public class RoleService {
                             if (userRole == null) {
                                 userRole = new UserRole();
                                 userRole.setUser(userEntity.get());
-//                                userRole.setRole(roleEntity.get());
+                                userRole.setRole(roleEntity.get());
                             }
                         } else {
                             return new GenericResponse(ResponseCode.DATA_NOT_FOUND.getCode(), "Wrong data");
@@ -109,7 +109,7 @@ public class RoleService {
                 Optional<User> userEntity = userRepository.findById(request.userId());
                 for (RoleDto dto :
                         request.roleList()) {
-                    UserRole userRole = new UserRole();
+                    UserRole userRole;
                     Optional<Role> roleEntity = roleRepository.findById(dto.getId());
                     if (userEntity.isPresent() && roleEntity.isPresent()) {
                         userRole = userRoleRepository.findByUserAndRole(userEntity.get(), roleEntity.get());
