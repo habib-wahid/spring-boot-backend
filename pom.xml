@@ -132,6 +132,41 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<!--This piece of code should be placed in the pom.xml file. We need to uncomment this piece of code
+	when we get the remote server url. Normally all the dependency is downloaded from maven central repository.
+	But after using this piece of code all the required dependency will be downloaded from this specific url.
+	Here url will be replaced with the remote server url. Also, every developer should update settings.xml file
+	which is located in the local .m2 folder. Need to define one mirror and one server in the
+	mirrors and servers section of settings.xml file respectively which will be found in the readme file.-->
+
+	<!--<repositories>
+		<repository>
+			<id>mirror</id>
+			<name>Mirror</name>
+			<url>http://192.168.168.180:8082/repository/mirror/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>mirror</id>
+			<name>Mirror</name>
+			<url>http://192.168.168.180:8082/repository/mirror/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>-->
+
+
 	<build>
 		<plugins>
 			<plugin>
