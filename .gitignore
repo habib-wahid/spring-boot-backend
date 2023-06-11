@@ -32,4 +32,8 @@ build/
 ### VS Code ###
 .vscode/
 
-/src/main/resources/application-dev.yml
+/dcs-service/src/main/resources/application-dev.yml
+/ipa-service/src/main/resources/application-dev.yml
+/reporting-service/src/main/resources/application-dev.yml
+/sales-service/src/main/resources/application-dev.yml
+
