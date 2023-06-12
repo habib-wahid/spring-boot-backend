@@ -1,0 +1,12 @@
+package com.usb.pss.ipaservice.exception;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class ExceptionResponse {
+
+    private String exceptionCode;
+    private String message;
+}

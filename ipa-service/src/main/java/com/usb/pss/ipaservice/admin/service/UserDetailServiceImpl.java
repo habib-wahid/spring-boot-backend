@@ -4,8 +4,8 @@ import com.usb.pss.ipaservice.admin.dto.UserDto;
 import com.usb.pss.ipaservice.admin.dto.AuthorityDto;
 import com.usb.pss.ipaservice.admin.dto.JwtUserDto;
 import com.usb.pss.ipaservice.admin.dto.PermissionDto;
-import com.usb.pss.ipaservice.admin.model.entity.User;
-import com.usb.pss.ipaservice.admin.repository.UserRepository;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
+import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,13 +19,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserDetailServiceImpl implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final IpaAdminUserRepository userRepository;
     private final PermissionService permissionService;
 
     @Override
     public JwtUserDto loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            User user = userRepository.findByUsername(username).get();
+            IpaAdminUser user = userRepository.findByUsername(username).get();
             if (user == null) {
                 throw new UsernameNotFoundException("");
             } else {

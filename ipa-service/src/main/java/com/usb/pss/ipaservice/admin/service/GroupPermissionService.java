@@ -4,12 +4,9 @@ import com.usb.pss.ipaservice.admin.dto.GroupPermissionDto;
 import com.usb.pss.ipaservice.admin.dto.PermissionDto;
 import com.usb.pss.ipaservice.admin.dto.SaveGroupPermissionRequest;
 import com.usb.pss.ipaservice.admin.dto.SaveSingleGroupPermissionsRequest;
-import com.usb.pss.ipaservice.admin.model.entity.GroupPermission;
-import com.usb.pss.ipaservice.admin.model.entity.Groups;
-import com.usb.pss.ipaservice.admin.model.entity.Permission;
-import com.usb.pss.ipaservice.admin.repository.GroupPermissionRepository;
-import com.usb.pss.ipaservice.admin.repository.GroupRepository;
-import com.usb.pss.ipaservice.admin.repository.PermissionRepository;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminMenu;
+import com.usb.pss.ipaservice.admin.repository.IpaAdminGroupRepository;
+import com.usb.pss.ipaservice.admin.repository.IpaAdminActionRepository;
 import com.usb.pss.ipaservice.utils.GenericResponse;
 import com.usb.pss.ipaservice.utils.ResponseCode;
 import jakarta.transaction.Transactional;
@@ -25,8 +22,8 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class GroupPermissionService {
-    private final GroupRepository groupRepository;
-    private final PermissionRepository permissionRepository;
+    private final IpaAdminGroupRepository groupRepository;
+    private final IpaAdminActionRepository permissionRepository;
     private final GroupPermissionRepository groupPermissionRepository;
 
     @Transactional
@@ -37,7 +34,7 @@ public class GroupPermissionService {
                         request.groupPermissionDtoList) {
                     GroupPermission groupPermission;
 
-                    Optional<Permission> permissionEntity = permissionRepository.findById(dto.getPermissionId());
+                    Optional<IpaAdminMenu> permissionEntity = permissionRepository.findById(dto.getPermissionId());
                     Optional<Groups> groupEntity = groupRepository.findById(dto.getGroupId());
                     if (groupEntity.isPresent() && permissionEntity.isPresent()) {
                         groupPermission = groupPermissionRepository.findByGroupsAndPermission(groupEntity.get(), permissionEntity.get());
@@ -93,7 +90,7 @@ public class GroupPermissionService {
                 for (PermissionDto dto :
                         request.permissionList()) {
                     GroupPermission groupPermission;
-                    Optional<Permission> permissionEntity = permissionRepository.findById(dto.getId());
+                    Optional<IpaAdminMenu> permissionEntity = permissionRepository.findById(dto.getId());
                     if (groupEntity.isPresent() && permissionEntity.isPresent()) {
                         groupPermission = groupPermissionRepository.findByGroupsAndPermission(groupEntity.get(), permissionEntity.get());
                         if (groupPermission == null) {

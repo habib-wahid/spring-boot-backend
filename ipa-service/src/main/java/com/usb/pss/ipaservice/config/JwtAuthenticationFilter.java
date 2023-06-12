@@ -1,7 +1,6 @@
 package com.usb.pss.ipaservice.config;
 
 import com.usb.pss.ipaservice.admin.dto.JwtUserDto;
-import com.usb.pss.ipaservice.admin.repository.TokenRepository;
 import com.usb.pss.ipaservice.admin.service.JwtService;
 import com.usb.pss.ipaservice.admin.service.LogoutService;
 import com.usb.pss.ipaservice.admin.service.UserDetailServiceImpl;

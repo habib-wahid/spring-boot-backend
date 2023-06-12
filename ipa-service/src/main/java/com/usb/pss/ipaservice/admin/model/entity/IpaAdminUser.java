@@ -1,18 +1,9 @@
 package com.usb.pss.ipaservice.admin.model.entity;
 
-import com.usb.pss.ipaservice.admin.model.enums.Role;
-
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,32 +16,32 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_info")
-public class User implements UserDetails {
+@Table(name = "ipa_admin_user")
+public class IpaAdminUser implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name = "ipa_admin_user_sequence",
+            sequenceName = "ipa_admin_user_sequence",
+            allocationSize = 1
+    )
     private Long id;
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
     @Column(unique = true)
     private String email;
     @Column(unique = true)
     private String username;
     private String password;
+    private boolean active = true;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-    @OneToMany(mappedBy = "user")
-    private List<UserRole> userRoles;
-
-    @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private IpaAdminGroup group;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role.getAuthorities();
+        return new HashSet<>();
     }
 
     @Override
@@ -65,21 +56,21 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return active;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return active;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return active;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return active;
     }
 }

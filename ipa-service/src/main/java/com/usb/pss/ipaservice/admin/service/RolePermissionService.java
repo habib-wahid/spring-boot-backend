@@ -4,12 +4,10 @@ import com.usb.pss.ipaservice.admin.dto.PermissionDto;
 import com.usb.pss.ipaservice.admin.dto.RolePermissionDto;
 import com.usb.pss.ipaservice.admin.dto.SaveRolePermissionRequest;
 import com.usb.pss.ipaservice.admin.dto.SaveSingleRolePermissionsRequest;
-import com.usb.pss.ipaservice.admin.model.entity.Permission;
-import com.usb.pss.ipaservice.admin.model.entity.Role;
-import com.usb.pss.ipaservice.admin.model.entity.RolePermission;
-import com.usb.pss.ipaservice.admin.repository.PermissionRepository;
-import com.usb.pss.ipaservice.admin.repository.RolePermissionRepository;
-import com.usb.pss.ipaservice.admin.repository.RoleRepository;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminMenu;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminRole;
+import com.usb.pss.ipaservice.admin.repository.IpaAdminActionRepository;
+import com.usb.pss.ipaservice.admin.repository.IpaAdminRoleRepository;
 import com.usb.pss.ipaservice.utils.GenericResponse;
 import com.usb.pss.ipaservice.utils.ResponseCode;
 import jakarta.transaction.Transactional;
@@ -22,8 +20,8 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class RolePermissionService {
-    private final RoleRepository roleRepository;
-    private final PermissionRepository permissionRepository;
+    private final IpaAdminRoleRepository roleRepository;
+    private final IpaAdminActionRepository permissionRepository;
     private final RolePermissionRepository rolePermissionRepository;
 
     @Transactional
@@ -34,8 +32,8 @@ public class RolePermissionService {
                         request.rolePermissionDtoList) {
                     RolePermission rolePermission = new RolePermission();
 
-                    Optional<Role> roleEntity = roleRepository.findById(dto.getRoleId());
-                    Optional<Permission> permissionEntity = permissionRepository.findById(dto.getPermissionId());
+                    Optional<IpaAdminRole> roleEntity = roleRepository.findById(dto.getRoleId());
+                    Optional<IpaAdminMenu> permissionEntity = permissionRepository.findById(dto.getPermissionId());
                     if (roleEntity.isPresent() && permissionEntity.isPresent()) {
                         rolePermission = rolePermissionRepository.findByRoleAndPermission(roleEntity.get(), permissionEntity.get());
                         if (rolePermission == null) {
@@ -84,12 +82,12 @@ public class RolePermissionService {
         try {
             if (request != null && request.roleId() != null &&
                     request.permissionList() != null && request.permissionList().size() > 0) {
-                Optional<Role> roleEntity = roleRepository.findById(request.roleId());
+                Optional<IpaAdminRole> roleEntity = roleRepository.findById(request.roleId());
                 for (PermissionDto dto :
                         request.permissionList()) {
                     RolePermission rolePermission = new RolePermission();
 
-                    Optional<Permission> permissionEntity = permissionRepository.findById(dto.getId());
+                    Optional<IpaAdminMenu> permissionEntity = permissionRepository.findById(dto.getId());
                     if (roleEntity.isPresent() && permissionEntity.isPresent()) {
                         rolePermission = rolePermissionRepository.findByRoleAndPermission(roleEntity.get(), permissionEntity.get());
                         if (rolePermission == null) {

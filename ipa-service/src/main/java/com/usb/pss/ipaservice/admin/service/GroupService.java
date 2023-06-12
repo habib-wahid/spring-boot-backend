@@ -4,12 +4,10 @@ import com.usb.pss.ipaservice.admin.dto.GroupsDto;
 import com.usb.pss.ipaservice.admin.dto.SaveSingleUserGroupsRequest;
 import com.usb.pss.ipaservice.admin.dto.SaveUserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.UserGroupDto;
-import com.usb.pss.ipaservice.admin.model.entity.Groups;
-import com.usb.pss.ipaservice.admin.model.entity.UserGroup;
-import com.usb.pss.ipaservice.admin.model.entity.User;
-import com.usb.pss.ipaservice.admin.repository.GroupRepository;
-import com.usb.pss.ipaservice.admin.repository.UserGroupRepository;
-import com.usb.pss.ipaservice.admin.repository.UserRepository;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminGroup;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
+import com.usb.pss.ipaservice.admin.repository.IpaAdminGroupRepository;
+import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
 import com.usb.pss.ipaservice.utils.GenericResponse;
 import com.usb.pss.ipaservice.utils.ResponseCode;
 import jakarta.transaction.Transactional;
@@ -25,8 +23,8 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class GroupService {
-    private final GroupRepository groupRepository;
-    private final UserRepository userRepository;
+    private final IpaAdminGroupRepository groupRepository;
+    private final IpaAdminUserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
 
     public GenericResponse saveGroup(GroupsDto request) {
@@ -58,23 +56,23 @@ public class GroupService {
             if (request != null && request.userGroupDtoList != null && request.userGroupDtoList.size() > 0) {
                 for (UserGroupDto dto :
                         request.userGroupDtoList) {
-                    UserGroup userGroup;
-                    Optional<User> userEntity = userRepository.findById(dto.getUserId());
+                    IpaAdminGroup ipaAdminGroup;
+                    Optional<IpaAdminUser> userEntity = userRepository.findById(dto.getUserId());
                     Optional<Groups> groupEntity = groupRepository.findById(dto.getGroupId());
                     if (userEntity.isPresent() && groupEntity.isPresent()) {
-                        userGroup = userGroupRepository.findByUserAndGroups(userEntity.get(), groupEntity.get());
-                        if (userGroup == null) {
-                            userGroup = new UserGroup();
-                            userGroup.setUser(userEntity.get());
-                            userGroup.setGroups(groupEntity.get());
+                        ipaAdminGroup = userGroupRepository.findByUserAndGroups(userEntity.get(), groupEntity.get());
+                        if (ipaAdminGroup == null) {
+                            ipaAdminGroup = new IpaAdminGroup();
+                            ipaAdminGroup.setUser(userEntity.get());
+                            ipaAdminGroup.setGroups(groupEntity.get());
                         }
                     } else {
                         return new GenericResponse(ResponseCode.DATA_NOT_FOUND.getCode(), "Wrong data");
                     }
 
-                    userGroup.setActive(dto.isActive());
+                    ipaAdminGroup.setActive(dto.isActive());
 
-                    userGroupRepository.save(userGroup);
+                    userGroupRepository.save(ipaAdminGroup);
                 }
                 return new GenericResponse();
             } else {
@@ -88,9 +86,9 @@ public class GroupService {
 
     public List<UserGroupDto> getUserGroups(Long userId) {
         try {
-            Set<UserGroup> userRoleList = userGroupRepository.findAllByUserAndActive(userRepository.findById(userId).get(), true);
+            Set<IpaAdminGroup> userRoleList = userGroupRepository.findAllByUserAndActive(userRepository.findById(userId).get(), true);
             List<UserGroupDto> userGroupDtoList = new ArrayList<>();
-            for (UserGroup dto :
+            for (IpaAdminGroup dto :
                     userRoleList) {
                 UserGroupDto userGroupDto = new UserGroupDto();
                 BeanUtils.copyProperties(dto, userGroupDto);
@@ -112,25 +110,25 @@ public class GroupService {
         try {
             if (request != null && request.userId() != null &&
                     request.groupList() != null && request.groupList().size() > 0) {
-                Optional<User> userEntity = userRepository.findById(request.userId());
+                Optional<IpaAdminUser> userEntity = userRepository.findById(request.userId());
                 for (GroupsDto dto :
                         request.groupList()) {
-                    UserGroup userGroup = new UserGroup();
+                    IpaAdminGroup ipaAdminGroup = new IpaAdminGroup();
                     Optional<Groups> groupEntity = groupRepository.findById(dto.getId());
                     if (userEntity.isPresent() && groupEntity.isPresent()) {
-                        userGroup = userGroupRepository.findByUserAndGroups(userEntity.get(), groupEntity.get());
-                        if (userGroup == null) {
-                            userGroup = new UserGroup();
-                            userGroup.setUser(userEntity.get());
-                            userGroup.setGroups(groupEntity.get());
+                        ipaAdminGroup = userGroupRepository.findByUserAndGroups(userEntity.get(), groupEntity.get());
+                        if (ipaAdminGroup == null) {
+                            ipaAdminGroup = new IpaAdminGroup();
+                            ipaAdminGroup.setUser(userEntity.get());
+                            ipaAdminGroup.setGroups(groupEntity.get());
                         }
                     } else {
                         return new GenericResponse(ResponseCode.DATA_NOT_FOUND.getCode(), "Wrong data");
                     }
 
-                    userGroup.setActive(dto.isActive());
+                    ipaAdminGroup.setActive(dto.isActive());
 
-                    userGroupRepository.save(userGroup);
+                    userGroupRepository.save(ipaAdminGroup);
                 }
                 return new GenericResponse();
             } else {

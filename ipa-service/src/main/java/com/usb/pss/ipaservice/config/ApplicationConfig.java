@@ -1,6 +1,6 @@
 package com.usb.pss.ipaservice.config;
 
-import com.usb.pss.ipaservice.admin.repository.UserRepository;
+import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository userRepository;
+    private final IpaAdminUserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {

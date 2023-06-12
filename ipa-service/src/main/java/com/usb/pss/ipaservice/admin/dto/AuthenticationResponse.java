@@ -1,7 +1,6 @@
 package com.usb.pss.ipaservice.admin.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.usb.pss.ipaservice.admin.model.entity.NavigationItem;
 import com.usb.pss.ipaservice.utils.GenericResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

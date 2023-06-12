@@ -5,8 +5,8 @@ import com.usb.pss.ipaservice.admin.dto.PermissionDto;
 import com.usb.pss.ipaservice.admin.dto.RolePermissionDto;
 import com.usb.pss.ipaservice.admin.dto.UserGroupDto;
 import com.usb.pss.ipaservice.admin.dto.UserRoleDto;
-import com.usb.pss.ipaservice.admin.model.entity.Permission;
-import com.usb.pss.ipaservice.admin.repository.PermissionRepository;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminMenu;
+import com.usb.pss.ipaservice.admin.repository.IpaAdminActionRepository;
 import com.usb.pss.ipaservice.utils.GenericResponse;
 import com.usb.pss.ipaservice.utils.ResponseCode;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +21,14 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class PermissionService {
-    private final PermissionRepository permissionRepository;
+    private final IpaAdminActionRepository permissionRepository;
     private final RoleService roleService;
     private final GroupService groupService;
     private final RolePermissionService rolePermissionService;
     private final GroupPermissionService groupPermissionService;
 
     public GenericResponse savePermission(PermissionDto request) {
-        Permission permission = new Permission();
+        IpaAdminMenu permission = new IpaAdminMenu();
         BeanUtils.copyProperties(request, permission);
 
         try {
@@ -47,9 +47,9 @@ public class PermissionService {
     }
 
     public List<PermissionDto> getPermissions() {
-        List<Permission> permissionList = permissionRepository.findAll();
+        List<IpaAdminMenu> permissionList = permissionRepository.findAll();
         List<PermissionDto> permissionDtoList = new ArrayList<>();
-        for (Permission permission :
+        for (IpaAdminMenu permission :
                 permissionList) {
             PermissionDto dto = new PermissionDto();
             BeanUtils.copyProperties(permission, dto);
@@ -70,7 +70,7 @@ public class PermissionService {
                         rolePermissionDtoList) {
                     if (!permissionMap.containsKey(rolePermissionDto.getPermissionId())) {
                         PermissionDto permissionDto = new PermissionDto();
-                        Permission permission = permissionRepository.findById(rolePermissionDto.getPermissionId()).get();
+                        IpaAdminMenu permission = permissionRepository.findById(rolePermissionDto.getPermissionId()).get();
 
                         BeanUtils.copyProperties(permission, permissionDto);
                         if (permission.getParentId() != null && permission.getParentId().getId() != null) {
@@ -92,7 +92,7 @@ public class PermissionService {
                     if (!permissionMap.containsKey(groupPermissionDto.getPermissionId())) {
 
                         PermissionDto permissionDto = new PermissionDto();
-                        Permission permission = permissionRepository.findById(groupPermissionDto.getPermissionId()).get();
+                        IpaAdminMenu permission = permissionRepository.findById(groupPermissionDto.getPermissionId()).get();
 
                         BeanUtils.copyProperties(permission, permissionDto);
                         if (permission.getParentId() != null && permission.getParentId().getId() != null) {

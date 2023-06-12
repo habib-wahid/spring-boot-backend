@@ -1,16 +1,17 @@
 package com.usb.pss.ipaservice.admin.controller;
 
-import com.usb.pss.ipaservice.admin.dto.AuthenticationRequest;
+import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
 import com.usb.pss.ipaservice.admin.dto.AuthenticationResponse;
 import com.usb.pss.ipaservice.admin.dto.LogoutRequest;
-import com.usb.pss.ipaservice.admin.dto.RegisterRequest;
-import com.usb.pss.ipaservice.admin.service.AuthenticationService;
+import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
+import com.usb.pss.ipaservice.admin.service.UserService;
 import com.usb.pss.ipaservice.admin.service.LogoutService;
 import com.usb.pss.ipaservice.utils.GenericResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,27 +21,24 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
-public class AuthenticationController {
+public class UserController {
 
-    private final AuthenticationService authenticationService;
+    private final UserService userService;
     private final LogoutService logoutService;
 
-    @PostMapping("/register")
-//    public ResponseEntity<AuthenticationResponse> register(
-    public GenericResponse register(
-            @RequestBody RegisterRequest request
-    ) {
-        return authenticationService.register(request);
+    @PostMapping
+    public GenericResponse register(@RequestBody @Validated RegistrationRequest request) {
+        return userService.register(request);
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+        return ResponseEntity.ok(userService.authenticate(request));
     }
 
     @PostMapping("/refresh-token")
@@ -48,7 +46,7 @@ public class AuthenticationController {
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
-        authenticationService.refreshToken(request, response);
+        userService.refreshToken(request, response);
     }
 
     @PostMapping("/logout")

@@ -1,7 +1,6 @@
 package com.usb.pss.ipaservice.admin.service;
 
 import com.usb.pss.ipaservice.admin.dto.LogoutRequest;
-import com.usb.pss.ipaservice.admin.repository.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

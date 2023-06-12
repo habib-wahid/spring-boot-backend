@@ -1,56 +1,56 @@
 package com.usb.pss.ipaservice.admin.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.usb.pss.ipaservice.admin.dto.*;
-import com.usb.pss.ipaservice.admin.model.entity.NavigationItem;
-import com.usb.pss.ipaservice.admin.model.entity.Token;
-import com.usb.pss.ipaservice.admin.model.enums.TokenType;
-import com.usb.pss.ipaservice.admin.model.entity.User;
-import com.usb.pss.ipaservice.admin.repository.NavigationItemRepository;
-import com.usb.pss.ipaservice.admin.repository.TokenRepository;
-import com.usb.pss.ipaservice.admin.repository.UserRepository;
+import com.usb.pss.ipaservice.admin.dto.AuthenticationResponse;
+import com.usb.pss.ipaservice.admin.dto.NavigationItemResponse;
+import com.usb.pss.ipaservice.admin.dto.UserDto;
+import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
+import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
+import com.usb.pss.ipaservice.admin.repository.IpaAdminMenuRepository;
+import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
+import com.usb.pss.ipaservice.exception.BusinessException;
 import com.usb.pss.ipaservice.utils.GenericResponse;
 import com.usb.pss.ipaservice.utils.ResponseCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.Console;
 import java.io.IOException;
 import java.util.List;
 
+import static com.usb.pss.ipaservice.common.ExceptionConstants.PASSWORD_NOT_MATCH;
+
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
-    private final UserRepository repository;
-    private final TokenRepository tokenRepository;
+public class UserService {
+    private final IpaAdminUserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final NavigationItemRepository navigationItemRepository;
+    private final IpaAdminMenuRepository navigationItemRepository;
 
-//    public AuthenticationResponse register(RegisterRequest request) {
-    public GenericResponse register(RegisterRequest request) {
-        try {
-            var user = User.builder()
-                    .firstname(request.getFirstname())
-                    .lastname(request.getLastname())
-                    .email(request.getEmail())
-                    .username(request.getUsername())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(request.getRole())
-                    .build();
-            repository.save(user);
-
-            return new GenericResponse(ResponseCode.OK.getCode(), "Successfully Registered");
-        } catch (Exception ex) {
-            return new GenericResponse(ResponseCode.SERVICE_ERROR.getCode(), "Service Error");
+    public GenericResponse register(RegistrationRequest request) {
+        if (request.getPassword().equals(request.getConfirmPassword())) {
+            throw new BusinessException(PASSWORD_NOT_MATCH, "Password does not match...");
         }
+
+        var user = IpaAdminUser.builder()
+                .firstName(request.getFirstname())
+                .lastName(request.getLastname())
+                .email(request.getEmail())
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .build();
+        repository.save(user);
+
+        return new GenericResponse(HttpStatus.OK, "Successfully Registered");
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -84,8 +84,8 @@ public class AuthenticationService {
                     .refreshToken(refreshToken)
                     .user(new UserDto(
                             user.getId(),
-                            user.getFirstname(),
-                            user.getLastname(),
+                            user.getFirstName(),
+                            user.getLastName(),
                             user.getEmail(),
                             user.getUsername(),
                             ""))
@@ -99,7 +99,7 @@ public class AuthenticationService {
         }
     }
 
-    private void saveUserToken(User user, String jwtToken) {
+    private void saveUserToken(IpaAdminUser user, String jwtToken) {
         var token = Token.builder()
                 .user(user)
                 .refreshToken(jwtToken)
@@ -110,7 +110,7 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
-    private void revokeAllUserTokens(User user) {
+    private void revokeAllUserTokens(IpaAdminUser user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty())
             return;
@@ -155,7 +155,7 @@ public class AuthenticationService {
                     .orElse(null);
 
             if (storedToken != null) {
-                User user = storedToken.getUser();
+                IpaAdminUser user = storedToken.getUser();
                 var accessToken = jwtService.generateToken(user);
                 saveUserToken(user, refreshToken);
                 var authResponse = AuthenticationResponse.builder()
