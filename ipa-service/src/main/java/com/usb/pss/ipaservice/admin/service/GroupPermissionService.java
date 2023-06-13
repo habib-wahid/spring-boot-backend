@@ -1,6 +1,5 @@
 package com.usb.pss.ipaservice.admin.service;
 
-import com.usb.pss.ipaservice.admin.dto.GroupPermissionDto;
 import com.usb.pss.ipaservice.admin.dto.PermissionDto;
 import com.usb.pss.ipaservice.admin.dto.SaveGroupPermissionRequest;
 import com.usb.pss.ipaservice.admin.dto.SaveSingleGroupPermissionsRequest;

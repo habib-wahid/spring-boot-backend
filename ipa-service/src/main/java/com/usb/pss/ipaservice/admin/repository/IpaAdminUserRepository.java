@@ -10,6 +10,6 @@ public interface IpaAdminUserRepository extends JpaRepository<IpaAdminUser, Long
 
     Optional<IpaAdminUser> findByEmail(String email);
 
-    Optional<IpaAdminUser> findByUsername(String username);
+    Optional<IpaAdminUser> findUserByUsername(String username);
 
 }

@@ -1,8 +1,6 @@
 package com.usb.pss.ipaservice.admin.service;
 
 import com.usb.pss.ipaservice.admin.dto.UserDto;
-import com.usb.pss.ipaservice.admin.dto.AuthorityDto;
-import com.usb.pss.ipaservice.admin.dto.JwtUserDto;
 import com.usb.pss.ipaservice.admin.dto.PermissionDto;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
@@ -25,7 +23,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     public JwtUserDto loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            IpaAdminUser user = userRepository.findByUsername(username).get();
+            IpaAdminUser user = userRepository.findUserByUsername(username).get();
             if (user == null) {
                 throw new UsernameNotFoundException("");
             } else {

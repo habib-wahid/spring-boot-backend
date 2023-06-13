@@ -1,9 +1,9 @@
 package com.usb.pss.ipaservice.exception;
 
-public class BusinessException extends RuntimeException {
+public class ApplicationException extends RuntimeException {
     private final String exceptionCode;
 
-    public BusinessException(String exceptionCode, String message) {
+    public ApplicationException(String exceptionCode, String message) {
         super(message);
         this.exceptionCode = exceptionCode;
     }
@@ -11,5 +11,4 @@ public class BusinessException extends RuntimeException {
     public String getExceptionCode() {
         return exceptionCode;
     }
-
 }

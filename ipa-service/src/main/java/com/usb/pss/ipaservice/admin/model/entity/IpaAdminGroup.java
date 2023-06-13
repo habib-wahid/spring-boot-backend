@@ -1,17 +1,24 @@
 package com.usb.pss.ipaservice.admin.model.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "ipa_admin_group")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "ipa_admin_group")
 public class IpaAdminGroup {
 
     @Id
@@ -24,5 +31,5 @@ public class IpaAdminGroup {
     private Long id;
 
     private String name;
-    private boolean active;
+    private boolean active = true;
 }

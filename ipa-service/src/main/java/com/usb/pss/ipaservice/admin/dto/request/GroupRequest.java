@@ -1,4 +1,4 @@
-package com.usb.pss.ipaservice.admin.dto;
+package com.usb.pss.ipaservice.admin.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupsDto {
-    private Long id;
-    private String groupName;
-    private boolean active;
+public class GroupRequest {
+    private String name;
 }

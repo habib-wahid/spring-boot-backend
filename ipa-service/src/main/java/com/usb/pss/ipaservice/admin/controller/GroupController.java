@@ -1,8 +1,7 @@
 package com.usb.pss.ipaservice.admin.controller;
 
-import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
-import com.usb.pss.ipaservice.admin.service.UserService;
-import com.usb.pss.ipaservice.admin.service.LogoutService;
+import com.usb.pss.ipaservice.admin.dto.request.GroupRequest;
+import com.usb.pss.ipaservice.admin.service.GroupService;
 import com.usb.pss.ipaservice.utils.GenericResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -13,17 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/groups")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
-public class UserController {
+public class GroupController {
 
-    private final UserService userService;
-    private final LogoutService logoutService;
+    private final GroupService groupService;
 
     @PostMapping
-    public GenericResponse register(@RequestBody @Validated RegistrationRequest request) {
-        return userService.register(request);
+    public GenericResponse createNewGroup(@RequestBody @Validated GroupRequest request) {
+        return groupService.createNewGroup(request);
     }
-
 }
