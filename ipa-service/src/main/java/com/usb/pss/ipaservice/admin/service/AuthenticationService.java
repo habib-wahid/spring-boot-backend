@@ -1,8 +1,10 @@
 package com.usb.pss.ipaservice.admin.service;
 
+import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminRefreshToken;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
 import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
@@ -11,6 +13,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.UUID;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstants.INVALID_ACCESS_TOKEN;
 import static com.usb.pss.ipaservice.common.ExceptionConstants.USER_NOT_EXISTS;
@@ -21,6 +28,7 @@ public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final TokenService tokenService;
     private final IpaAdminUserRepository userRepository;
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -36,32 +44,48 @@ public class AuthenticationService {
                         USER_NOT_EXISTS, "No user data found with this username...")
                 );
 
+        String accessToken = jwtService.generateAccessToken(user);
+        IpaAdminRefreshToken refreshToken = tokenService.createNewRefreshToken(user);
+
         return AuthenticationResponse.builder()
-                .accessToken(jwtService.generateAccessToken(user))
-                .refreshToken(jwtService.generateRefreshToken(user))
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getToken())
                 .build();
     }
 
-    public RefreshAccessTokenResponse refreshAccessToken(String authHeader) {
+    public RefreshAccessTokenResponse refreshAccessToken(UUID token) {
+
+        IpaAdminRefreshToken refreshToken = tokenService.getRefreshTokenById(token);
+        if (refreshToken.getExpiration().isBefore(LocalDateTime.now())) {
+            throw new AuthenticationFailedException(INVALID_ACCESS_TOKEN, "Token expired...");
+        }
+
+        return RefreshAccessTokenResponse.builder()
+                .accessToken(jwtService.generateAccessToken(refreshToken.getUser()))
+                .build();
+
+    }
+
+
+    public void logout(String authHeader, LogoutRequest request) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new AuthenticationFailedException(INVALID_ACCESS_TOKEN, "Token is invalid...");
+            return;
         }
-
         authHeader = authHeader.substring(7);
-        final String username = jwtService.extractUsername(authHeader);
-        IpaAdminUser user = userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        USER_NOT_EXISTS, "No user data found with this username...")
-                );
 
-        if (jwtService.isTokenValid(authHeader, user)) {
+        // TO-DO -> Invalidate the access token.
+        Date expiration = jwtService.extractExpiration(authHeader);
 
-            return RefreshAccessTokenResponse.builder()
-                    .accessToken(jwtService.generateAccessToken(user))
-                    .build();
-        }
+        tokenService.deleteRefreshTokenById(request.getToken());
+    }
 
-        throw new AuthenticationFailedException(INVALID_ACCESS_TOKEN, "Token is invalid...");
+    public boolean checkIfBlacklisted(String accessToken) {
+        // TO-DO -> Write logic here...
+        return false;
+    }
+
+    private long getTTLForToken(Date date) {
+        return Math.max(0, date.toInstant().getEpochSecond() - Instant.now().getEpochSecond());
     }
 
 }

@@ -34,9 +34,10 @@ public class IpaAdminUser implements UserDetails {
     @Column(unique = true)
     private String username;
     private String password;
-    private boolean active = true;
+    private boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
     private IpaAdminGroup group;
 
     @Override

@@ -25,16 +25,11 @@ public class JwtService {
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
 
-    @Value("${application.security.jwt.refresh-token.expiration}")
-    private long refreshTokenExpiration;
-
-
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-//        System.out.println("Roles extracted: " + extractRoles(token));
         return extractUsername(token).equals(userDetails.getUsername()) &&
                 !isTokenExpired(token);
     }
@@ -43,7 +38,7 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token) {
+    public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
@@ -54,10 +49,6 @@ public class JwtService {
 
     public String generateAccessToken(UserDetails userDetails) {
         return generateAccessToken(new HashMap<>(), userDetails, jwtExpiration);
-    }
-
-    public String generateRefreshToken(UserDetails userDetails) {
-        return generateAccessToken(new HashMap<>(), userDetails, refreshTokenExpiration);
     }
 
     public String generateAccessToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
