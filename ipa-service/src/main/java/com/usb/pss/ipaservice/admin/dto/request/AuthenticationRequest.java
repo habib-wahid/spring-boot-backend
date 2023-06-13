@@ -1,16 +1,12 @@
 package com.usb.pss.ipaservice.admin.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-public class AuthenticationRequest {
+public record AuthenticationRequest(
 
-    private String username;
-    private String password;
+        @NotBlank
+        String username,
+        String password
+) {
+
 }

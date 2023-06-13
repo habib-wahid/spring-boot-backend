@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Setter
 public class GenericResponse implements Serializable {
     private HttpStatus status;
-    private String remarks;
+    private String message;
 
     public GenericResponse() {
         this.status = HttpStatus.OK;

@@ -5,8 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.usb.pss.ipaservice.common.APIEndpointConstants.AIRCRAFT_ENDPOINT;
+
 @RestController
-@RequestMapping(path = "/api/v1/aircraft")
+@RequestMapping(path = AIRCRAFT_ENDPOINT)
 @CrossOrigin(origins = "*")
 public class AircraftController {
 

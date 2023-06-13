@@ -42,4 +42,6 @@ public class IpaAdminMenu {
 
     @Enumerated(EnumType.STRING)
     private Service service;
+
+    private boolean active;
 }

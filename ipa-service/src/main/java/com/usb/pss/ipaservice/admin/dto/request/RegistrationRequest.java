@@ -2,33 +2,22 @@ package com.usb.pss.ipaservice.admin.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class RegistrationRequest {
 
-    @NotBlank
-    private String firstName;
-    private String lastName;
+public record RegistrationRequest(
+        @NotBlank
+        String firstName,
+        String lastName,
+        @NotBlank
+        @Email
+        String email,
+        @NotBlank
+        String username,
+        @NotBlank
+        String password,
+        @NotBlank
+        String confirmPassword,
+        Long groupId
+) {
 
-    @NotBlank
-    @Email
-    private String email;
-
-    @NotBlank
-    private String username;
-
-    @NotBlank
-    private String password;
-
-    @NotBlank
-    private String confirmPassword;
-
-    private Long groupId;
 }

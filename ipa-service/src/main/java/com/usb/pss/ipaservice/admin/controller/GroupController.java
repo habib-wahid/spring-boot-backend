@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.usb.pss.ipaservice.common.APIEndpointConstants.GROUP_ENDPOINT;
+
 @RestController
-@RequestMapping("/api/v1/groups")
+@RequestMapping(GROUP_ENDPOINT)
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class GroupController {

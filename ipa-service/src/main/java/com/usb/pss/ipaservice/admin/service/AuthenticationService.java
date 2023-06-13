@@ -34,12 +34,12 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
+                        request.username(),
+                        request.password()
                 )
         );
 
-        IpaAdminUser user = userRepository.findUserByUsername(request.getUsername())
+        IpaAdminUser user = userRepository.findUserByUsername(request.username())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         USER_NOT_EXISTS, "No user data found with this username...")
                 );
@@ -76,7 +76,7 @@ public class AuthenticationService {
         // TO-DO -> Invalidate the access token.
         Date expiration = jwtService.extractExpiration(authHeader);
 
-        tokenService.deleteRefreshTokenById(request.getToken());
+        tokenService.deleteRefreshTokenById(request.token());
     }
 
     public boolean checkIfBlacklisted(String accessToken) {

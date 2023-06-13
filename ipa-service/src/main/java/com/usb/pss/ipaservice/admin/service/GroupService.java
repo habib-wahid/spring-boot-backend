@@ -14,7 +14,7 @@ public class GroupService {
 
     public GenericResponse createNewGroup(GroupRequest request) {
         IpaAdminGroup group = IpaAdminGroup.builder()
-                .name(request.getName())
+                .name(request.name())
                 .build();
 
         groupRepository.save(group);
