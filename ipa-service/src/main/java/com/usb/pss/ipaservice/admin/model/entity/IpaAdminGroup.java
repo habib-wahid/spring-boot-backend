@@ -44,7 +44,7 @@ public class IpaAdminGroup {
             name = "ipa_admin_group_role",
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    Set<IpaAdminRole> assignedRoles = new HashSet<>();
+    private Set<IpaAdminRole> assignedRoles = new HashSet<>();
 
     private boolean active = true;
 }

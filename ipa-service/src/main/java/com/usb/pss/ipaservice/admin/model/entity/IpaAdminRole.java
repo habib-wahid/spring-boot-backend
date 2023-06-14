@@ -47,6 +47,6 @@ public class IpaAdminRole {
             name = "ipa_admin_role_menu",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_id"))
-    Set<IpaAdminMenu> permittedMenu = new HashSet<>();
+    private Set<IpaAdminMenu> permittedMenu = new HashSet<>();
 
 }
