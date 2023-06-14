@@ -20,12 +20,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "ipa_admin_group")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "ipa_admin_group")
 public class IpaAdminGroup {
 
     @Id

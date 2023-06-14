@@ -24,17 +24,13 @@ public class TokenService {
 
     public IpaAdminRefreshToken createNewRefreshToken(IpaAdminUser user) {
         return refreshTokenRepository.save(
-                IpaAdminRefreshToken.builder()
-                        .token(UUID.randomUUID())
-                        .user(user)
-                        .expiration(LocalDateTime.now().plusSeconds(refreshTokenExpiration))
-                        .build()
+                new IpaAdminRefreshToken(UUID.randomUUID(), user, LocalDateTime.now().plusSeconds(refreshTokenExpiration))
         );
 
     }
 
     public IpaAdminRefreshToken getRefreshTokenById(UUID token) {
-        return refreshTokenRepository.findByToken(token)
+        return refreshTokenRepository.findByTokenId(token)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         INVALID_ACCESS_TOKEN, "Refresh token is invalid...")
                 );

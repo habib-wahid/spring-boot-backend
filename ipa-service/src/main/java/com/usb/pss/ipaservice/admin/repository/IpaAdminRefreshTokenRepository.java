@@ -9,5 +9,5 @@ import java.util.UUID;
 
 public interface IpaAdminRefreshTokenRepository extends JpaRepository<IpaAdminRefreshToken, UUID> {
     @EntityGraph(attributePaths = {"user"})
-    Optional<IpaAdminRefreshToken> findByToken(UUID token);
+    Optional<IpaAdminRefreshToken> findByTokenId(UUID tokenId);
 }

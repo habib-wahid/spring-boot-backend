@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.config;
 
 import com.usb.pss.ipaservice.admin.service.JwtService;
+import com.usb.pss.ipaservice.utils.CommonUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,11 +37,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        final String jwt = authHeader.substring(7);
-        final String username = jwtService.extractUsername(jwt);
+        final String accessToken = CommonUtils.extractTokenFromHeader(authHeader);
+        final String username = jwtService.extractUsername(accessToken);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        if (jwtService.isTokenValid(jwt, userDetails)) {
+        if (jwtService.isTokenValid(accessToken, userDetails)) {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,

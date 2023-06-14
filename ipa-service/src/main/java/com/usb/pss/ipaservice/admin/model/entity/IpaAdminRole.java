@@ -19,11 +19,12 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
 @Table(name = "ipa_admin_role")
 public class IpaAdminRole {
 

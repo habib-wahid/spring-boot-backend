@@ -9,6 +9,7 @@ import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
 import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
+import com.usb.pss.ipaservice.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,10 +48,7 @@ public class AuthenticationService {
         String accessToken = jwtService.generateAccessToken(user);
         IpaAdminRefreshToken refreshToken = tokenService.createNewRefreshToken(user);
 
-        return AuthenticationResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getToken())
-                .build();
+        return new AuthenticationResponse(accessToken, refreshToken.getTokenId());
     }
 
     public RefreshAccessTokenResponse refreshAccessToken(UUID token) {
@@ -60,9 +58,7 @@ public class AuthenticationService {
             throw new AuthenticationFailedException(INVALID_ACCESS_TOKEN, "Token expired...");
         }
 
-        return RefreshAccessTokenResponse.builder()
-                .accessToken(jwtService.generateAccessToken(refreshToken.getUser()))
-                .build();
+        return new RefreshAccessTokenResponse(jwtService.generateAccessToken(refreshToken.getUser()));
 
     }
 
@@ -71,10 +67,10 @@ public class AuthenticationService {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
-        authHeader = authHeader.substring(7);
+        String accessToken = CommonUtils.extractTokenFromHeader(authHeader);
 
         // TO-DO -> Invalidate the access token.
-        Date expiration = jwtService.extractExpiration(authHeader);
+        Date expiration = jwtService.extractExpiration(accessToken);
 
         tokenService.deleteRefreshTokenById(request.token());
     }

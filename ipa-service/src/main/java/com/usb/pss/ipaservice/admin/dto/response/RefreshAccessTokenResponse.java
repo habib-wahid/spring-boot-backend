@@ -1,9 +1,9 @@
 package com.usb.pss.ipaservice.admin.dto.response;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Builder
+@AllArgsConstructor
 @Getter
 public class RefreshAccessTokenResponse {
     private String accessToken;
