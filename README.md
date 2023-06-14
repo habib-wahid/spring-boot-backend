@@ -148,13 +148,10 @@ Swagger UI can be used by visiting the following URL format for an individual se
 Using Redocly is a little lengthier process. The steps include:
 1. Install Redocly CLI globally by running this command
    `npm i -g @redocly/cli@latest` (add sudo for linux)
-2. Download the OpenAPI specification file that is provided in JSON format by Swagger UI. This file can be found by clicking on the link below the project title of the Swagger UI page.
+2. Download the OpenAPI specification file of the project that is provided in JSON format by Swagger UI. This file can be found by clicking on the link below the project title of the project's Swagger UI page.
 3. Convert this JSON file into YAML file using an online or offline converter.
 4. Save the converted YAML file with yaml or yml extension.
 5. Now to create the Redocly documentation file go to the same directory of the saved YAML file and run the following command `redocly build-docs {openapi-file-name}.yml`
 6. This command will create a new HTML file in the same directory which is the Redocly documentation file.
 7. Open this HTML documentation file in a browser.
-8. If new endpoints are added or old ones are updated, then follow the previous steps again to get an updated Redocly documentation.
-
-![BookStore.png](..%2F..%2F..%2FPictures%2FBookStore.png)
-Fig. A Sample of Redocly Documentation Page
+8. If new endpoints are added or old ones are updated to the project, then follow the previous steps again to get an updated Redocly documentation.
