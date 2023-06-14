@@ -5,6 +5,7 @@ import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
 import com.usb.pss.ipaservice.admin.service.AuthenticationService;
+import com.usb.pss.ipaservice.common.GlobalApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
@@ -16,21 +17,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
+import static com.usb.pss.ipaservice.common.APIEndpointConstants.AUTHENTICATION_ENDPOINT;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth")
+@RequestMapping(AUTHENTICATION_ENDPOINT)
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public AuthenticationResponse authenticate(@RequestBody @Validated AuthenticationRequest request) {
-        return authenticationService.authenticate(request);
+    public GlobalApiResponse<AuthenticationResponse> authenticate(@RequestBody @Validated AuthenticationRequest request) {
+        return new GlobalApiResponse<>(authenticationService.authenticate(request));
     }
 
     @PostMapping("/refresh-token")
-    public RefreshAccessTokenResponse refreshAccessToken(@RequestHeader(HttpHeaders.AUTHORIZATION) UUID token) {
-        return authenticationService.refreshAccessToken(token);
+    public GlobalApiResponse<RefreshAccessTokenResponse> refreshAccessToken(@RequestHeader(HttpHeaders.AUTHORIZATION) UUID token) {
+        return new GlobalApiResponse<>(authenticationService.refreshAccessToken(token));
     }
 
     @PostMapping("/logout")
