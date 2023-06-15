@@ -3,7 +3,7 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminRefreshToken;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminRefreshTokenRepository;
-import com.usb.pss.ipaservice.admin.service.TokenService;
+import com.usb.pss.ipaservice.admin.service.iservice.TokenService;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

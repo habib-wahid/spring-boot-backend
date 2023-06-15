@@ -4,7 +4,7 @@ import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
-import com.usb.pss.ipaservice.admin.service.AuthenticationService;
+import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
 import com.usb.pss.ipaservice.common.GlobalApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

@@ -3,11 +3,9 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
-import com.usb.pss.ipaservice.admin.service.UserService;
+import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
-import com.usb.pss.ipaservice.utils.GenericResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +18,7 @@ public class UserServiceImpl implements UserService {
     private final IpaAdminUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public GenericResponse registerUser(RegistrationRequest request) {
+    public void registerUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
             throw new RuleViolationException(PASSWORD_NOT_MATCH, "Password does not match...");
         }
@@ -37,9 +35,8 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode(request.password()))
                 .active(true)
                 .build();
-        userRepository.save(user);
 
-        return new GenericResponse(HttpStatus.OK, "Successfully Registered");
+        userRepository.save(user);
     }
 
 

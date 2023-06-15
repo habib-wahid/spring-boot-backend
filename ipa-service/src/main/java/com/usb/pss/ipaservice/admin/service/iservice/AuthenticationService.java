@@ -1,4 +1,4 @@
-package com.usb.pss.ipaservice.admin.service;
+package com.usb.pss.ipaservice.admin.service.iservice;
 
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;

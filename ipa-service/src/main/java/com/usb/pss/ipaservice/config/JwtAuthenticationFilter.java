@@ -1,7 +1,7 @@
 package com.usb.pss.ipaservice.config;
 
 import com.usb.pss.ipaservice.admin.service.JwtService;
-import com.usb.pss.ipaservice.utils.CommonUtils;
+import com.usb.pss.ipaservice.utils.SecurityUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import static com.usb.pss.ipaservice.common.SecurityConstants.TOKEN_TYPE;
+
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -32,12 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith(TOKEN_TYPE)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String accessToken = CommonUtils.extractTokenFromHeader(authHeader);
+        final String accessToken = SecurityUtils.extractTokenFromHeader(authHeader);
         final String username = jwtService.extractUsername(accessToken);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
