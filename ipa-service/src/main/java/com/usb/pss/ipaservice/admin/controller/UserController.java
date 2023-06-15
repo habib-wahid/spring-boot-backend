@@ -1,9 +1,10 @@
 package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
-import com.usb.pss.ipaservice.admin.service.UserService;
-import com.usb.pss.ipaservice.utils.GenericResponse;
+import com.usb.pss.ipaservice.admin.service.iservice.UserService;
+import com.usb.pss.ipaservice.common.GlobalApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +21,11 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public GenericResponse registerUser(@RequestBody @Validated RegistrationRequest request) {
-        return userService.registerUser(request);
+    public GlobalApiResponse<Object> registerUser(@RequestBody @Validated RegistrationRequest request) {
+        userService.registerUser(request);
+        return new GlobalApiResponse<>(
+                HttpStatus.CREATED, "User created successfully!", null
+        );
     }
 
 }

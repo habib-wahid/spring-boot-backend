@@ -1,4 +1,4 @@
-package com.usb.pss.ipaservice.admin.service;
+package com.usb.pss.ipaservice.admin.service.iservice;
 
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminRefreshToken;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;

@@ -7,12 +7,12 @@ import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminRefreshToken;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
-import com.usb.pss.ipaservice.admin.service.AuthenticationService;
+import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
 import com.usb.pss.ipaservice.admin.service.JwtService;
-import com.usb.pss.ipaservice.admin.service.TokenService;
+import com.usb.pss.ipaservice.admin.service.iservice.TokenService;
 import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
-import com.usb.pss.ipaservice.utils.CommonUtils;
+import com.usb.pss.ipaservice.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstants.INVALID_ACCESS_TOKEN;
 import static com.usb.pss.ipaservice.common.ExceptionConstants.USER_NOT_EXISTS;
+import static com.usb.pss.ipaservice.common.SecurityConstants.TOKEN_TYPE;
 
 @Service
 @RequiredArgsConstructor
@@ -67,10 +68,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     public void logout(String authHeader, LogoutRequest request) {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith(TOKEN_TYPE)) {
             return;
         }
-        String accessToken = CommonUtils.extractTokenFromHeader(authHeader);
+        String accessToken = SecurityUtils.extractTokenFromHeader(authHeader);
 
         // TO-DO -> Invalidate the access token.
         Date expiration = jwtService.extractExpiration(accessToken);
