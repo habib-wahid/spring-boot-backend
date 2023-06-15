@@ -23,8 +23,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
-import static com.usb.pss.ipaservice.common.ExceptionConstants.INVALID_ACCESS_TOKEN;
-import static com.usb.pss.ipaservice.common.ExceptionConstants.USER_NOT_EXISTS;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.INVALID_ACCESS_TOKEN;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
 import static com.usb.pss.ipaservice.common.SecurityConstants.TOKEN_TYPE;
 
 @Service
@@ -45,9 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         IpaAdminUser user = userRepository.findUserByUsername(request.username())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        USER_NOT_EXISTS, "No user data found with this username...")
-                );
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
 
         String accessToken = jwtService.generateAccessToken(user);
         IpaAdminRefreshToken refreshToken = tokenService.createNewRefreshToken(user);
@@ -59,7 +57,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         IpaAdminRefreshToken refreshToken = tokenService.getRefreshTokenById(token);
         if (refreshToken.getExpiration().isBefore(LocalDateTime.now())) {
-            throw new AuthenticationFailedException(INVALID_ACCESS_TOKEN, "Token expired...");
+            throw new AuthenticationFailedException(INVALID_ACCESS_TOKEN);
         }
 
         return new RefreshAccessTokenResponse(jwtService.generateAccessToken(refreshToken.getUser()));
