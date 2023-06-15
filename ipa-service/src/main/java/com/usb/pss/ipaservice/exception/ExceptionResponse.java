@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 public class ExceptionResponse {
 
-    private String exceptionCode;
+    private String code;
     private String message;
 }

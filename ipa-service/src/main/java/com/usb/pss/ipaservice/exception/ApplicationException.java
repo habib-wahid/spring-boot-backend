@@ -1,14 +1,14 @@
 package com.usb.pss.ipaservice.exception;
 
 public class ApplicationException extends RuntimeException {
-    private final String exceptionCode;
+    private final String code;
 
-    public ApplicationException(String exceptionCode, String message) {
+    public ApplicationException(String code, String message) {
         super(message);
-        this.exceptionCode = exceptionCode;
+        this.code = code;
     }
 
-    public String getExceptionCode() {
-        return exceptionCode;
+    public String getCode() {
+        return code;
     }
 }

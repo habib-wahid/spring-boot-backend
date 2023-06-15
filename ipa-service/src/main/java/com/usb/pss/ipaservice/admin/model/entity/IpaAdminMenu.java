@@ -1,19 +1,17 @@
 package com.usb.pss.ipaservice.admin.model.entity;
 
 import com.usb.pss.ipaservice.admin.model.enums.Service;
+import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Entity
 @Getter
@@ -21,16 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ipa_admin_menu")
-public class IpaAdminMenu {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(
-            name = "ipa_admin_menu_sequence",
-            sequenceName = "ipa_admin_menu_sequence",
-            allocationSize = 1
-    )
-    private Long id;
+public class IpaAdminMenu extends BaseAuditorEntity {
 
     @Column(unique = true)
     private String name;
@@ -43,5 +32,13 @@ public class IpaAdminMenu {
     @Enumerated(EnumType.STRING)
     private Service service;
 
-    private boolean active;
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
