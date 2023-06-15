@@ -14,6 +14,8 @@ import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import net.jodah.expiringmap.ExpiringMap;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstants.INVALID_ACCESS_TOKEN;
 import static com.usb.pss.ipaservice.common.ExceptionConstants.USER_NOT_EXISTS;
@@ -35,6 +38,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final TokenService tokenService;
     private final IpaAdminUserRepository userRepository;
+    private final TokenBlackListingService tokenBlackListingService;
+    @Value("${useExpiringMapToBlackListAccessToken}")
+    private boolean useExpiringMapToBlackListAccessToken;
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
@@ -50,6 +56,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 );
 
         String accessToken = jwtService.generateAccessToken(user);
+        System.out.println(accessToken);
         IpaAdminRefreshToken refreshToken = tokenService.createNewRefreshToken(user);
 
         return new AuthenticationResponse(accessToken, refreshToken.getTokenId());
@@ -74,18 +81,37 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String accessToken = SecurityUtils.extractTokenFromHeader(authHeader);
 
         // TO-DO -> Invalidate the access token.
+        invalidateAccessToken(accessToken);
         Date expiration = jwtService.extractExpiration(accessToken);
 
         tokenService.deleteRefreshTokenById(request.token());
     }
 
-    public boolean checkIfBlacklisted(String accessToken) {
-        // TO-DO -> Write logic here...
-        return false;
+    public void invalidateAccessToken(String accessToken) {
+        if (!useExpiringMapToBlackListAccessToken) {
+            Date tokenExpiryDate = jwtService.extractExpiration(accessToken);
+            long ttl = getTTLForToken(tokenExpiryDate);
+            System.out.println("For " + accessToken + " ttl seconds: " + ttl);
+            tokenBlackListingService.blackListTokenWithExpiryTime(accessToken, ttl);
+        } else {
+            blacklistAccessTokenInExpiringMap(accessToken);
+        }
+
     }
+
+
+
+    public void blacklistAccessTokenInExpiringMap(String accessToken) {
+        Date tokenExpiryDate = jwtService.extractExpiration(accessToken);
+        long ttl = getTTLForToken(tokenExpiryDate);
+        System.out.println("For " + accessToken + " ttl: " + ttl);
+        tokenBlackListingService.putAccessTokenInExpiringMap(accessToken,ttl);
+    }
+
 
     private long getTTLForToken(Date date) {
         return Math.max(0, date.toInstant().getEpochSecond() - Instant.now().getEpochSecond());
     }
+
 
 }
