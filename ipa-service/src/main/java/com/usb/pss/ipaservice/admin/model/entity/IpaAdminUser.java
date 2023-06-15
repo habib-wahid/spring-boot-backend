@@ -30,7 +30,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "ipa_admin_user")
 public class IpaAdminUser extends BaseAuditorEntity implements UserDetails {
 
-    private Long id;
     private String firstName;
     private String lastName;
     @Column(unique = true)
@@ -38,6 +37,7 @@ public class IpaAdminUser extends BaseAuditorEntity implements UserDetails {
     @Column(unique = true)
     private String username;
     private String password;
+    private boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
@@ -74,22 +74,22 @@ public class IpaAdminUser extends BaseAuditorEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return isActive();
+        return active;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isActive();
+        return active;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isActive();
+        return active;
     }
 
     @Override
     public boolean isEnabled() {
-        return isActive();
+        return active;
     }
 
     @Override

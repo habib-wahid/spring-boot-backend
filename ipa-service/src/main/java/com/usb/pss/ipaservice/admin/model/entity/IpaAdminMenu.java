@@ -19,8 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ipa_admin_menu")
-public class IpaAdminMenu extends BaseAuditorEntity{
-
+public class IpaAdminMenu extends BaseAuditorEntity {
 
     @Column(unique = true)
     private String name;

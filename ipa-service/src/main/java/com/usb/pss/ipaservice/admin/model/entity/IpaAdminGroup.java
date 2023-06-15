@@ -24,7 +24,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "ipa_admin_group")
-public class IpaAdminGroup extends BaseAuditorEntity{
+public class IpaAdminGroup extends BaseAuditorEntity {
 
     @Column(unique = true)
     private String name;

@@ -5,18 +5,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class LoggedUserHelper {
 
-    public static Long getCurrentUserId(){
-        Long userId = null;
+    public static Optional<Long> getCurrentUserId() {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(Objects.isNull(auth))
-            return null;
+        if (Objects.isNull(auth))
+            return Optional.empty();
         IpaAdminUser ipaAdminUser = (IpaAdminUser) auth.getPrincipal();
-        if(Objects.nonNull(ipaAdminUser)){
-            userId = ipaAdminUser.getId();
+        if (Objects.isNull(ipaAdminUser)) {
+            return Optional.empty();
         }
-        return userId;
+        return Optional.of(ipaAdminUser.getId());
     }
 }

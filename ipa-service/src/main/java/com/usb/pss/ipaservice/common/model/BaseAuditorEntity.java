@@ -13,24 +13,22 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
-public abstract class BaseAuditorEntity extends BaseEntity{
+public abstract class BaseAuditorEntity extends BaseEntity {
 
     /*  To-Do list:
-        * Need to implement two dates
-        * Server date
-        * system date
+     * Need to implement two dates
+     * Server date
+     * system date
      */
 
     @CreatedDate
-    @Column(name = "created_at",updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @CreatedBy
@@ -55,24 +53,16 @@ public abstract class BaseAuditorEntity extends BaseEntity{
     private int version;
 
     @PrePersist
-    private void onPersist(){
+    private void onPersist() {
         createdAt = LocalDateTime.now();
-        createdById = (SecurityContextHolder.getContext().getAuthentication()
-                instanceof AnonymousAuthenticationToken) ? null : LoggedUserHelper.getCurrentUserId();
+        if(LoggedUserHelper.getCurrentUserId().isPresent())
+            createdById = LoggedUserHelper.getCurrentUserId().get();
     }
+
     @PreUpdate
     private void onModification() {
-
-        if (isDeleted()) {
-            if (deletedById == null) {
-                deletedById = LoggedUserHelper.getCurrentUserId();
-            }
-            if (getDeletedAt() == null) {
-                deletedAt = LocalDateTime.now();
-            }
-        }
-
         updatedAt = LocalDateTime.now();
-        updatedById = LoggedUserHelper.getCurrentUserId();
+        if(LoggedUserHelper.getCurrentUserId().isPresent())
+            updatedById = LoggedUserHelper.getCurrentUserId().get();
     }
 }

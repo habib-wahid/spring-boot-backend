@@ -23,8 +23,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "ipa_admin_role")
-public class IpaAdminRole extends BaseAuditorEntity{
-
+public class IpaAdminRole extends BaseAuditorEntity {
 
     @Column(unique = true)
     private String name;
