@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.usb.pss.ipaservice.common.ExceptionConstants.ALREADY_EXISTS;
-import static com.usb.pss.ipaservice.common.ExceptionConstants.PASSWORD_NOT_MATCH;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
 
 @Service
 @RequiredArgsConstructor
@@ -20,11 +20,11 @@ public class UserServiceImpl implements UserService {
 
     public void registerUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
-            throw new RuleViolationException(PASSWORD_NOT_MATCH, "Password does not match...");
+            throw new RuleViolationException(PASSWORD_NOT_MATCH);
         }
 
         if (userRepository.existsByUsername(request.username())) {
-            throw new RuleViolationException(ALREADY_EXISTS, "User already exists with this username...");
+            throw new RuleViolationException(DUPLICATE_USERNAME);
         }
 
         var user = IpaAdminUser.builder()

@@ -1,8 +1,10 @@
 package com.usb.pss.ipaservice.exception;
 
-public class AuthenticationFailedException extends ApplicationException{
+import com.usb.pss.ipaservice.common.ExceptionConstant;
 
-    public AuthenticationFailedException(String exceptionCode, String message) {
-        super(exceptionCode, message);
+public class AuthenticationFailedException extends ApplicationException {
+
+    public AuthenticationFailedException(ExceptionConstant ex) {
+        super(ex.name(), ex.getMessage());
     }
 }

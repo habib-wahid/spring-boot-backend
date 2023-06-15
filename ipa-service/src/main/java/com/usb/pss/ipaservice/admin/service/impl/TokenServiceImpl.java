@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.usb.pss.ipaservice.common.ExceptionConstants.INVALID_ACCESS_TOKEN;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.INVALID_ACCESS_TOKEN;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +32,7 @@ public class TokenServiceImpl implements TokenService {
 
     public IpaAdminRefreshToken getRefreshTokenById(UUID token) {
         return refreshTokenRepository.findByTokenId(token)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        INVALID_ACCESS_TOKEN, "Refresh token is invalid...")
-                );
+                .orElseThrow(() -> new ResourceNotFoundException(INVALID_ACCESS_TOKEN));
 
     }
 
