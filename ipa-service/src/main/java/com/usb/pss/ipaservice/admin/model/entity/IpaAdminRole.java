@@ -1,27 +1,19 @@
 package com.usb.pss.ipaservice.admin.model.entity;
 
 import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
 
 @Entity
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-@Getter
-@Setter
+@AllArgsConstructor
 @Table(name = "ipa_admin_role")
 public class IpaAdminRole extends BaseAuditorEntity {
 
