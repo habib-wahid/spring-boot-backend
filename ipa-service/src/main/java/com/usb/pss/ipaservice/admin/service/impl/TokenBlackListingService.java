@@ -36,21 +36,11 @@ public class TokenBlackListingService implements BlackListingService {
     public boolean ifBlackListed(String accessToken) {
         if (!useExpiringMapToBlackListAccessToken) {
             Object blackListedToken = checkBlackListedTokenWithExpiryTime(accessToken);
-            if (blackListedToken != null) {
-//                System.out.println("Tried to access resource with a blacklisted token in redis");
-                return true;
-            } else {
-                return false;
-            }
+            return blackListedToken != null;
         } else {
             System.out.println(expiringMap.keySet());
 //            String value = expiringMap.get(accessToken);
-            if (expiringMap.containsKey(accessToken)) {
-//                System.out.println("Tried to access resource with a blacklisted token in expiringmap");
-                return true;
-            } else {
-                return false;
-            }
+            return expiringMap.containsKey(accessToken);
         }
     }
 

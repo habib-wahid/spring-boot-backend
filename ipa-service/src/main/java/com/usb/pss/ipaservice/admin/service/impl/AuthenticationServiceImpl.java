@@ -87,7 +87,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!useExpiringMapToBlackListAccessToken) {
             Date tokenExpiryDate = jwtService.extractExpiration(accessToken);
             long ttl = getTTLForToken(tokenExpiryDate);
-//            System.out.println("For " + accessToken + " ttl seconds: " + ttl);
             tokenBlackListingService.blackListTokenWithExpiryTime(accessToken, ttl);
         } else {
             blacklistAccessTokenInExpiringMap(accessToken);
@@ -98,7 +97,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private void blacklistAccessTokenInExpiringMap(String accessToken) {
         Date tokenExpiryDate = jwtService.extractExpiration(accessToken);
         long ttl = getTTLForToken(tokenExpiryDate);
-//        System.out.println("For " + accessToken + " ttl: " + ttl);
         tokenBlackListingService.putAccessTokenInExpiringMap(accessToken, ttl);
     }
 
