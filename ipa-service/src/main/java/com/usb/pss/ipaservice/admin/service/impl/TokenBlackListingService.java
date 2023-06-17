@@ -18,10 +18,7 @@ public class TokenBlackListingService implements BlackListingService {
     @Value("${spring.data.redis.hashkey:pss2023Technonext}")
     private String hashKey;
 
-    private ExpiringMap<String, String> expiringMap = ExpiringMap.builder()
-            .variableExpiration()
-            .maxSize(1000)
-            .build();
+    private ExpiringMap<String, String> expiringMap = ExpiringMap.builder().variableExpiration().maxSize(1000).build();
     @Value("${useExpiringMapToBlackListAccessToken}")
     private boolean useExpiringMapToBlackListAccessToken;
 
@@ -32,13 +29,15 @@ public class TokenBlackListingService implements BlackListingService {
         if (isExpire) {
             return token;
         }
+
         return null;
     }
-    public boolean checkIfBlacklisted(String accessToken) {
+
+    public boolean ifBlackListed(String accessToken) {
         if (!useExpiringMapToBlackListAccessToken) {
             Object blackListedToken = checkBlackListedTokenWithExpiryTime(accessToken);
             if (blackListedToken != null) {
-                System.out.println("Tried to access resource with a blacklisted token in redis");
+//                System.out.println("Tried to access resource with a blacklisted token in redis");
                 return true;
             } else {
                 return false;
@@ -47,13 +46,14 @@ public class TokenBlackListingService implements BlackListingService {
             System.out.println(expiringMap.keySet());
 //            String value = expiringMap.get(accessToken);
             if (expiringMap.containsKey(accessToken)) {
-                System.out.println("Tried to access resource with a blacklisted token in expiringmap");
+//                System.out.println("Tried to access resource with a blacklisted token in expiringmap");
                 return true;
             } else {
                 return false;
             }
         }
     }
+
     @Override
     public Object checkBlackListedTokenWithExpiryTime(String token) {
         return redisTemplate.opsForHash().get(token, hashKey);

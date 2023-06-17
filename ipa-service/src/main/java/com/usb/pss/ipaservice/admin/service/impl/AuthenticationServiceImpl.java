@@ -77,10 +77,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return;
         }
         String accessToken = SecurityUtils.extractTokenFromHeader(authHeader);
-
-        // TO-DO -> Invalidate the access token.
         invalidateAccessToken(accessToken);
-        Date expiration = jwtService.extractExpiration(accessToken);
+//        Date expiration = jwtService.extractExpiration(accessToken); no use of the expiration, so commenting it out.
 
         tokenService.deleteRefreshTokenById(request.token());
     }
@@ -89,21 +87,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!useExpiringMapToBlackListAccessToken) {
             Date tokenExpiryDate = jwtService.extractExpiration(accessToken);
             long ttl = getTTLForToken(tokenExpiryDate);
-            System.out.println("For " + accessToken + " ttl seconds: " + ttl);
+//            System.out.println("For " + accessToken + " ttl seconds: " + ttl);
             tokenBlackListingService.blackListTokenWithExpiryTime(accessToken, ttl);
         } else {
             blacklistAccessTokenInExpiringMap(accessToken);
         }
-
     }
 
 
-
-    public void blacklistAccessTokenInExpiringMap(String accessToken) {
+    private void blacklistAccessTokenInExpiringMap(String accessToken) {
         Date tokenExpiryDate = jwtService.extractExpiration(accessToken);
         long ttl = getTTLForToken(tokenExpiryDate);
-        System.out.println("For " + accessToken + " ttl: " + ttl);
-        tokenBlackListingService.putAccessTokenInExpiringMap(accessToken,ttl);
+//        System.out.println("For " + accessToken + " ttl: " + ttl);
+        tokenBlackListingService.putAccessTokenInExpiringMap(accessToken, ttl);
     }
 
 
