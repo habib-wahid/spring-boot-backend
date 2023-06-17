@@ -33,7 +33,7 @@ public class TokenBlackListingService implements BlackListingService {
         return null;
     }
 
-    public boolean ifBlackListed(String accessToken) {
+    public boolean isTokenBlackListed(String accessToken) {
         if (!useExpiringMapToBlackListAccessToken) {
             Object blackListedToken = checkBlackListedTokenWithExpiryTime(accessToken);
             return blackListedToken != null;
