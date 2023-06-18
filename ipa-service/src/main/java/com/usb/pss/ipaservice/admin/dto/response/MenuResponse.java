@@ -1,7 +1,11 @@
 package com.usb.pss.ipaservice.admin.dto.response;
 
 import com.usb.pss.ipaservice.admin.model.enums.Service;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author Junaid Khan Pathan

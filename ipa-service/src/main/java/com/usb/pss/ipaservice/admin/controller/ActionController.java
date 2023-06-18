@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.usb.pss.ipaservice.common.APIEndpointConstants.ACTION_ENDPOINT;
 
+/**
+ * @author Junaid Khan Pathan
+ * @date Jun 17, 2023
+ */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(ACTION_ENDPOINT)

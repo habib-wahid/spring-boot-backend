@@ -1,7 +1,11 @@
 package com.usb.pss.ipaservice.common.model;
 
 import com.usb.pss.ipaservice.utils.LoggedUserHelper;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Version;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.CreatedBy;

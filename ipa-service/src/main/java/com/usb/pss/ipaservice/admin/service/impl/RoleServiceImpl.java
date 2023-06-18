@@ -3,7 +3,6 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.dto.request.RoleMenuRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RoleRequest;
 import com.usb.pss.ipaservice.admin.dto.response.RoleResponse;
-import com.usb.pss.ipaservice.admin.model.entity.IpaAdminGroup;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminMenu;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminRole;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminRoleRepository;
