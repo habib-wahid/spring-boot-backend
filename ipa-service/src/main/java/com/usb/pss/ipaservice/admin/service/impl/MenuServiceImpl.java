@@ -25,46 +25,34 @@ public class MenuServiceImpl implements MenuService {
         Optional<IpaAdminMenu> duplicateMenuName = menuRepository.findActiveMenuByName(menuRequest.name());
         if (duplicateMenuName.isPresent()) {
             throw new RuleViolationException(ExceptionConstant.DUPLICATE_MENU_NAME);
-        } else {
-            Optional<IpaAdminMenu> duplicateMenuUrl = menuRepository.findActiveMenuByUrl(menuRequest.url());
-            if (duplicateMenuUrl.isPresent()) {
-                throw new RuleViolationException(ExceptionConstant.DUPLICATE_MENU_URL);
-            } else {
-                IpaAdminMenu menuToSave = new IpaAdminMenu();
-                prepareEntity(menuRequest, menuToSave);
-                menuRepository.save(menuToSave);
-            }
         }
+
+        Optional<IpaAdminMenu> duplicateMenuUrl = menuRepository.findActiveMenuByUrl(menuRequest.url());
+        if (duplicateMenuUrl.isPresent()) {
+            throw new RuleViolationException(ExceptionConstant.DUPLICATE_MENU_URL);
+        }
+
+        IpaAdminMenu menuToSave = new IpaAdminMenu();
+        prepareEntity(menuRequest, menuToSave);
+        menuRepository.save(menuToSave);
     }
 
     @Override
     public IpaAdminMenu getMenuById(Long menuId) {
-        Optional<IpaAdminMenu> menu = menuRepository.findActiveMenuById(menuId);
-        if (menu.isPresent()) {
-            return menu.get();
-        } else {
-            throw new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND);
-        }
+        return menuRepository.findActiveMenuById(menuId)
+                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND));
     }
 
     @Override
     public IpaAdminMenu getMenuByName(String menuName) {
-        Optional<IpaAdminMenu> menu = menuRepository.findActiveMenuByName(menuName);
-        if (menu.isPresent()) {
-            return menu.get();
-        } else {
-            throw new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND);
-        }
+        return menuRepository.findActiveMenuByName(menuName)
+                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND));
     }
 
     @Override
     public IpaAdminMenu getMenuByUrl(String menuUrl) {
-        Optional<IpaAdminMenu> menu = menuRepository.findActiveMenuByUrl(menuUrl);
-        if (menu.isPresent()) {
-            return menu.get();
-        } else {
-            throw new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND);
-        }
+        return menuRepository.findActiveMenuByUrl(menuUrl)
+                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND));
     }
 
     @Override
@@ -101,15 +89,15 @@ public class MenuServiceImpl implements MenuService {
         Optional<IpaAdminMenu> duplicateMenuName = menuRepository.findActiveMenuByName(menuRequest.name());
         if (duplicateMenuName.isPresent()) {
             throw new RuleViolationException(ExceptionConstant.DUPLICATE_MENU_NAME);
-        } else {
-            Optional<IpaAdminMenu> duplicateMenuUrl = menuRepository.findActiveMenuByUrl(menuRequest.name());
-            if (duplicateMenuUrl.isPresent()) {
-                throw new RuleViolationException(ExceptionConstant.DUPLICATE_MENU_URL);
-            } else {
-                prepareEntity(menuRequest, menuToUpdate);
-                menuRepository.save(menuToUpdate);
-            }
         }
+
+        Optional<IpaAdminMenu> duplicateMenuUrl = menuRepository.findActiveMenuByUrl(menuRequest.name());
+        if (duplicateMenuUrl.isPresent()) {
+            throw new RuleViolationException(ExceptionConstant.DUPLICATE_MENU_URL);
+        }
+
+        prepareEntity(menuRequest, menuToUpdate);
+        menuRepository.save(menuToUpdate);
     }
 
     @Override

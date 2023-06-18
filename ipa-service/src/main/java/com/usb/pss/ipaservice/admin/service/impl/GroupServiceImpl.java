@@ -34,31 +34,23 @@ public class GroupServiceImpl implements GroupService {
         Optional<IpaAdminGroup> duplicateGroupName = groupRepository.findActiveGroupByName(groupRequest.name());
         if (duplicateGroupName.isPresent()) {
             throw new RuleViolationException(ExceptionConstant.DUPLICATE_GROUP_NAME);
-        } else {
-            IpaAdminGroup groupToSave = new IpaAdminGroup();
-            prepareEntity(groupRequest, groupToSave);
-            groupRepository.save(groupToSave);
         }
+
+        IpaAdminGroup groupToSave = new IpaAdminGroup();
+        prepareEntity(groupRequest, groupToSave);
+        groupRepository.save(groupToSave);
     }
 
     @Override
     public IpaAdminGroup getGroupById(Long groupId) {
-        Optional<IpaAdminGroup> group = groupRepository.findActiveGroupById(groupId);
-        if (group.isPresent()) {
-            return group.get();
-        } else {
-            throw new ResourceNotFoundException(ExceptionConstant.GROUP_NOT_FOUND);
-        }
+        return groupRepository.findActiveGroupById(groupId)
+                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.GROUP_NOT_FOUND));
     }
 
     @Override
     public IpaAdminGroup getGroupByName(String groupName) {
-        Optional<IpaAdminGroup> existingGroup = groupRepository.findActiveGroupByName(groupName);
-        if (existingGroup.isPresent()) {
-            return existingGroup.get();
-        } else {
-            throw new ResourceNotFoundException(ExceptionConstant.GROUP_NOT_FOUND);
-        }
+        return groupRepository.findActiveGroupByName(groupName)
+                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.GROUP_NOT_FOUND));
     }
 
     @Override
@@ -95,10 +87,10 @@ public class GroupServiceImpl implements GroupService {
         Optional<IpaAdminGroup> duplicateGroupName = groupRepository.findActiveGroupByName(groupRequest.name());
         if (duplicateGroupName.isPresent()) {
             throw new RuleViolationException(ExceptionConstant.DUPLICATE_GROUP_NAME);
-        } else {
-            prepareEntity(groupRequest, groupToUpdate);
-            groupRepository.save(groupToUpdate);
         }
+
+        prepareEntity(groupRequest, groupToUpdate);
+        groupRepository.save(groupToUpdate);
     }
 
     @Override

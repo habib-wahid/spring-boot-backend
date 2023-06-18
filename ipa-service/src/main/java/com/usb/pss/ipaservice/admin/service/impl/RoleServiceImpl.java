@@ -34,31 +34,23 @@ public class RoleServiceImpl implements RoleService {
         Optional<IpaAdminRole> duplicateRoleName = roleRepository.findActiveRoleByName(roleRequest.name());
         if (duplicateRoleName.isPresent()) {
             throw new RuleViolationException(ExceptionConstant.DUPLICATE_ROLE_NAME);
-        } else {
-            IpaAdminRole roleToSave = new IpaAdminRole();
-            prepareEntity(roleRequest, roleToSave);
-            roleRepository.save(roleToSave);
         }
+
+        IpaAdminRole roleToSave = new IpaAdminRole();
+        prepareEntity(roleRequest, roleToSave);
+        roleRepository.save(roleToSave);
     }
 
     @Override
     public IpaAdminRole getRoleById(Long roleId) {
-        Optional<IpaAdminRole> role = roleRepository.findActiveRoleById(roleId);
-        if (role.isPresent()) {
-            return role.get();
-        } else {
-            throw new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND);
-        }
+        return roleRepository.findActiveRoleById(roleId)
+                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND));
     }
 
     @Override
     public IpaAdminRole getRoleByName(String roleName) {
-        Optional<IpaAdminRole> role = roleRepository.findActiveRoleByName(roleName);
-        if (role.isPresent()) {
-            return role.get();
-        } else {
-            throw new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND);
-        }
+        return roleRepository.findActiveRoleByName(roleName)
+                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND));
     }
 
     @Override
@@ -95,10 +87,10 @@ public class RoleServiceImpl implements RoleService {
         Optional<IpaAdminRole> duplicateRoleName = roleRepository.findActiveRoleByName(roleRequest.name());
         if (duplicateRoleName.isPresent()) {
             throw new RuleViolationException(ExceptionConstant.DUPLICATE_ROLE_NAME);
-        } else {
-            prepareEntity(roleRequest, roleToUpdate);
-            roleRepository.save(roleToUpdate);
         }
+
+        prepareEntity(roleRequest, roleToUpdate);
+        roleRepository.save(roleToUpdate);
     }
 
     @Override
