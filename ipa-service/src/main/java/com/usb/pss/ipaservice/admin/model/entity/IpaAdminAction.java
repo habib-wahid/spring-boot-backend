@@ -11,7 +11,6 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.*;
 
-@Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
