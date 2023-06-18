@@ -2,15 +2,16 @@ package com.usb.pss.ipaservice.admin.model.entity;
 
 import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
 @Entity
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,6 +28,18 @@ public class IpaAdminRole extends BaseAuditorEntity {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_id"))
     private Set<IpaAdminMenu> permittedMenu = new HashSet<>();
+
+    public void addMenu(IpaAdminMenu menu) {
+        if (Objects.nonNull(menu)) {
+            this.permittedMenu.add(menu);
+        }
+    }
+
+    public void removeMenu(IpaAdminMenu menu) {
+        if (Objects.nonNull(menu)) {
+            this.permittedMenu.remove(menu);
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
