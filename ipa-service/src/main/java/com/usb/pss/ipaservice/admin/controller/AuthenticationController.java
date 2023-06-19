@@ -5,7 +5,6 @@ import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
-import com.usb.pss.ipaservice.common.GlobalApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
@@ -28,13 +27,13 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public GlobalApiResponse<AuthenticationResponse> authenticate(@RequestBody @Validated AuthenticationRequest request) {
-        return new GlobalApiResponse<>(authenticationService.authenticate(request));
+    public AuthenticationResponse authenticate(@RequestBody @Validated AuthenticationRequest request) {
+        return authenticationService.authenticate(request);
     }
 
     @PostMapping("/refresh-token")
-    public GlobalApiResponse<RefreshAccessTokenResponse> refreshAccessToken(@RequestHeader(HttpHeaders.AUTHORIZATION) UUID token) {
-        return new GlobalApiResponse<>(authenticationService.refreshAccessToken(token));
+    public RefreshAccessTokenResponse refreshAccessToken(@RequestHeader(HttpHeaders.AUTHORIZATION) UUID token) {
+        return authenticationService.refreshAccessToken(token);
     }
 
     @PostMapping("/logout")
