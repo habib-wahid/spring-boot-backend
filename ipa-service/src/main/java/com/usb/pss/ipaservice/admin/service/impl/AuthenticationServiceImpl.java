@@ -14,6 +14,7 @@ import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
-import static com.usb.pss.ipaservice.common.ExceptionConstants.INVALID_ACCESS_TOKEN;
-import static com.usb.pss.ipaservice.common.ExceptionConstants.USER_NOT_EXISTS;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.INVALID_ACCESS_TOKEN;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
 import static com.usb.pss.ipaservice.common.SecurityConstants.TOKEN_TYPE;
 
 @Service
@@ -35,6 +36,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final TokenService tokenService;
     private final IpaAdminUserRepository userRepository;
+    private final TokenBlackListingService tokenBlackListingService;
+    @Value("${useExpiringMapToBlackListAccessToken}")
+    private boolean useExpiringMapToBlackListAccessToken;
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
@@ -45,9 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         IpaAdminUser user = userRepository.findUserByUsername(request.username())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        USER_NOT_EXISTS, "No user data found with this username...")
-                );
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
 
         String accessToken = jwtService.generateAccessToken(user);
         IpaAdminRefreshToken refreshToken = tokenService.createNewRefreshToken(user);
@@ -59,7 +61,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         IpaAdminRefreshToken refreshToken = tokenService.getRefreshTokenById(token);
         if (refreshToken.getExpiration().isBefore(LocalDateTime.now())) {
-            throw new AuthenticationFailedException(INVALID_ACCESS_TOKEN, "Token expired...");
+            throw new AuthenticationFailedException(INVALID_ACCESS_TOKEN);
         }
 
         return new RefreshAccessTokenResponse(jwtService.generateAccessToken(refreshToken.getUser()));
@@ -72,20 +74,32 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return;
         }
         String accessToken = SecurityUtils.extractTokenFromHeader(authHeader);
-
-        // TO-DO -> Invalidate the access token.
-        Date expiration = jwtService.extractExpiration(accessToken);
+        invalidateAccessToken(accessToken);
 
         tokenService.deleteRefreshTokenById(request.token());
     }
 
-    public boolean checkIfBlacklisted(String accessToken) {
-        // TO-DO -> Write logic here...
-        return false;
+    public void invalidateAccessToken(String accessToken) {
+        if (!useExpiringMapToBlackListAccessToken) {
+            Date tokenExpiryDate = jwtService.extractExpiration(accessToken);
+            long ttl = getTTLForToken(tokenExpiryDate);
+            tokenBlackListingService.blackListTokenWithExpiryTime(accessToken, ttl);
+        } else {
+            blacklistAccessTokenInExpiringMap(accessToken);
+        }
     }
+
+
+    private void blacklistAccessTokenInExpiringMap(String accessToken) {
+        Date tokenExpiryDate = jwtService.extractExpiration(accessToken);
+        long ttl = getTTLForToken(tokenExpiryDate);
+        tokenBlackListingService.putAccessTokenInExpiringMap(accessToken, ttl);
+    }
+
 
     private long getTTLForToken(Date date) {
         return Math.max(0, date.toInstant().getEpochSecond() - Instant.now().getEpochSecond());
     }
+
 
 }

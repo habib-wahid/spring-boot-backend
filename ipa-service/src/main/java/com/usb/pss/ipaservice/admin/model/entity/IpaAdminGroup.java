@@ -1,14 +1,12 @@
 package com.usb.pss.ipaservice.admin.model.entity;
 
+import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,26 +15,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "ipa_admin_group")
-public class IpaAdminGroup {
+public class IpaAdminGroup extends BaseAuditorEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(
-            name = "ipa_admin_group_sequence",
-            sequenceName = "ipa_admin_group_sequence",
-            allocationSize = 1
-    )
-    private Long id;
-
+    @Column(unique = true)
     private String name;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -46,5 +37,25 @@ public class IpaAdminGroup {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<IpaAdminRole> assignedRoles = new HashSet<>();
 
-    private boolean active = true;
+    public void addRole(IpaAdminRole role) {
+        if (Objects.nonNull(role)) {
+            this.assignedRoles.add(role);
+        }
+    }
+
+    public void removeRole(IpaAdminRole role) {
+        if (Objects.nonNull(role)) {
+            this.assignedRoles.remove(role);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

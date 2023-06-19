@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 import static com.usb.pss.ipaservice.common.APIEndpointConstants.AUTHENTICATION_ENDPOINT;
+import static com.usb.pss.ipaservice.common.SecurityConstants.AUTHORIZATION;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,7 +38,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public void logout(String authHeader, @RequestBody @Validated LogoutRequest logoutRequest) {
+    public void logout(@RequestHeader(AUTHORIZATION) String authHeader, @RequestBody @Validated LogoutRequest logoutRequest) {
         authenticationService.logout(authHeader, logoutRequest);
     }
 }
