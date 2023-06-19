@@ -5,7 +5,7 @@ import com.usb.pss.ipaservice.admin.model.entity.IpaAdminAction;
 
 public interface ActionService {
 
-    IpaAdminAction saveUserAction(ActionRequest actionRequest);
-    IpaAdminAction getUserAction(Long actionId);
-    String deleteUserAction(Long actionId);
+    void saveUserAction(ActionRequest actionRequest);
+    IpaAdminAction getUserActionById(Long actionId);
+    String deleteUserActionById(Long actionId);
 }
