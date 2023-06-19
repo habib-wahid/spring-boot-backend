@@ -63,7 +63,12 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<GroupResponse> getAllGroupResponse() {
-        return groupRepository.findAllGroupResponse();
+        return groupRepository.findAll().stream()
+                .map(group -> {
+                    GroupResponse groupResponse = new GroupResponse();
+                    prepareResponse(group, groupResponse);
+                    return groupResponse;
+                }).collect(Collectors.toList());
     }
 
     @Override

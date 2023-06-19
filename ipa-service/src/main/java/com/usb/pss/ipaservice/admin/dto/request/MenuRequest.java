@@ -1,6 +1,5 @@
 package com.usb.pss.ipaservice.admin.dto.request;
 
-import com.usb.pss.ipaservice.admin.model.enums.Service;
 import jakarta.validation.constraints.NotBlank;
 
 /**
@@ -14,5 +13,5 @@ public record MenuRequest(
         @NotBlank
         String url,
         String icon,
-        Service service
+        long serviceId
 ) {}

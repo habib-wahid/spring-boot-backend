@@ -34,4 +34,3 @@ server:
 
 
 useExpiringMapToBlackListAccessToken: false
-
