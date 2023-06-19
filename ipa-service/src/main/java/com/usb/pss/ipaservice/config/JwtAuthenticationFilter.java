@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.config;
 
 import com.usb.pss.ipaservice.admin.service.JwtService;
+import com.usb.pss.ipaservice.admin.service.impl.TokenBlackListingService;
 import com.usb.pss.ipaservice.utils.SecurityUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,6 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final TokenBlackListingService tokenBlackListingService;
 
     @Override
     protected void doFilterInternal(
@@ -43,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String username = jwtService.extractUsername(accessToken);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        if (jwtService.isTokenValid(accessToken, userDetails)) {
+        if (jwtService.isTokenValid(accessToken, userDetails) && !tokenBlackListingService.isTokenBlackListed(accessToken)) {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
