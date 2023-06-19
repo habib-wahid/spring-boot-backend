@@ -114,6 +114,22 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>io.dapr</groupId>
+			<artifactId>dapr-sdk</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.dapr</groupId>
+			<artifactId>dapr-sdk-springboot</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-core</artifactId>
+			<version>3.4.14</version>
+		</dependency>
+
 		<!--		<dependency>-->
 		<!--			<groupId>org.springframework.cloud</groupId>-->
 		<!--			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>-->

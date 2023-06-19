@@ -1,23 +1,36 @@
 package com.usb.pss.ipaservice.admin.controller;
-
-import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.usb.pss.ipaservice.admin.dto.request.ActionRequest;
+import com.usb.pss.ipaservice.admin.dto.response.AdminActionResponse;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminAction;
+import com.usb.pss.ipaservice.admin.service.impl.ActionServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import static com.usb.pss.ipaservice.common.APIEndpointConstants.ACTION_ENDPOINT;
-
-/**
- * @author Junaid Khan Pathan
- * @date Jun 17, 2023
- */
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(ACTION_ENDPOINT)
-@Tag(name = "Action Controller", description = "API Endpoints for user action related operations.")
 public class ActionController {
-    private final ActionService actionService;
+
+    private final ActionServiceImpl actionService;
+
+    @PostMapping()
+    public ResponseEntity<String> saveAction(@RequestBody ActionRequest actionRequest){
+        actionService.saveUserAction(actionRequest);
+        return new ResponseEntity<>("User action saved",HttpStatus.OK);
+    }
+
+    @GetMapping("/{actionId}")
+    public ResponseEntity<AdminActionResponse> getAction(@PathVariable Long actionId){
+        return new ResponseEntity<>(actionService.getUserActionById(actionId),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{actionId}")
+    public ResponseEntity<String> deleteAction(@PathVariable Long actionId){
+        return new ResponseEntity<>(actionService.deleteUserActionById(actionId),HttpStatus.OK);
+    }
 
 }

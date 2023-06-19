@@ -1,9 +1,12 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
-/**
- * @author Junaid Khan Pathan
- * @date Jun 17, 2023
- */
+import com.usb.pss.ipaservice.admin.dto.request.ActionRequest;
+import com.usb.pss.ipaservice.admin.dto.response.AdminActionResponse;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminAction;
 
 public interface ActionService {
+
+    void saveUserAction(ActionRequest actionRequest);
+    AdminActionResponse getUserActionById(Long actionId);
+    String deleteUserActionById(Long actionId);
 }
