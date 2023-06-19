@@ -14,6 +14,5 @@ public record MenuRequest(
         @NotBlank
         String url,
         String icon,
-        Service service,
-        boolean active
+        Service service
 ) {}

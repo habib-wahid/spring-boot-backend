@@ -9,6 +9,5 @@ import jakarta.validation.constraints.NotBlank;
 
 public record GroupRequest(
         @NotBlank
-        String name,
-        boolean active
+        String name
 ) {}
