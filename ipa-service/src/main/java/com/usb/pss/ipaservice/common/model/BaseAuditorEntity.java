@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.common.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.usb.pss.ipaservice.utils.LoggedUserHelper;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
@@ -46,6 +47,7 @@ public abstract class BaseAuditorEntity extends BaseEntity {
     private Long deletedById;
 
     @Column(name = "deleted_at")
+    @JsonIgnore
     private LocalDateTime deletedAt;
 
     @Version

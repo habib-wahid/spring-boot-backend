@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.controller;
 import com.usb.pss.ipaservice.admin.dto.request.ActionRequest;
+import com.usb.pss.ipaservice.admin.dto.response.AdminActionResponse;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminAction;
 import com.usb.pss.ipaservice.admin.service.impl.ActionServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class ActionController {
     }
 
     @GetMapping("/{actionId}")
-    public ResponseEntity<IpaAdminAction> getAction(@PathVariable Long actionId){
+    public ResponseEntity<AdminActionResponse> getAction(@PathVariable Long actionId){
         return new ResponseEntity<>(actionService.getUserActionById(actionId),HttpStatus.OK);
     }
 
