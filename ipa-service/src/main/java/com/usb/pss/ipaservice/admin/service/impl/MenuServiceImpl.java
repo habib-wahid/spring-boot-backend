@@ -53,17 +53,10 @@ public class MenuServiceImpl implements MenuService {
         // will be implemented later if needed
     }
 
-    private void prepareEntity(MenuRequest menuRequest, IpaAdminMenu menu) {
-        menu.setName(menuRequest.name());
-        menu.setUrl(menuRequest.url());
-        menu.setIcon(menuRequest.icon());
-        menu.setService(menuRequest.service());
-    }
-
     private void prepareResponse(IpaAdminMenu menu, MenuResponse menuResponse) {
         menuResponse.setId(menu.getId());
         menuResponse.setName(menu.getName());
         menuResponse.setUrl(menu.getUrl());
-        menuResponse.setService(menu.getService());
+        menuResponse.setServiceName(menu.getModule().getName());
     }
 }

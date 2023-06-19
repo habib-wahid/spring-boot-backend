@@ -18,7 +18,7 @@ public interface IpaAdminMenuRepository extends JpaRepository<IpaAdminMenu, Long
             "mn.name, " +
             "mn.url, " +
             "mn.icon, " +
-            "mn.service) " +
+            "mn.module.name) " +
             "from IpaAdminMenu mn")
     List<MenuResponse> findAllMenuResponse();
 }
