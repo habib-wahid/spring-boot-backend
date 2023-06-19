@@ -14,7 +14,6 @@ import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-import net.jodah.expiringmap.ExpiringMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +23,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.INVALID_ACCESS_TOKEN;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
@@ -54,7 +52,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
 
         String accessToken = jwtService.generateAccessToken(user);
-        System.out.println(accessToken);
         IpaAdminRefreshToken refreshToken = tokenService.createNewRefreshToken(user);
 
         return new AuthenticationResponse(accessToken, refreshToken.getTokenId());
@@ -78,7 +75,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         String accessToken = SecurityUtils.extractTokenFromHeader(authHeader);
         invalidateAccessToken(accessToken);
-//        Date expiration = jwtService.extractExpiration(accessToken); no use of the expiration, so commenting it out.
 
         tokenService.deleteRefreshTokenById(request.token());
     }

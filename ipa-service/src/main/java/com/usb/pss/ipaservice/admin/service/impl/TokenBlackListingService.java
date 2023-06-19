@@ -18,19 +18,15 @@ public class TokenBlackListingService implements BlackListingService {
     @Value("${spring.data.redis.hashkey:pss2023Technonext}")
     private String hashKey;
 
-    private ExpiringMap<String, String> expiringMap = ExpiringMap.builder().variableExpiration().maxSize(1000).build();
+    private final ExpiringMap<String, String> expiringMap = ExpiringMap.builder().variableExpiration().maxSize(1000).build();
     @Value("${useExpiringMapToBlackListAccessToken}")
     private boolean useExpiringMapToBlackListAccessToken;
 
     @Override
-    public String blackListTokenWithExpiryTime(String token, long timeToLive) {
+    public void blackListTokenWithExpiryTime(String token, long timeToLive) {
+//        To Do: we need to make sure tenant aware caching
         redisTemplate.opsForHash().put(token, hashKey, CacheConfig.BLACKLIST_CACHE_NAME);
-        boolean isExpire = redisTemplate.expire(token, timeToLive, TimeUnit.SECONDS);
-        if (isExpire) {
-            return token;
-        }
-
-        return null;
+        redisTemplate.expire(token, timeToLive, TimeUnit.SECONDS);
     }
 
     public boolean isTokenBlackListed(String accessToken) {
@@ -38,8 +34,6 @@ public class TokenBlackListingService implements BlackListingService {
             Object blackListedToken = checkBlackListedTokenWithExpiryTime(accessToken);
             return blackListedToken != null;
         } else {
-            System.out.println(expiringMap.keySet());
-//            String value = expiringMap.get(accessToken);
             return expiringMap.containsKey(accessToken);
         }
     }

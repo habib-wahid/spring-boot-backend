@@ -1,7 +1,9 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
 public interface BlackListingService {
-    public String blackListTokenWithExpiryTime(String token, long timeToLive);
-    public Object checkBlackListedTokenWithExpiryTime(String token);
-    public boolean isTokenBlackListed(String accessToken);
+    void blackListTokenWithExpiryTime(String token, long timeToLive);
+
+    Object checkBlackListedTokenWithExpiryTime(String token);
+
+    boolean isTokenBlackListed(String accessToken);
 }
