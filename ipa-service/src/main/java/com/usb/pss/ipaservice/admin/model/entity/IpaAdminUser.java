@@ -1,9 +1,5 @@
 package com.usb.pss.ipaservice.admin.model.entity;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,12 +17,16 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Table(name = "ipa_admin_user")
 public class IpaAdminUser extends BaseAuditorEntity implements UserDetails {
 

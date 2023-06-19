@@ -9,19 +9,22 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "ipa_admin_role")
 public class IpaAdminRole extends BaseAuditorEntity {
 
@@ -35,6 +38,18 @@ public class IpaAdminRole extends BaseAuditorEntity {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_id"))
     private Set<IpaAdminMenu> permittedMenu = new HashSet<>();
+
+    public void addMenu(IpaAdminMenu menu) {
+        if (Objects.nonNull(menu)) {
+            this.permittedMenu.add(menu);
+        }
+    }
+
+    public void removeMenu(IpaAdminMenu menu) {
+        if (Objects.nonNull(menu)) {
+            this.permittedMenu.remove(menu);
+        }
+    }
 
     @Override
     public boolean equals(Object o) {

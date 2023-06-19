@@ -1,13 +1,12 @@
 package com.usb.pss.ipaservice.admin.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 
 /**
  * @author Junaid Khan Pathan
  * @date Jun 17, 2023
  */
 
-public record GroupRequest(
-        @NotBlank
-        String name
+public record GroupRoleRequest(
+   List<Long> groupRoleIds
 ) {}

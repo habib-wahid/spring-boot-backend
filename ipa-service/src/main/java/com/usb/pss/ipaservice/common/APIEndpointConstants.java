@@ -1,8 +1,12 @@
 package com.usb.pss.ipaservice.common;
 
 public class APIEndpointConstants {
-    public static final String AUTHENTICATION_ENDPOINT = "/api/v1/auth";
-    public static final String USER_ENDPOINT = "/api/v1/users";
-    public static final String GROUP_ENDPOINT = "/api/v1/groups";
-    public static final String AIRCRAFT_ENDPOINT = "/api/v1/aircraft";
+    private static final String API_VERSION = "/api/v1";
+    public static final String AUTHENTICATION_ENDPOINT = API_VERSION + "/auth";
+    public static final String USER_ENDPOINT = API_VERSION + "/users";
+    public static final String GROUP_ENDPOINT = API_VERSION + "/groups";
+    public static final String ROLE_ENDPOINT = API_VERSION + "/roles";
+    public static final String MENU_ENDPOINT = API_VERSION + "/menus";
+    public static final String ACTION_ENDPOINT = API_VERSION + "/actions";
+    public static final String AIRCRAFT_ENDPOINT = API_VERSION + "/aircraft";
 }
