@@ -1,6 +1,5 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
-import com.usb.pss.ipaservice.admin.dto.request.MenuRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminMenu;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminMenuRepository;
@@ -11,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +45,12 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuResponse> getAllMenuResponse() {
-        return menuRepository.findAllMenuResponse();
+        return menuRepository.findAll().stream()
+                .map(menu -> {
+                    MenuResponse menuResponse = new MenuResponse();
+                    prepareResponse(menu, menuResponse);
+                    return menuResponse;
+                }).collect(Collectors.toList());
     }
 
     @Override
