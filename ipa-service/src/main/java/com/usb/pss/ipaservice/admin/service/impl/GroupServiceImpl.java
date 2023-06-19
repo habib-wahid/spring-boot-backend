@@ -64,8 +64,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<GroupResponse> getAllGroupResponse() {
-        List<IpaAdminGroup> groupList = groupRepository.findAll();
-        return groupList.stream()
+        return groupRepository.findAll().stream()
                 .map(group -> {
                     GroupResponse groupResponse = new GroupResponse();
                     prepareResponse(group, groupResponse);
