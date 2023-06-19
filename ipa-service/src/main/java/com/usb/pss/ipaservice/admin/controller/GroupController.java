@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,7 +39,7 @@ public class GroupController {
     @GetMapping
     @Operation(summary = "Get all active groups in a list.")
     public GlobalApiResponse<List<GroupResponse>> getAllGroups() {
-        List<GroupResponse> allGroups = groupService.getAllActiveGroups();
+        List<GroupResponse> allGroups = groupService.getAllGroupResponse();
         return new GlobalApiResponse<>(allGroups);
     }
 
@@ -79,7 +80,7 @@ public class GroupController {
         return new GlobalApiResponse<>(HttpStatus.OK, "Group roles added successfully.", null);
     }
 
-    @DeleteMapping("/{groupId}/roles")
+    @PatchMapping("/{groupId}/roles")
     @Operation(summary = "Remove a list of roles to a group with it's ID.")
     public GlobalApiResponse<Void> removeGroupRoles(@Validated @RequestBody GroupRoleRequest groupRoleRequest,
                                                     @PathVariable Long groupId) {

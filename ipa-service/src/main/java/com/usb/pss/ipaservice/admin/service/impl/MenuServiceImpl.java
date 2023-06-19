@@ -7,13 +7,10 @@ import com.usb.pss.ipaservice.admin.repository.IpaAdminMenuRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
-import com.usb.pss.ipaservice.exception.RuleViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,37 +18,20 @@ public class MenuServiceImpl implements MenuService {
     private final IpaAdminMenuRepository menuRepository;
 
     @Override
-    public void createNewMenu(MenuRequest menuRequest) {
-        Optional<IpaAdminMenu> duplicateMenuName = menuRepository.findActiveMenuByName(menuRequest.name());
-        if (duplicateMenuName.isPresent()) {
-            throw new RuleViolationException(ExceptionConstant.DUPLICATE_MENU_NAME);
-        }
-
-        Optional<IpaAdminMenu> duplicateMenuUrl = menuRepository.findActiveMenuByUrl(menuRequest.url());
-        if (duplicateMenuUrl.isPresent()) {
-            throw new RuleViolationException(ExceptionConstant.DUPLICATE_MENU_URL);
-        }
-
-        IpaAdminMenu menuToSave = new IpaAdminMenu();
-        prepareEntity(menuRequest, menuToSave);
-        menuRepository.save(menuToSave);
-    }
-
-    @Override
     public IpaAdminMenu getMenuById(Long menuId) {
-        return menuRepository.findActiveMenuById(menuId)
+        return menuRepository.findById(menuId)
                 .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND));
     }
 
     @Override
     public IpaAdminMenu getMenuByName(String menuName) {
-        return menuRepository.findActiveMenuByName(menuName)
+        return menuRepository.findByNameIgnoreCase(menuName)
                 .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND));
     }
 
     @Override
     public IpaAdminMenu getMenuByUrl(String menuUrl) {
-        return menuRepository.findActiveMenuByUrl(menuUrl)
+        return menuRepository.findByUrlIgnoreCase(menuUrl)
                 .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND));
     }
 
@@ -64,47 +44,13 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuResponse> getAllActiveMenus() {
-        return menuRepository.findAllActiveMenus().stream()
-                .map(menu -> {
-                    MenuResponse menuResponse = new MenuResponse();
-                    prepareResponse(menu, menuResponse);
-                    return menuResponse;
-                }).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<MenuResponse> getAllInactiveMenus() {
-        return menuRepository.findAllInactiveMenus().stream()
-                .map(menu -> {
-                    MenuResponse menuResponse = new MenuResponse();
-                    prepareResponse(menu, menuResponse);
-                    return menuResponse;
-                }).collect(Collectors.toList());
-    }
-
-    @Override
-    public void updateMenu(MenuRequest menuRequest, Long menuId) {
-        IpaAdminMenu menuToUpdate = getMenuById(menuId);
-        Optional<IpaAdminMenu> duplicateMenuName = menuRepository.findActiveMenuByName(menuRequest.name());
-        if (duplicateMenuName.isPresent()) {
-            throw new RuleViolationException(ExceptionConstant.DUPLICATE_MENU_NAME);
-        }
-
-        Optional<IpaAdminMenu> duplicateMenuUrl = menuRepository.findActiveMenuByUrl(menuRequest.name());
-        if (duplicateMenuUrl.isPresent()) {
-            throw new RuleViolationException(ExceptionConstant.DUPLICATE_MENU_URL);
-        }
-
-        prepareEntity(menuRequest, menuToUpdate);
-        menuRepository.save(menuToUpdate);
+    public List<MenuResponse> getAllMenuResponse() {
+        return menuRepository.findAllMenuResponse();
     }
 
     @Override
     public void deactivateMenu(Long menuId) {
-        IpaAdminMenu menuToDeactivate = getMenuById(menuId);
-        menuToDeactivate.setActive(false);
-        menuRepository.save(menuToDeactivate);
+        // will be implemented later if needed
     }
 
     private void prepareEntity(MenuRequest menuRequest, IpaAdminMenu menu) {
@@ -112,7 +58,6 @@ public class MenuServiceImpl implements MenuService {
         menu.setUrl(menuRequest.url());
         menu.setIcon(menuRequest.icon());
         menu.setService(menuRequest.service());
-        menu.setActive(menuRequest.active());
     }
 
     private void prepareResponse(IpaAdminMenu menu, MenuResponse menuResponse) {
@@ -120,6 +65,5 @@ public class MenuServiceImpl implements MenuService {
         menuResponse.setName(menu.getName());
         menuResponse.setUrl(menu.getUrl());
         menuResponse.setService(menu.getService());
-        menuResponse.setActive(menu.isActive());
     }
 }

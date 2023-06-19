@@ -19,5 +19,4 @@ import lombok.Setter;
 public class ActionResponse {
     private Long id;
     private String name;
-    private boolean active;
 }

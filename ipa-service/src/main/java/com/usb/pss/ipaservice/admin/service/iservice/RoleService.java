@@ -17,8 +17,7 @@ public interface RoleService {
     IpaAdminRole getRoleById(Long roleId);
     IpaAdminRole getRoleByName(String roleName);
     RoleResponse getRoleResponseById(Long roleId);
-    List<RoleResponse> getAllActiveRoles();
-    List<RoleResponse> getAllInactiveRoles();
+    List<RoleResponse> getAllRoleResponse();
     void updateRole(RoleRequest roleRequest, Long roleId);
     void deactivateRole(Long roleId);
     void addRoleMenu(Long roleId, RoleMenuRequest roleMenuRequest);

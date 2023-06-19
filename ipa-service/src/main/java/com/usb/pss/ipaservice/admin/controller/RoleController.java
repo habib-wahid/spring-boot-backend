@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,7 +39,7 @@ public class RoleController {
     @GetMapping
     @Operation(summary = "Get all active roles in a list.")
     public GlobalApiResponse<List<RoleResponse>> getAllRoles() {
-        List<RoleResponse> allActiveRoles = roleService.getAllActiveRoles();
+        List<RoleResponse> allActiveRoles = roleService.getAllRoleResponse();
         return new GlobalApiResponse<>(allActiveRoles);
     }
 
@@ -79,7 +80,7 @@ public class RoleController {
         return new GlobalApiResponse<>(HttpStatus.OK, "Role menus added successfully.", null);
     }
 
-    @DeleteMapping("/{roleId}/menus")
+    @PatchMapping("/{roleId}/menus")
     @Operation(summary = "Remove a list of menus to a role with it's ID.")
     public GlobalApiResponse<Void> removeRoleMenus(@Validated @RequestBody RoleMenuRequest roleMenuRequest,
                                                    @PathVariable Long roleId) {

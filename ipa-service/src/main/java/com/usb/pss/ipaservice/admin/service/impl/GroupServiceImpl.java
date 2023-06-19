@@ -31,7 +31,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void createNewGroup(GroupRequest groupRequest) {
-        Optional<IpaAdminGroup> duplicateGroupName = groupRepository.findActiveGroupByName(groupRequest.name());
+        Optional<IpaAdminGroup> duplicateGroupName = groupRepository.findByNameIgnoreCase(groupRequest.name());
         if (duplicateGroupName.isPresent()) {
             throw new RuleViolationException(ExceptionConstant.DUPLICATE_GROUP_NAME);
         }
@@ -43,13 +43,13 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public IpaAdminGroup getGroupById(Long groupId) {
-        return groupRepository.findActiveGroupById(groupId)
+        return groupRepository.findById(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.GROUP_NOT_FOUND));
     }
 
     @Override
     public IpaAdminGroup getGroupByName(String groupName) {
-        return groupRepository.findActiveGroupByName(groupName)
+        return groupRepository.findByNameIgnoreCase(groupName)
                 .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.GROUP_NOT_FOUND));
     }
 
@@ -62,29 +62,14 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<GroupResponse> getAllActiveGroups() {
-        return groupRepository.findAllActiveGroups().stream()
-                .map(group -> {
-                    GroupResponse groupResponse = new GroupResponse();
-                    prepareResponse(group, groupResponse);
-                    return groupResponse;
-                }).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<GroupResponse> getAllInactiveGroups() {
-        return groupRepository.findAllInactiveGroups().stream()
-                .map(group -> {
-                    GroupResponse groupResponse = new GroupResponse();
-                    prepareResponse(group, groupResponse);
-                    return groupResponse;
-                }).collect(Collectors.toList());
+    public List<GroupResponse> getAllGroupResponse() {
+        return groupRepository.findAllGroupResponse();
     }
 
     @Override
     public void updateGroup(GroupRequest groupRequest, Long groupId) {
         IpaAdminGroup groupToUpdate = getGroupById(groupId);
-        Optional<IpaAdminGroup> duplicateGroupName = groupRepository.findActiveGroupByName(groupRequest.name());
+        Optional<IpaAdminGroup> duplicateGroupName = groupRepository.findByNameIgnoreCase(groupRequest.name());
         if (duplicateGroupName.isPresent()) {
             throw new RuleViolationException(ExceptionConstant.DUPLICATE_GROUP_NAME);
         }
@@ -95,9 +80,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void deactivateGroup(Long groupId) {
-        IpaAdminGroup groupToDeactivate = getGroupById(groupId);
-        groupToDeactivate.setActive(false);
-        groupRepository.save(groupToDeactivate);
+        // will be implemented later if needed
     }
 
     @Override
@@ -120,12 +103,10 @@ public class GroupServiceImpl implements GroupService {
 
     private void prepareEntity(GroupRequest groupRequest, IpaAdminGroup group) {
         group.setName(groupRequest.name());
-        group.setActive(groupRequest.active());
     }
 
     private void prepareResponse(IpaAdminGroup group, GroupResponse groupResponse) {
         groupResponse.setId(group.getId());
         groupResponse.setName(group.getName());
-        groupResponse.setActive(group.isActive());
     }
 }

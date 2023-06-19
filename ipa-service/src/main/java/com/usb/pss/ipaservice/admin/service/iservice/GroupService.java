@@ -17,8 +17,7 @@ public interface GroupService {
     IpaAdminGroup getGroupById(Long groupId);
     IpaAdminGroup getGroupByName(String groupName);
     GroupResponse getGroupResponseById(Long groupId);
-    List<GroupResponse> getAllActiveGroups();
-    List<GroupResponse> getAllInactiveGroups();
+    List<GroupResponse> getAllGroupResponse();
     void updateGroup(GroupRequest groupRequest, Long groupId);
     void deactivateGroup(Long groupId);
     void addGroupRoles(Long groupId, GroupRoleRequest groupRoleRequest);

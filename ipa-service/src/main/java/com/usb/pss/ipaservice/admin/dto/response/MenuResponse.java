@@ -23,5 +23,4 @@ public class MenuResponse {
     private String url;
     private String icon;
     private Service service;
-    private boolean active;
 }

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Junaid Khan Pathan
@@ -31,7 +30,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void createNewRole(RoleRequest roleRequest) {
-        Optional<IpaAdminRole> duplicateRoleName = roleRepository.findActiveRoleByName(roleRequest.name());
+        Optional<IpaAdminRole> duplicateRoleName = roleRepository.findByNameIgnoreCase(roleRequest.name());
         if (duplicateRoleName.isPresent()) {
             throw new RuleViolationException(ExceptionConstant.DUPLICATE_ROLE_NAME);
         }
@@ -43,13 +42,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public IpaAdminRole getRoleById(Long roleId) {
-        return roleRepository.findActiveRoleById(roleId)
+        return roleRepository.findById(roleId)
                 .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND));
     }
 
     @Override
     public IpaAdminRole getRoleByName(String roleName) {
-        return roleRepository.findActiveRoleByName(roleName)
+        return roleRepository.findByNameIgnoreCase(roleName)
                 .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND));
     }
 
@@ -62,29 +61,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<RoleResponse> getAllActiveRoles() {
-        return roleRepository.findAllActiveRoles().stream()
-                .map(role -> {
-                    RoleResponse roleResponse = new RoleResponse();
-                    prepareResponse(role, roleResponse);
-                    return roleResponse;
-                }).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<RoleResponse> getAllInactiveRoles() {
-        return roleRepository.findAllInactiveRoles().stream()
-                .map(role -> {
-                    RoleResponse roleResponse = new RoleResponse();
-                    prepareResponse(role, roleResponse);
-                    return roleResponse;
-                }).collect(Collectors.toList());
+    public List<RoleResponse> getAllRoleResponse() {
+        return roleRepository.findAllRoleResponse();
     }
 
     @Override
     public void updateRole(RoleRequest roleRequest, Long roleId) {
         IpaAdminRole roleToUpdate = getRoleById(roleId);
-        Optional<IpaAdminRole> duplicateRoleName = roleRepository.findActiveRoleByName(roleRequest.name());
+        Optional<IpaAdminRole> duplicateRoleName = roleRepository.findByNameIgnoreCase(roleRequest.name());
         if (duplicateRoleName.isPresent()) {
             throw new RuleViolationException(ExceptionConstant.DUPLICATE_ROLE_NAME);
         }
@@ -95,9 +79,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void deactivateRole(Long roleId) {
-        IpaAdminRole roleToDeactivate = getRoleById(roleId);
-        roleToDeactivate.setActive(false);
-        roleRepository.save(roleToDeactivate);
+        // will be implemented later if needed
     }
 
     @Override
@@ -121,13 +103,11 @@ public class RoleServiceImpl implements RoleService {
     private void prepareEntity(RoleRequest roleRequest, IpaAdminRole role) {
         role.setName(roleRequest.name());
         role.setDescription(roleRequest.description());
-        role.setActive(roleRequest.active());
     }
 
     private void prepareResponse(IpaAdminRole role, RoleResponse roleResponse) {
         roleResponse.setId(role.getId());
         roleResponse.setName(role.getName());
         roleResponse.setDescription(role.getDescription());
-        roleResponse.setActive(role.isActive());
     }
 }
