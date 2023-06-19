@@ -16,3 +16,5 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   cache:
     type: redis
+  main:
+    log-config: classpath:logback-spring.xml
