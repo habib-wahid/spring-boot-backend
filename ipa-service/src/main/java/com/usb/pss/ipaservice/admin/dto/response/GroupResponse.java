@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
  * @author Junaid Khan Pathan
  * @date Jun 17, 2023
@@ -19,4 +21,5 @@ import lombok.Setter;
 public class GroupResponse {
     private Long id;
     private String name;
+    private List<RoleResponse> roleResponses;
 }

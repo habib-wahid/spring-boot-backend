@@ -3,6 +3,7 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.dto.request.GroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupRoleRequest;
 import com.usb.pss.ipaservice.admin.dto.response.GroupResponse;
+import com.usb.pss.ipaservice.admin.dto.response.RoleResponse;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminGroup;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminRole;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminGroupRepository;
@@ -63,7 +64,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<GroupResponse> getAllGroupResponse() {
-        return groupRepository.findAll().stream()
+        List<IpaAdminGroup> groupList = groupRepository.findAll();
+        return groupList.stream()
                 .map(group -> {
                     GroupResponse groupResponse = new GroupResponse();
                     prepareResponse(group, groupResponse);
@@ -113,5 +115,13 @@ public class GroupServiceImpl implements GroupService {
     private void prepareResponse(IpaAdminGroup group, GroupResponse groupResponse) {
         groupResponse.setId(group.getId());
         groupResponse.setName(group.getName());
+        groupResponse.setRoleResponses(group.getAssignedRoles().stream()
+                .map(role -> {
+                    RoleResponse roleResponse = new RoleResponse();
+                    roleResponse.setId(role.getId());
+                    roleResponse.setName(role.getName());
+                    roleResponse.setDescription(role.getDescription());
+                    return roleResponse;
+                }).collect(Collectors.toList()));
     }
 }
