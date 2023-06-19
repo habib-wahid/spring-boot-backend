@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,7 +64,7 @@ public class GroupController {
         return new GlobalApiResponse<>(HttpStatus.OK, "Group updated successfully.", null);
     }
 
-    @DeleteMapping("/{groupId}")
+    @PatchMapping("/{groupId}")
     @Operation(summary = "Deactivate an active group with it's ID.")
     public GlobalApiResponse<Void> deactivateGroup(@PathVariable Long groupId) {
         groupService.deactivateGroup(groupId);

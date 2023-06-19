@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,7 +64,7 @@ public class RoleController {
         return new GlobalApiResponse<>(HttpStatus.OK, "Role updated successfully.", null);
     }
 
-    @DeleteMapping("/{roleId}")
+    @PatchMapping("/{roleId}")
     @Operation(summary = "Deactivate an active role with it's ID.")
     public GlobalApiResponse<Void> deactivateRole(@PathVariable Long roleId) {
         roleService.deactivateRole(roleId);
