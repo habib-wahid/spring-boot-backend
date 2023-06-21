@@ -2,9 +2,12 @@ package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserMenuRequest;
+import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +45,26 @@ public class UserController {
     @Operation(summary = "Get all users in a list")
     public List<UserResponse> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping("/permitted/menus")
+    @Operation(summary = "Get all permitted menus by current logged in user")
+    public Set<MenuResponse> getMenuByUserId() {
+        return userService.getUserAllPermittedMenu();
+    }
+
+    @PostMapping("/{userId}/menus")
+    @Operation(summary = "add a set of menu to a user")
+    public void addUserMenus(@PathVariable Long userId,
+                             @RequestBody @Validated UserMenuRequest userMenuRequest) {
+        userService.addUserMenus(userId, userMenuRequest);
+    }
+
+    @PatchMapping("/{userId}/menus")
+    @Operation(summary = "Remove a set of menu from a user")
+    public void removeUserMenus(@PathVariable Long userId,
+                                @RequestBody @Validated UserMenuRequest userMenuRequest) {
+        userService.removeUserMenus(userId, userMenuRequest);
     }
 
 }
