@@ -2,8 +2,11 @@ package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserMenuRequest;
+import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminGroup;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminMenu;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.GroupService;
@@ -11,6 +14,8 @@ import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
+import com.usb.pss.ipaservice.utils.LoggedUserHelper;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +33,7 @@ public class UserServiceImpl implements UserService {
     private final IpaAdminUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final GroupService groupService;
+    private final MenuServiceImpl menuService;
 
     public void registerUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -95,5 +101,32 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void addUserMenus(Long userId, UserMenuRequest userMenuRequest) {
+        IpaAdminUser user = getUserById(userId);
+        Set<IpaAdminMenu> menuList = menuService.getAllMenuByIds(userMenuRequest.menuIds());
+        menuService.addUserMenu(user, menuList);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void removeUserMenus(Long userId, UserMenuRequest userMenuRequest) {
+        IpaAdminUser user = getUserById(userId);
+        Set<IpaAdminMenu> menuList = menuService.getAllMenuByIds(userMenuRequest.menuIds());
+        menuService.removeUserMenu(user, menuList);
+        userRepository.save(user);
+    }
+
+    @Override
+    public Set<MenuResponse> getUserAllPermittedMenu() {
+
+        IpaAdminUser user = getUserById(LoggedUserHelper.getCurrentUserId().get());
+        return user.getPermittedMenu().stream()
+            .map(menu -> {
+                MenuResponse menuResponse = new MenuResponse();
+                menuService.prepareResponse(menu, menuResponse);
+                return menuResponse;
+            }).collect(Collectors.toSet());
+    }
 
 }

@@ -2,10 +2,13 @@ package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminMenu;
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminMenuRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -58,10 +61,27 @@ public class MenuServiceImpl implements MenuService {
         // will be implemented later if needed
     }
 
-    private void prepareResponse(IpaAdminMenu menu, MenuResponse menuResponse) {
+    @Override
+    public Set<IpaAdminMenu> getAllMenuByIds(List<Long> menuIds) {
+        return new HashSet<>(menuRepository.findAllById(menuIds));
+    }
+
+    @Override
+    public void removeUserMenu(IpaAdminUser user, Set<IpaAdminMenu> menuSet) {
+        user.getPermittedMenu().removeAll(menuSet);
+    }
+
+    @Override
+    public void addUserMenu(IpaAdminUser user, Set<IpaAdminMenu> menuSet) {
+        user.getPermittedMenu().addAll(menuSet);
+    }
+
+    public void prepareResponse(IpaAdminMenu menu, MenuResponse menuResponse) {
         menuResponse.setId(menu.getId());
         menuResponse.setName(menu.getName());
         menuResponse.setUrl(menu.getUrl());
+        menuResponse.setIcon(menu.getIcon());
+        menuResponse.setServiceId(menu.getModule().getId());
         menuResponse.setServiceName(menu.getModule().getName());
     }
 }
