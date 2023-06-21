@@ -1,10 +1,10 @@
 package com.usb.pss.ipaservice.admin.dto.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
