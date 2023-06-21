@@ -21,12 +21,12 @@ public class UserController {
         userService.registerUser(request);
     }
 
-    @PutMapping("/group/add")
+    @PutMapping("/group/assign")
     public void assignGroup(@RequestBody @Validated UserGroupRequest request) {
         userService.updateGroup(request);
     }
 
-    @PutMapping("/group/delete")
+    @PutMapping("/group/remove")
     public void removeFromGroup(@RequestBody @Validated UserGroupRequest request) {
         userService.removeGroup(request);
     }
