@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface IpaAdminGroupRepository extends JpaRepository<IpaAdminGroup, Long> {
     Optional<IpaAdminGroup> findByNameIgnoreCase(String groupName);
 
+    List<IpaAdminGroup> findAllByOrderByCreatedAtDesc();
+
 //    @Query("select new com.usb.pss.ipaservice.admin.dto.response.GroupResponse(" +
 //            "gr.id, " +
 //            "gr.name) " +
