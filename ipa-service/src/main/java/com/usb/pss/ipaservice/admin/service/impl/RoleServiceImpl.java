@@ -63,7 +63,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<RoleResponse> getAllRoleResponse() {
-        return roleRepository.findAll().stream()
+        return roleRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(role -> {
                     RoleResponse roleResponse = new RoleResponse();
                     prepareResponse(role, roleResponse);
@@ -74,9 +74,11 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void updateRole(RoleRequest roleRequest, Long roleId) {
         IpaAdminRole roleToUpdate = getRoleById(roleId);
-        Optional<IpaAdminRole> duplicateRoleName = roleRepository.findByNameIgnoreCase(roleRequest.name());
-        if (duplicateRoleName.isPresent()) {
-            throw new RuleViolationException(ExceptionConstant.DUPLICATE_ROLE_NAME);
+        if (!roleToUpdate.getName().equals(roleRequest.name())) {
+            Optional<IpaAdminRole> duplicateRoleName = roleRepository.findByNameIgnoreCase(roleRequest.name());
+            if (duplicateRoleName.isPresent()) {
+                throw new RuleViolationException(ExceptionConstant.DUPLICATE_ROLE_NAME);
+            }
         }
 
         prepareEntity(roleRequest, roleToUpdate);
