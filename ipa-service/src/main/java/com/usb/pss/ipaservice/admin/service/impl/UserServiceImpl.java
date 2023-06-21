@@ -2,6 +2,7 @@ package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
+import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminGroup;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
@@ -13,6 +14,10 @@ import com.usb.pss.ipaservice.exception.RuleViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
@@ -68,6 +73,26 @@ public class UserServiceImpl implements UserService {
             user.setGroup(null);
         }
         userRepository.save(user);
+    }
+
+    @Override
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> {
+                    UserResponse userResponse = new UserResponse();
+                    prepareResponse(user, userResponse);
+                    return userResponse;
+                }).collect(Collectors.toList());
+    }
+
+    private void prepareResponse(IpaAdminUser user, UserResponse userResponse) {
+        userResponse.setId(user.getId());
+        userResponse.setName(user.getUsername());
+        if (Objects.nonNull(user.getGroup())) {
+            userResponse.setGroupId(user.getGroup().getId());
+            userResponse.setGroupName(user.getGroup().getName());
+        }
     }
 
 
