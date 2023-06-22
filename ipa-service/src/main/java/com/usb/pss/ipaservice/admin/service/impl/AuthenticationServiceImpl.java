@@ -3,6 +3,7 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
+import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminRefreshToken;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
@@ -10,9 +11,11 @@ import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
 import com.usb.pss.ipaservice.admin.service.JwtService;
 import com.usb.pss.ipaservice.admin.service.iservice.TokenService;
+import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.utils.SecurityUtils;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,6 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final TokenService tokenService;
     private final IpaAdminUserRepository userRepository;
     private final TokenBlackListingService tokenBlackListingService;
+    private final UserService userService;
     @Value("${useExpiringMapToBlackListAccessToken}")
     private boolean useExpiringMapToBlackListAccessToken;
 
@@ -53,8 +57,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String accessToken = jwtService.generateAccessToken(user);
         IpaAdminRefreshToken refreshToken = tokenService.createNewRefreshToken(user);
+        Set<MenuResponse> menuResponseSet = userService.getAllPermittedMenuByUser(user);
 
-        return new AuthenticationResponse(accessToken, refreshToken.getTokenId());
+        return AuthenticationResponse.builder()
+            .accessToken(accessToken)
+            .refreshToken(refreshToken.getTokenId())
+            .menuResponseSet(menuResponseSet)
+            .build();
+
+//        return new AuthenticationResponse(accessToken, refreshToken.getTokenId());
     }
 
     public RefreshAccessTokenResponse refreshAccessToken(UUID token) {

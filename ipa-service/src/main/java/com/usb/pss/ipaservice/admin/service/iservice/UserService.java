@@ -6,6 +6,7 @@ import com.usb.pss.ipaservice.admin.dto.request.UserMenuRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 
+import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
 import java.util.List;
 import java.util.Set;
 
@@ -24,5 +25,6 @@ public interface UserService {
     void addUserMenus(Long userId, UserMenuRequest userMenuRequest);
 
     void removeUserMenus(Long userId, UserMenuRequest userMenuRequest);
+    Set<MenuResponse> getAllPermittedMenuByUser(IpaAdminUser user);
 
 }

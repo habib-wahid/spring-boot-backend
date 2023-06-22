@@ -119,6 +119,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Set<MenuResponse> getAllPermittedMenuByUser(IpaAdminUser user) {
+        return user.getPermittedMenu().stream()
+            .map(menu -> {
+                MenuResponse menuResponse = new MenuResponse();
+                menuService.prepareResponse(menu, menuResponse);
+                return menuResponse;
+            }).collect(Collectors.toSet());
+    }
+
+    @Override
     public Set<MenuResponse> getUserAllPermittedMenu() {
 
         IpaAdminUser user = getUserById(LoggedUserHelper.getCurrentUserId().get());
