@@ -138,6 +138,24 @@ To make any changes or to update your changes to the code base, please follow th
 
 When your pull request is approved, it will be merged.
 
+## Instruction for adding Checkstyle in Intellij Idea
+### Add checkstyle plugin in Intellij Idea
+1. Go to settings -> plugins
+2. Search Checkstyle-IDEA plugin and install it
+
+### Show Checkstyle error in Idea:
+1. Go to settings -> Tools -> checkstyle
+2. Using '+' sing upload checkstyle.xml file of our PSS project
+3. Checkmark the uploaded checkstyle file
+
+Now Checkstyle error is seen in idea if you aren't fulfill checkstyle rules
+
+### Solve Checkstyle error:
+
+1. To reformat code use keyboard shortcut Ctrl+Alt+L
+2. To reformat import statements use keyboard shortcut Ctrl+Alt+O
+
+
 
 ## Using Swagger UI and Redocly
 Swagger UI is used for both documenting and testing the API endpoints whereas Redocly is used for documentation only but which is also visually pleasing.
