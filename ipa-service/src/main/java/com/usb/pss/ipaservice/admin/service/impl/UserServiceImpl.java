@@ -85,6 +85,7 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
                 .stream()
+                .filter(Objects::nonNull)
                 .map(user -> {
                     UserResponse userResponse = new UserResponse();
                     prepareResponse(user, userResponse);
