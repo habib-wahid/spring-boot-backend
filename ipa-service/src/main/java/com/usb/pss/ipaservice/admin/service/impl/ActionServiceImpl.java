@@ -64,14 +64,14 @@ public class ActionServiceImpl implements ActionService {
         return modules.stream().map(
                 module -> ModuleActionResponse
                         .builder()
-                        .moduleId(module.getId())
-                        .moduleName(module.getName().toString())
-                        .moduleMenuList(
+                        .id(module.getId())
+                        .name(String.valueOf(module.getName()))
+                        .menuList(
                                 module.getMenus().stream().map(
                                         menu -> MenuActionResponse
                                                 .builder()
-                                                .menuId(menu.getId())
-                                                .menuName(menu.getName())
+                                                .id(menu.getId())
+                                                .name(menu.getName())
                                                 .actions(
                                                         menu.getActions().stream().map(
                                                                 action -> ActionResponse

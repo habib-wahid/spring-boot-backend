@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MenuActionResponse {
-    private Long menuId;
-    private String menuName;
+    private Long id;
+    private String name;
     private List<ActionResponse> actions;
 }

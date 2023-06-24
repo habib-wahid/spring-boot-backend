@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ModuleActionResponse {
-    private Long moduleId;
-    private String moduleName;
-    private List<MenuActionResponse> moduleMenuList;
+    private Long id;
+    private String name;
+    private List<MenuActionResponse> menuList;
 }
