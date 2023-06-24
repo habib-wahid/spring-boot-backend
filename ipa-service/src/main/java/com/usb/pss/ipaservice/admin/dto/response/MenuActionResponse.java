@@ -1,11 +1,14 @@
 package com.usb.pss.ipaservice.admin.dto.response;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+
+@Setter
+@Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class MenuActionResponse {
     private Long menuId;

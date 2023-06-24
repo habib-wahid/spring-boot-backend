@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/pss_ipa
-    username: admin
-    password: admin
-  data:
-    redis:
-      host: localhost
-      port: 7001
-      hashkey: pss2023Technonext
+    url: jdbc:postgresql://localhost:5432/pss_inventory
+    username: postgres
+    password: password
+#  data:
+#    redis:
+#      host: localhost
+#      port: 7001
+#      hashkey: pss2023Technonext
 
   jpa:
     show-sql: true

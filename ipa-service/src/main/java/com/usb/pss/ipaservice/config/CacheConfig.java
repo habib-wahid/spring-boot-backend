@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@Configuration
-@AutoConfigureAfter(RedisAutoConfiguration.class)
-@EnableCaching
+//@Configuration
+//@AutoConfigureAfter(RedisAutoConfiguration.class)
+//@EnableCaching
 public class CacheConfig {
 
     public final static String BLACKLIST_CACHE_NAME = "jwt_token_black_list";
