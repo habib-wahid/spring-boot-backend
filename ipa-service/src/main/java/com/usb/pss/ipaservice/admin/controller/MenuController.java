@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
+import com.usb.pss.ipaservice.admin.dto.response.MenuResponseWithIdName;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,5 +44,11 @@ public class MenuController {
     @Operation(summary = "Deactivate an active menu with it's ID.")
     public void deactivateMenu(@PathVariable Long menuId) {
         menuService.deactivateMenu(menuId);
+    }
+
+    @GetMapping("/all-with-id-name")
+    @Operation(summary = "Get all active menus with id and name in a list.")
+    public List<MenuResponseWithIdName> getAllMenusWithIdName() {
+        return menuService.getAllMenuResponseWithIdName();
     }
 }

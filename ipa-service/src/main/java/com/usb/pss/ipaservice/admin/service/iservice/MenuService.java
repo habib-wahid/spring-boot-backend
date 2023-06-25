@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
+import com.usb.pss.ipaservice.admin.dto.response.MenuResponseWithIdName;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminMenu;
 
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
@@ -30,4 +31,6 @@ public interface MenuService {
     void removeUserMenu(IpaAdminUser user, Set<IpaAdminMenu> menuSet);
 
     void addUserMenu(IpaAdminUser user, Set<IpaAdminMenu> menuSet);
+
+    List<MenuResponseWithIdName> getAllMenuResponseWithIdName();
 }
