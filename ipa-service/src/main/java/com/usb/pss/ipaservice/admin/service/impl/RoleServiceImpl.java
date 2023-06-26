@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 /**
  * @author Junaid Khan Pathan
@@ -68,7 +68,7 @@ public class RoleServiceImpl implements RoleService {
                     RoleResponse roleResponse = new RoleResponse();
                     prepareResponse(role, roleResponse);
                     return roleResponse;
-                }).collect(Collectors.toList());
+                }).toList();
     }
 
     @Override

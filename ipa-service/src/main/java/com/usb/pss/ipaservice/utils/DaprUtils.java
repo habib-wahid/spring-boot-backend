@@ -6,6 +6,8 @@ import io.dapr.client.DaprClient;
 import io.dapr.client.DaprClientBuilder;
 
 public class DaprUtils {
+
+    private DaprUtils() {}
     private static final String DAPR_SATE_STORE = "ipa-state-store";
     public static AdminActionResponse getUserActionFromDapr(Long actionId){
         DaprClient daprClient = new DaprClientBuilder().build();
