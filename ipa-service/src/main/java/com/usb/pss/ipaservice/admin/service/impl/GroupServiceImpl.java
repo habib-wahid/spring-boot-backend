@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Junaid Khan Pathan
@@ -69,7 +68,7 @@ public class GroupServiceImpl implements GroupService {
                     GroupResponse groupResponse = new GroupResponse();
                     prepareResponse(group, groupResponse);
                     return groupResponse;
-                }).collect(Collectors.toList());
+                }).toList();
     }
 
     @Override
@@ -121,6 +120,6 @@ public class GroupServiceImpl implements GroupService {
                     roleResponse.setName(role.getName());
                     roleResponse.setDescription(role.getDescription());
                     return roleResponse;
-                }).collect(Collectors.toList()));
+                }).toList());
     }
 }

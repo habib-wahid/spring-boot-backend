@@ -1,6 +1,8 @@
 package com.usb.pss.ipaservice.common;
 
 public class APIEndpointConstants {
+
+    private APIEndpointConstants() {}
     private static final String API_VERSION = "/api/v1";
     public static final String AUTHENTICATION_ENDPOINT = API_VERSION + "/auth";
     public static final String USER_ENDPOINT = API_VERSION + "/users";

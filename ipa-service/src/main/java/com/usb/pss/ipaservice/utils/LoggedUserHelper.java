@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public class LoggedUserHelper {
 
+    private LoggedUserHelper() {}
     public static Optional<Long> getCurrentUserId() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

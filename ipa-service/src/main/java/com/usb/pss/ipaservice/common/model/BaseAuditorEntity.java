@@ -56,15 +56,12 @@ public abstract class BaseAuditorEntity extends BaseEntity {
     @PrePersist
     private void onPersist() {
         createdAt = LocalDateTime.now();
-        if (LoggedUserHelper.getCurrentUserId().isPresent())
-            createdById = LoggedUserHelper.getCurrentUserId().get();
+        LoggedUserHelper.getCurrentUserId().ifPresent(currentLoggedUser -> createdById = currentLoggedUser);
     }
 
     @PreUpdate
     private void onModification() {
         updatedAt = LocalDateTime.now();
-        if (LoggedUserHelper.getCurrentUserId().isPresent())
-            updatedById = LoggedUserHelper.getCurrentUserId().get();
-
+        LoggedUserHelper.getCurrentUserId().ifPresent(currentLoggedUser -> updatedById = currentLoggedUser);
     }
 }

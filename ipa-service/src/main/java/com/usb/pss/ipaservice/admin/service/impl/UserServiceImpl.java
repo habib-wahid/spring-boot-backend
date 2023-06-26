@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
                     UserResponse userResponse = new UserResponse();
                     prepareResponse(user, userResponse);
                     return userResponse;
-                }).collect(Collectors.toList());
+                }).toList();
     }
 
     private void prepareResponse(IpaAdminUser user, UserResponse userResponse) {
