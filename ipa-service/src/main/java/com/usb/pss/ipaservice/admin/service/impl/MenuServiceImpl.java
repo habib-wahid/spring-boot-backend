@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
+import com.usb.pss.ipaservice.admin.dto.response.MenuResponseWithIdName;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminMenu;
 import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
 import com.usb.pss.ipaservice.admin.repository.IpaAdminMenuRepository;
@@ -76,6 +77,16 @@ public class MenuServiceImpl implements MenuService {
         user.getPermittedMenu().addAll(menuSet);
     }
 
+    @Override
+    public List<MenuResponseWithIdName> getAllMenuResponseWithIdName() {
+        return menuRepository.findAll().stream()
+            .map(menu -> {
+                MenuResponseWithIdName responseWithIdName = new MenuResponseWithIdName();
+                prepareResponseWithIdName(menu, responseWithIdName);
+                return responseWithIdName;
+            }).toList();
+    }
+
     public void prepareResponse(IpaAdminMenu menu, MenuResponse menuResponse) {
         menuResponse.setId(menu.getId());
         menuResponse.setName(menu.getName());
@@ -83,5 +94,10 @@ public class MenuServiceImpl implements MenuService {
         menuResponse.setIcon(menu.getIcon());
         menuResponse.setServiceId(menu.getModule().getId());
         menuResponse.setServiceName(menu.getModule().getName());
+    }
+
+    private void prepareResponseWithIdName(IpaAdminMenu menu, MenuResponseWithIdName menuResponseWithIdName) {
+        menuResponseWithIdName.setId(menu.getId());
+        menuResponseWithIdName.setName(menu.getName());
     }
 }
