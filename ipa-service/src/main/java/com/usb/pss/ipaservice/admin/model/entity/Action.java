@@ -1,8 +1,9 @@
 package com.usb.pss.ipaservice.admin.model.entity;
 
+import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -12,24 +13,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 @Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ipa_admin_refresh_token")
-public class IpaAdminRefreshToken {
+@Table(name = "adm_action")
+public class Action extends BaseAuditorEntity {
 
-    @Id
-    private UUID tokenId;
+    @Column(unique = true)
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private IpaAdminUser user;
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
 
-    private LocalDateTime expiration;
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

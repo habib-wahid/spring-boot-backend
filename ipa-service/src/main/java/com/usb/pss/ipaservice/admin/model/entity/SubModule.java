@@ -1,11 +1,12 @@
 package com.usb.pss.ipaservice.admin.model.entity;
 
+
 import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,29 +14,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "ipa_admin_action")
-public class IpaAdminAction extends BaseAuditorEntity {
+@Table(name = "adm_sub_module")
+public class SubModule extends BaseAuditorEntity {
 
-    @Column(unique = true)
     private String name;
+    private String description;
+    private Integer sortOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private IpaAdminMenu menu;
+    @JoinColumn(name = "module_id")
+    private Module module;
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subModule")
+    private Set<Menu> menus;
 }

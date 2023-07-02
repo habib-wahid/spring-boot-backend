@@ -1,7 +1,6 @@
 package com.usb.pss.ipaservice.utils;
 
 import com.usb.pss.ipaservice.admin.dto.response.AdminActionResponse;
-import com.usb.pss.ipaservice.admin.model.entity.IpaAdminAction;
 import io.dapr.client.DaprClient;
 import io.dapr.client.DaprClientBuilder;
 

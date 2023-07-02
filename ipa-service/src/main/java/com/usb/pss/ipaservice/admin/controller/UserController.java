@@ -32,13 +32,13 @@ public class UserController {
     @PutMapping("/group/assign")
     @Operation(summary = "Assign a user to a group.")
     public void assignGroup(@RequestBody @Validated UserGroupRequest request) {
-        userService.updateGroup(request);
+//        userService.updateGroup(request);
     }
 
     @PutMapping("/group/remove")
     @Operation(summary = "Remove a user from a group.")
     public void removeFromGroup(@RequestBody @Validated UserGroupRequest request) {
-        userService.removeGroup(request);
+//        userService.removeGroup(request);
     }
 
     @GetMapping

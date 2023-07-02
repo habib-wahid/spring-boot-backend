@@ -1,8 +1,8 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
-import com.usb.pss.ipaservice.admin.model.entity.IpaAdminRefreshToken;
-import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
-import com.usb.pss.ipaservice.admin.repository.IpaAdminRefreshTokenRepository;
+import com.usb.pss.ipaservice.admin.model.entity.RefreshToken;
+import com.usb.pss.ipaservice.admin.model.entity.User;
+import com.usb.pss.ipaservice.admin.repository.RefreshTokenRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.TokenService;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,19 +18,19 @@ import static com.usb.pss.ipaservice.common.ExceptionConstant.INVALID_ACCESS_TOK
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
 
-    private final IpaAdminRefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshTokenExpiration;
 
-    public IpaAdminRefreshToken createNewRefreshToken(IpaAdminUser user) {
+    public RefreshToken createNewRefreshToken(User user) {
         return refreshTokenRepository.save(
-                new IpaAdminRefreshToken(UUID.randomUUID(), user, LocalDateTime.now().plusSeconds(refreshTokenExpiration))
+                new RefreshToken(UUID.randomUUID(), user, LocalDateTime.now().plusSeconds(refreshTokenExpiration))
         );
 
     }
 
-    public IpaAdminRefreshToken getRefreshTokenById(UUID token) {
+    public RefreshToken getRefreshTokenById(UUID token) {
         return refreshTokenRepository.findByTokenId(token)
                 .orElseThrow(() -> new ResourceNotFoundException(INVALID_ACCESS_TOKEN));
 

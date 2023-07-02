@@ -1,14 +1,14 @@
 package com.usb.pss.ipaservice.admin.repository;
 
-import com.usb.pss.ipaservice.admin.model.entity.IpaAdminMenu;
+import com.usb.pss.ipaservice.admin.model.entity.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface IpaAdminMenuRepository extends JpaRepository<IpaAdminMenu, Long> {
-    Optional<IpaAdminMenu> findByNameIgnoreCase(String menuName);
+public interface MenuRepository extends JpaRepository<Menu, Long> {
+    Optional<Menu> findByNameIgnoreCase(String menuName);
 
-    Optional<IpaAdminMenu> findByUrlIgnoreCase(String menuUrl);
+    Optional<Menu> findByUrlIgnoreCase(String menuUrl);
 
 //    @Query("select new com.usb.pss.ipaservice.admin.dto.response.MenuResponse(" +
 //            "mn.id, " +

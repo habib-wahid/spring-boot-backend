@@ -3,7 +3,7 @@ package com.usb.pss.ipaservice.admin.service.iservice;
 import com.usb.pss.ipaservice.admin.dto.request.RoleMenuRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RoleRequest;
 import com.usb.pss.ipaservice.admin.dto.response.RoleResponse;
-import com.usb.pss.ipaservice.admin.model.entity.IpaAdminRole;
+import com.usb.pss.ipaservice.admin.model.entity.Role;
 
 import java.util.List;
 
@@ -14,8 +14,8 @@ import java.util.List;
 
 public interface RoleService {
     void createNewRole(RoleRequest roleRequest);
-    IpaAdminRole getRoleById(Long roleId);
-    IpaAdminRole getRoleByName(String roleName);
+    Role getRoleById(Long roleId);
+    Role getRoleByName(String roleName);
     RoleResponse getRoleResponseById(Long roleId);
     List<RoleResponse> getAllRoleResponse();
     void updateRole(RoleRequest roleRequest, Long roleId);

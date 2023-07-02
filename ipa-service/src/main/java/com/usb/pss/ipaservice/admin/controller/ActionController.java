@@ -2,7 +2,7 @@ package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.request.ActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AdminActionResponse;
-import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.service.impl.ActionServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class ActionController {
     }
 
     @GetMapping("/module-wise-actions")
-    public ResponseEntity<List<ModuleActionResponse>> getModuleWiseUserActions() {
+    public ResponseEntity<List<ModuleResponse>> getModuleWiseUserActions() {
         return new ResponseEntity<>(actionService.getModuleActions(), HttpStatus.OK);
     }
 

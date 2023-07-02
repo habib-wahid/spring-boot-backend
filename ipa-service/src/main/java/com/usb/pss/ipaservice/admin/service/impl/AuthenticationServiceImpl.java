@@ -5,9 +5,9 @@ import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
-import com.usb.pss.ipaservice.admin.model.entity.IpaAdminRefreshToken;
-import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
-import com.usb.pss.ipaservice.admin.repository.IpaAdminUserRepository;
+import com.usb.pss.ipaservice.admin.model.entity.RefreshToken;
+import com.usb.pss.ipaservice.admin.model.entity.User;
+import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
 import com.usb.pss.ipaservice.admin.service.JwtService;
 import com.usb.pss.ipaservice.admin.service.iservice.TokenService;
@@ -38,7 +38,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final TokenService tokenService;
-    private final IpaAdminUserRepository userRepository;
+    private final UserRepository userRepository;
     private final TokenBlackListingService tokenBlackListingService;
     private final UserService userService;
     @Value("${useExpiringMapToBlackListAccessToken}")
@@ -52,11 +52,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
 
-        IpaAdminUser user = userRepository.findUserByUsername(request.username())
+        User user = userRepository.findUserByUsername(request.username())
                 .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
 
         String accessToken = jwtService.generateAccessToken(user);
-        IpaAdminRefreshToken refreshToken = tokenService.createNewRefreshToken(user);
+        RefreshToken refreshToken = tokenService.createNewRefreshToken(user);
         Set<MenuResponse> menuResponseSet = userService.getAllPermittedMenuByUser(user);
 
         return AuthenticationResponse.builder()
@@ -70,7 +70,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public RefreshAccessTokenResponse refreshAccessToken(UUID token) {
 
-        IpaAdminRefreshToken refreshToken = tokenService.getRefreshTokenById(token);
+        RefreshToken refreshToken = tokenService.getRefreshTokenById(token);
         if (refreshToken.getExpiration().isBefore(LocalDateTime.now())) {
             throw new AuthenticationFailedException(INVALID_ACCESS_TOKEN);
         }
