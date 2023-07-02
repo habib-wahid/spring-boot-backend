@@ -1,7 +1,10 @@
 package com.usb.pss.ipaservice.admin.dto.response;
 
-import com.usb.pss.ipaservice.admin.model.entity.SubModule;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -13,6 +16,7 @@ import java.util.List;
 public class ModuleResponse {
     private Long id;
     private String name;
+    private String description;
     private Integer sortOrder;
     private List<SubModuleResponse> subModules;
 }

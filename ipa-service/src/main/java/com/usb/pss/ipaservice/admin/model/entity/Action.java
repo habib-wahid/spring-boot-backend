@@ -25,6 +25,8 @@ public class Action extends BaseAuditorEntity {
     @Column(unique = true)
     private String name;
 
+    private String description;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
     private Menu menu;

@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ModuleRepository extends JpaRepository<Module, Long> {
-    @EntityGraph(attributePaths = {"menus", "menus.actions"})
+    @EntityGraph(attributePaths = {"subModules", "subModules.menus", "subModules.menus.actions"})
     List<Module> findAll();
 }

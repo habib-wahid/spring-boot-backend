@@ -16,6 +16,7 @@ import java.util.List;
 public class SubModuleResponse {
     private Long id;
     private String name;
+    private String description;
     private Integer sortOrder;
     List<MenuResponse> menus;
 }

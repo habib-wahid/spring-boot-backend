@@ -1,6 +1,5 @@
 package com.usb.pss.ipaservice.admin.dto.response;
 
-import com.usb.pss.ipaservice.admin.model.enums.ServiceName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +21,7 @@ import java.util.List;
 public class MenuResponse {
     private Long id;
     private String name;
+    private String description;
     private String url;
     private String icon;
     private Integer sortOrder;

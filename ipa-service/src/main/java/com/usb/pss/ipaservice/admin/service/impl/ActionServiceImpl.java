@@ -65,6 +65,7 @@ public class ActionServiceImpl implements ActionService {
                     .builder()
                     .id(module.getId())
                     .name(String.valueOf(module.getName()))
+                    .description(module.getDescription())
                     .sortOrder(module.getSortOrder())
                     .subModules(
                         module.getSubModules()
@@ -74,6 +75,7 @@ public class ActionServiceImpl implements ActionService {
                                     .builder()
                                     .id(subModule.getId())
                                     .name(subModule.getName())
+                                    .description(subModule.getDescription())
                                     .sortOrder(subModule.getSortOrder())
                                     .menus(
                                         subModule.getMenus()
@@ -82,6 +84,7 @@ public class ActionServiceImpl implements ActionService {
                                                     .builder()
                                                     .id(menu.getId())
                                                     .name(menu.getName())
+                                                    .description(menu.getDescription())
                                                     .url(menu.getUrl())
                                                     .sortOrder(menu.getSortOrder())
                                                     .actions(
@@ -91,6 +94,7 @@ public class ActionServiceImpl implements ActionService {
                                                                     .builder()
                                                                     .id(action.getId())
                                                                     .name(action.getName())
+                                                                    .description(action.getDescription())
                                                                     .build()
                                                             ).toList()
                                                     )
