@@ -7,7 +7,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,7 +50,7 @@ public class User extends BaseAuditorEntity implements UserDetails {
             name = "adm_user_menu",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_id"))
-    private Set<Menu> permittedMenu = new HashSet<>();
+    private Set<Menu> permittedMenus = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

@@ -69,12 +69,12 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public void removeUserMenu(User user, Set<Menu> menuSet) {
-        user.getPermittedMenu().removeAll(menuSet);
+        user.getPermittedMenus().removeAll(menuSet);
     }
 
     @Override
     public void addUserMenu(User user, Set<Menu> menuSet) {
-        user.getPermittedMenu().addAll(menuSet);
+        user.getPermittedMenus().addAll(menuSet);
     }
 
     @Override
