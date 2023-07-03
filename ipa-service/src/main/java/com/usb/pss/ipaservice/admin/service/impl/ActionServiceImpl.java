@@ -59,7 +59,7 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     public List<ModuleResponse> getModuleActions() {
-        List<Module> modules = moduleRepository.findAll();
+        List<Module> modules = moduleRepository.findAllByParentModuleIsNull();
         return modules.stream().map(
                 module -> ModuleResponse
                     .builder()
@@ -74,7 +74,7 @@ public class ActionServiceImpl implements ActionService {
                                 subModule -> SubModuleResponse
                                     .builder()
                                     .id(subModule.getId())
-                                    .name(subModule.getName())
+                                    .name(String.valueOf(subModule.getName()))
                                     .description(subModule.getDescription())
                                     .sortOrder(subModule.getSortOrder())
                                     .menus(

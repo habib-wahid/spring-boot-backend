@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -33,8 +35,15 @@ public class Module extends BaseAuditorEntity {
     private String description;
     private Integer sortOrder;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_module_id")
+    private Module parentModule;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parentModule")
+    private Set<Module> subModules;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "module")
-    private Set<SubModule> subModules;
+    private Set<Menu> menus;
 
     @Override
     public boolean equals(Object o) {
