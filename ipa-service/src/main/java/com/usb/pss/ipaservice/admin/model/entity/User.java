@@ -7,7 +7,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,8 +26,8 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ipa_admin_user")
-public class IpaAdminUser extends BaseAuditorEntity implements UserDetails {
+@Table(name = "adm_user")
+public class User extends BaseAuditorEntity implements UserDetails {
 
     private String firstName;
     private String lastName;
@@ -39,23 +38,26 @@ public class IpaAdminUser extends BaseAuditorEntity implements UserDetails {
     private String password;
     private boolean active;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    private IpaAdminGroup group;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "adm_user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "ipa_admin_user_menu",
+            name = "adm_user_menu",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_id"))
-    private Set<IpaAdminMenu> permittedMenu = new HashSet<>();
+    private Set<Menu> permittedMenus = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "ipa_admin_user_action",
+            name = "adm_user_action",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "action_id"))
-    private Set<IpaAdminAction> permittedActions = new HashSet<>();
+    private Set<Action> permittedActions = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

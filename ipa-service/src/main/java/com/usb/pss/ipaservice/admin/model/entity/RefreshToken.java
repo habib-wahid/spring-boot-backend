@@ -21,15 +21,15 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ipa_admin_refresh_token")
-public class IpaAdminRefreshToken {
+@Table(name = "adm_refresh_token")
+public class RefreshToken {
 
     @Id
     private UUID tokenId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private IpaAdminUser user;
+    private User user;
 
     private LocalDateTime expiration;
 }

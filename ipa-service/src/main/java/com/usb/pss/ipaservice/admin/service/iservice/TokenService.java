@@ -1,15 +1,15 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
-import com.usb.pss.ipaservice.admin.model.entity.IpaAdminRefreshToken;
-import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
+import com.usb.pss.ipaservice.admin.model.entity.RefreshToken;
+import com.usb.pss.ipaservice.admin.model.entity.User;
 
 import java.util.UUID;
 
 public interface TokenService {
 
-    IpaAdminRefreshToken createNewRefreshToken(IpaAdminUser user);
+    RefreshToken createNewRefreshToken(User user);
 
-    IpaAdminRefreshToken getRefreshTokenById(UUID token);
+    RefreshToken getRefreshTokenById(UUID token);
 
     void deleteRefreshTokenById(UUID token);
 }

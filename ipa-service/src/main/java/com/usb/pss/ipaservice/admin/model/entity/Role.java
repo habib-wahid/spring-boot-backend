@@ -18,34 +18,43 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+
 @Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ipa_admin_group")
-public class IpaAdminGroup extends BaseAuditorEntity {
+@Table(name = "adm_role")
+public class Role extends BaseAuditorEntity {
 
     @Column(unique = true)
     private String name;
+    private String description;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "ipa_admin_group_role",
-            joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<IpaAdminRole> assignedRoles = new HashSet<>();
+            name = "adm_role_menu",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "menu_id"))
+    private Set<Menu> permittedMenus = new HashSet<>();
 
-    public void addRole(IpaAdminRole role) {
-        if (Objects.nonNull(role)) {
-            this.assignedRoles.add(role);
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "adm_role_action",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "action_id"))
+    private Set<Action> permittedActions = new HashSet<>();
+
+    public void addMenu(Menu menu) {
+        if (Objects.nonNull(menu)) {
+            this.permittedMenus.add(menu);
         }
     }
 
-    public void removeRole(IpaAdminRole role) {
-        if (Objects.nonNull(role)) {
-            this.assignedRoles.remove(role);
+    public void removeMenu(Menu menu) {
+        if (Objects.nonNull(menu)) {
+            this.permittedMenus.remove(menu);
         }
     }
 

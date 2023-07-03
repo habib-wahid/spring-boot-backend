@@ -8,22 +8,15 @@ import lombok.Setter;
 
 import java.util.List;
 
-/**
- * @author Junaid Khan Pathan
- * @date Jun 17, 2023
- */
-
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class MenuResponse {
+@NoArgsConstructor
+public class ModuleResponse {
     private Long id;
     private String name;
     private String description;
-    private String url;
-    private String icon;
     private Integer sortOrder;
-    private List<ActionResponse> actions;
+    private List<SubModuleResponse> subModules;
 }

@@ -2,9 +2,9 @@ package com.usb.pss.ipaservice.admin.service.iservice;
 
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponseWithIdName;
-import com.usb.pss.ipaservice.admin.model.entity.IpaAdminMenu;
+import com.usb.pss.ipaservice.admin.model.entity.Menu;
 
-import com.usb.pss.ipaservice.admin.model.entity.IpaAdminUser;
+import com.usb.pss.ipaservice.admin.model.entity.User;
 import java.util.List;
 import java.util.Set;
 
@@ -14,11 +14,11 @@ import java.util.Set;
  */
 
 public interface MenuService {
-    IpaAdminMenu getMenuById(Long menuId);
+    Menu getMenuById(Long menuId);
 
-    IpaAdminMenu getMenuByName(String menuName);
+    Menu getMenuByName(String menuName);
 
-    IpaAdminMenu getMenuByUrl(String menuUrl);
+    Menu getMenuByUrl(String menuUrl);
 
     MenuResponse getMenuResponseById(Long menuId);
 
@@ -26,11 +26,11 @@ public interface MenuService {
 
     void deactivateMenu(Long menuId);
 
-    Set<IpaAdminMenu> getAllMenuByIds(List<Long> menuIds);
+    Set<Menu> getAllMenuByIds(List<Long> menuIds);
 
-    void removeUserMenu(IpaAdminUser user, Set<IpaAdminMenu> menuSet);
+    void removeUserMenu(User user, Set<Menu> menuSet);
 
-    void addUserMenu(IpaAdminUser user, Set<IpaAdminMenu> menuSet);
+    void addUserMenu(User user, Set<Menu> menuSet);
 
     List<MenuResponseWithIdName> getAllMenuResponseWithIdName();
 }

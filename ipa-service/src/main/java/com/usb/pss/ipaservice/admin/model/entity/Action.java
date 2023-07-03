@@ -19,15 +19,17 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ipa_admin_action")
-public class IpaAdminAction extends BaseAuditorEntity {
+@Table(name = "adm_action")
+public class Action extends BaseAuditorEntity {
 
     @Column(unique = true)
     private String name;
 
+    private String description;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
-    private IpaAdminMenu menu;
+    private Menu menu;
 
     @Override
     public boolean equals(Object o) {
