@@ -34,14 +34,14 @@ public class Role extends BaseAuditorEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "adm_role_menu",
+            name = "adm_role_wise_menu_mapping",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_id"))
     private Set<Menu> permittedMenus = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "adm_role_action",
+            name = "adm_role_wise_action_mapping",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "action_id"))
     private Set<Action> permittedActions = new HashSet<>();
