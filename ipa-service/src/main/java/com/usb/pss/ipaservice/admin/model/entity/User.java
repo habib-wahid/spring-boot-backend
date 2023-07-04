@@ -40,21 +40,21 @@ public class User extends BaseAuditorEntity implements UserDetails {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "adm_user_role",
+            name = "adm_user_wise_role_mapping",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "adm_user_menu",
+            name = "adm_user_wise_menu_mapping",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_id"))
     private Set<Menu> permittedMenus = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "adm_user_action",
+            name = "adm_user_wise_action_mapping",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "action_id"))
     private Set<Action> permittedActions = new HashSet<>();
