@@ -77,10 +77,6 @@ public class UserServiceImpl implements UserService {
     private void prepareResponse(User user, UserResponse userResponse) {
         userResponse.setId(user.getId());
         userResponse.setName(user.getUsername());
-//        if (Objects.nonNull(user.getGroup())) {
-//            userResponse.setGroupId(user.getGroup().getId());
-//            userResponse.setGroupName(user.getGroup().getName());
-//        }
     }
 
     @Override
