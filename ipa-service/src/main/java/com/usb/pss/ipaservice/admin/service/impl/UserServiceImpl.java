@@ -1,12 +1,14 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
-import com.usb.pss.ipaservice.admin.dto.request.UserMenuRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
+import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Menu;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
+import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
@@ -31,8 +33,8 @@ import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    //    private final GroupService groupService;
     private final MenuServiceImpl menuService;
+    private final ActionService actionService;
 
     public void registerUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -82,18 +84,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUserMenus(Long userId, UserMenuRequest userMenuRequest) {
-        User user = getUserById(userId);
-        Set<Menu> menuList = menuService.getAllMenuByIds(userMenuRequest.menuIds());
-        menuService.addUserMenu(user, menuList);
-        userRepository.save(user);
-    }
-
-    @Override
-    public void removeUserMenus(Long userId, UserMenuRequest userMenuRequest) {
-        User user = getUserById(userId);
-        Set<Menu> menuList = menuService.getAllMenuByIds(userMenuRequest.menuIds());
-        menuService.removeUserMenu(user, menuList);
+    public void addUserActions(UserActionRequest userActionRequest) {
+        User user = getUserById(userActionRequest.userId());
+        Set<Action> actions = actionService.getAllActionByIds(userActionRequest.actionIds());
+        Set<Menu> menus = actions.stream()
+            .filter(Objects::nonNull)
+            .map(Action::getMenu)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+        user.setPermittedActions(actions);
+        user.setPermittedMenus(menus);
         userRepository.save(user);
     }
 

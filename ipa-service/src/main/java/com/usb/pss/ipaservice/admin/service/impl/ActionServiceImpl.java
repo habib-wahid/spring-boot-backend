@@ -18,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,11 @@ public class ActionServiceImpl implements ActionService {
 
     private final ActionRepository actionRepository;
     private final ModuleRepository moduleRepository;
+
+    @Override
+    public Set<Action> getAllActionByIds(List<Long> actionId) {
+        return new HashSet<>(actionRepository.findAllById(actionId));
+    }
 
     @Override
     public void saveUserAction(ActionRequest actionRequest) {
