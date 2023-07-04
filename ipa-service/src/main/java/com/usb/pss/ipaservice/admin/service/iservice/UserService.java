@@ -18,7 +18,7 @@ public interface UserService {
 
     Set<MenuResponse> getUserAllPermittedMenu();
 
-    void addUserActions(UserActionRequest userActionRequest);
+    void updateUserActions(UserActionRequest userActionRequest);
 
     Set<MenuResponse> getAllPermittedMenuByUser(User user);
 }

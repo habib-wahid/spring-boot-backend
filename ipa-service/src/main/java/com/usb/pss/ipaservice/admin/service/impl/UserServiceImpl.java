@@ -80,17 +80,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUserActions(UserActionRequest userActionRequest) {
+    public void updateUserActions(UserActionRequest userActionRequest) {
         User user = getUserById(userActionRequest.userId());
-        Set<Action> actions = actionService.getAllActionByIds(userActionRequest.actionIds());
+        Set<Action> actions = actionService.getAllActionsByIds(userActionRequest.actionIds());
         Set<Menu> menus = actions.stream()
             .filter(Objects::nonNull)
             .map(Action::getMenu)
             .filter(Objects::nonNull)
             .collect(Collectors.toSet());
-        user.setPermittedActions(actions);
-        user.setPermittedMenus(menus);
-        userRepository.save(user);
+        user.getPermittedMenus().addAll(menus);
+        user.getPermittedMenus().retainAll(menus);
+        user.getPermittedActions().addAll(actions);
+        user.getPermittedActions().retainAll(actions);
     }
 
     @Override

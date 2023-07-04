@@ -60,9 +60,9 @@ public class UserController {
 
     @PutMapping("/{userId}/actions")
     @Operation(summary = "add a set of actions to a user")
-    public void addUserActions(
+    public void updateUserActions(
         @RequestBody @Validated UserActionRequest userActionRequest) {
-        userService.addUserActions(userActionRequest);
+        userService.updateUserActions(userActionRequest);
     }
 
 }

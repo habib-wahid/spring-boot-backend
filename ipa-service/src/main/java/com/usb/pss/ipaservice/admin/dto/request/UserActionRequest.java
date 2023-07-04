@@ -1,10 +1,15 @@
 package com.usb.pss.ipaservice.admin.dto.request;
 
-import java.util.List;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.Set;
 
 public record UserActionRequest(
 
+    @NotNull
     Long userId,
-    List<Long> actionIds
+    @NotEmpty
+    Set<Long> actionIds
 ) {
 }
