@@ -7,6 +7,7 @@ import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.SubModuleResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
+import com.usb.pss.ipaservice.admin.model.entity.Menu;
 import com.usb.pss.ipaservice.admin.model.entity.Module;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
 import com.usb.pss.ipaservice.admin.repository.ModuleRepository;
@@ -21,6 +22,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,11 +49,13 @@ public class ActionServiceImpl implements ActionService {
         if (DaprUtils.getUserActionFromDapr(actionId) != null) {
             return DaprUtils.getUserActionFromDapr(actionId);
         } else {
-            Action action = actionRepository.findById(actionId).get();
             AdminActionResponse adminActionResponse = new AdminActionResponse();
-            adminActionResponse.setId(action.getId());
-            adminActionResponse.setActionName(action.getName());
-            DaprUtils.saveUserActionInDapr(actionId, adminActionResponse);
+            Optional<Action> actionOptional = actionRepository.findById(actionId);
+            actionOptional.ifPresent(action -> {
+                adminActionResponse.setId(action.getId());
+                adminActionResponse.setActionName(action.getName());
+                DaprUtils.saveUserActionInDapr(actionId, adminActionResponse);
+            });
             return adminActionResponse;
         }
     }
@@ -69,41 +73,20 @@ public class ActionServiceImpl implements ActionService {
     public List<ModuleResponse> getModuleActions() {
         List<Module> modules = moduleRepository.findAllByParentModuleIsNull();
         return modules.stream().map(
-                module -> ModuleResponse
-                    .builder()
-                    .id(module.getId())
-                    .name(String.valueOf(module.getName()))
-                    .description(module.getDescription())
-                    .sortOrder(module.getSortOrder())
+                module -> getModuleResponseBuilder(module)
                     .subModules(
                         module.getSubModules()
                             .stream()
                             .map(
-                                subModule -> SubModuleResponse
-                                    .builder()
-                                    .id(subModule.getId())
-                                    .name(String.valueOf(subModule.getName()))
-                                    .description(subModule.getDescription())
-                                    .sortOrder(subModule.getSortOrder())
+                                subModule -> getSubModuleResponseBuilder(subModule)
                                     .menus(
                                         subModule.getMenus()
                                             .stream().map(
-                                                menu -> MenuResponse
-                                                    .builder()
-                                                    .id(menu.getId())
-                                                    .name(menu.getName())
-                                                    .description(menu.getDescription())
-                                                    .url(menu.getUrl())
-                                                    .sortOrder(menu.getSortOrder())
+                                                menu -> getMenuResponseBuilder(menu)
                                                     .actions(
                                                         menu.getActions()
                                                             .stream().map(
-                                                                action -> ActionResponse
-                                                                    .builder()
-                                                                    .id(action.getId())
-                                                                    .name(action.getName())
-                                                                    .description(action.getDescription())
-                                                                    .build()
+                                                                action -> getActionResponseBuilder(action)
                                                             ).toList()
                                                     )
                                                     .build()
@@ -117,5 +100,42 @@ public class ActionServiceImpl implements ActionService {
                     .build()
             ).sorted(Comparator.comparingInt(ModuleResponse::getSortOrder))
             .toList();
+    }
+
+    private static ActionResponse getActionResponseBuilder(Action action) {
+        return ActionResponse
+                .builder()
+                .id(action.getId())
+                .name(action.getName())
+                .description(action.getDescription())
+                .build();
+    }
+
+    private static MenuResponse.MenuResponseBuilder getMenuResponseBuilder(Menu menu) {
+        return MenuResponse
+                .builder()
+                .id(menu.getId())
+                .name(menu.getName())
+                .description(menu.getDescription())
+                .url(menu.getUrl())
+                .sortOrder(menu.getSortOrder());
+    }
+
+    private static SubModuleResponse.SubModuleResponseBuilder getSubModuleResponseBuilder(Module subModule) {
+        return SubModuleResponse
+                .builder()
+                .id(subModule.getId())
+                .name(String.valueOf(subModule.getName()))
+                .description(subModule.getDescription())
+                .sortOrder(subModule.getSortOrder());
+    }
+
+    private static ModuleResponse.ModuleResponseBuilder getModuleResponseBuilder(Module module) {
+        return ModuleResponse
+                .builder()
+                .id(module.getId())
+                .name(String.valueOf(module.getName()))
+                .description(module.getDescription())
+                .sortOrder(module.getSortOrder());
     }
 }
