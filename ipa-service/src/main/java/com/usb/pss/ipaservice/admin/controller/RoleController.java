@@ -88,7 +88,7 @@ public class RoleController {
     }
 
     @GetMapping("/{roleId}/roleWiseAction")
-    public ResponseEntity<List<ModuleResponse>> getRoleWiseAction(@PathVariable Long roleId) {
-        return new ResponseEntity<>(roleService.getRoleWisePermittedActions(roleId), HttpStatus.OK);
+    public List<ModuleResponse> getRoleWiseAction(@PathVariable Long roleId) {
+        return roleService.getRoleWisePermittedActions(roleId);
     }
 }

@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ModuleService {
     List<ModuleResponse> getModuleActions();
-    List<ModuleResponse> getModuleActionsByModules(List<Module> modules);
-    List<Module> getAllModulesByRole(Long roleId);
+//    List<ModuleResponse> getModuleActionsByModules(List<Module> modules);
+    List<ModuleResponse> getAllModulesByRole(Long roleId);
 }

@@ -122,7 +122,7 @@ public class RoleServiceImpl implements RoleService {
     public void updateRoleAction(RoleActionRequest request) {
         Role role = roleRepository.findRoleAndFetchMenuAndActionsById(request.roleId())
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND));
-        List<Action> updatedActions = actionRepository.findAllById(request.actionIds());
+        List<Action> updatedActions = actionRepository.findActionAndFetchMenuByIdIn(request.actionIds());
         Set<Menu> menus = updatedActions.stream()
             .map(Action::getMenu)
             .collect(Collectors.toSet());
@@ -135,9 +135,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<ModuleResponse> getRoleWisePermittedActions(Long roleId) {
-        Role role = getRoleById(roleId);
-        List<Module> roleWiseModules = moduleService.getAllModulesByRole(role.getId());
-        return moduleService.getModuleActionsByModules(roleWiseModules);
+        return moduleService.getAllModulesByRole(roleId);
     }
 
     private void prepareEntity(RoleRequest roleRequest, Role role) {

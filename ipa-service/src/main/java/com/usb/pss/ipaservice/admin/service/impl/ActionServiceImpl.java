@@ -8,6 +8,7 @@ import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.utils.DaprUtils;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +30,13 @@ public class ActionServiceImpl implements ActionService {
         if (DaprUtils.getUserActionFromDapr(actionId) != null) {
             return DaprUtils.getUserActionFromDapr(actionId);
         } else {
-            Action action = actionRepository.findById(actionId).get();
             AdminActionResponse adminActionResponse = new AdminActionResponse();
-            adminActionResponse.setId(action.getId());
-            adminActionResponse.setActionName(action.getName());
-            DaprUtils.saveUserActionInDapr(actionId, adminActionResponse);
+            Optional<Action> actionOptional = actionRepository.findById(actionId);
+            actionOptional.ifPresent(action -> {
+                adminActionResponse.setId(action.getId());
+                adminActionResponse.setActionName(action.getName());
+                DaprUtils.saveUserActionInDapr(actionId, adminActionResponse);
+            });
             return adminActionResponse;
         }
     }
@@ -46,4 +49,5 @@ public class ActionServiceImpl implements ActionService {
         DaprUtils.deleteUserActionFromDapr(actionId);
         return "User action deleted successfully";
     }
+
 }
