@@ -49,8 +49,7 @@ public class ModuleServiceImpl implements ModuleService {
                                                     .actions(
                                                         menu.getActions()
                                                             .stream().map(
-//                                                                action -> getActionResponseBuilder(action)
-                                                            this::getActionResponseBuilder
+                                                                this::getActionResponseBuilder
                                                             ).toList()
                                                     )
                                                     .build()
