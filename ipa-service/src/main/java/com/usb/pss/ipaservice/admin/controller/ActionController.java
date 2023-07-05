@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.request.ActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.RoleActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AdminActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.service.impl.ActionServiceImpl;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +48,16 @@ public class ActionController {
     @DeleteMapping("/{actionId}")
     public ResponseEntity<String> deleteAction(@PathVariable Long actionId) {
         return new ResponseEntity<>(actionService.deleteUserActionById(actionId), HttpStatus.OK);
+    }
+
+    @PutMapping("/roleWiseAction")
+    public void updateRoleWiseAction(@RequestBody RoleActionRequest request) {
+        actionService.updateRoleAction(request);
+    }
+
+    @GetMapping("/{roleId}/permittedActions")
+    public ResponseEntity<List<ModuleResponse>> getRoleWiseAction(@PathVariable Long roleId) {
+        return new ResponseEntity<>(actionService.getRoleWisePermittedActions(roleId), HttpStatus.OK);
     }
 
 }

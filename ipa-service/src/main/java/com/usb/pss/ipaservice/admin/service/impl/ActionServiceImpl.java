@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.ActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.RoleActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.ActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.AdminActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
@@ -8,9 +9,12 @@ import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.SubModuleResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Module;
+import com.usb.pss.ipaservice.admin.model.entity.Role;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
 import com.usb.pss.ipaservice.admin.repository.ModuleRepository;
+import com.usb.pss.ipaservice.admin.repository.RoleRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
+import com.usb.pss.ipaservice.admin.service.iservice.RoleService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.utils.DaprUtils;
@@ -26,6 +30,8 @@ public class ActionServiceImpl implements ActionService {
 
     private final ActionRepository actionRepository;
     private final ModuleRepository moduleRepository;
+    private final RoleService roleService;
+    private final RoleRepository roleRepository;
 
     @Override
     public void saveUserAction(ActionRequest actionRequest) {
@@ -60,6 +66,20 @@ public class ActionServiceImpl implements ActionService {
     @Override
     public List<ModuleResponse> getModuleActions() {
         List<Module> modules = moduleRepository.findAllByParentModuleIsNull();
+        return getModuleActionsByModules(modules);
+    }
+
+    @Override
+    public void updateRoleAction(RoleActionRequest request) {
+        Role role = roleService.getRoleById(request.roleId());
+        List<Action> updatedActions = actionRepository.findAllById(request.actionIds());
+        role.getPermittedActions().addAll(updatedActions);
+        role.getPermittedActions().retainAll(updatedActions);
+        roleRepository.save(role);
+    }
+
+    @Override
+    public List<ModuleResponse> getModuleActionsByModules(List<Module> modules) {
         return modules.stream().map(
                 module -> ModuleResponse
                     .builder()
@@ -109,5 +129,12 @@ public class ActionServiceImpl implements ActionService {
                     .build()
             ).sorted(Comparator.comparingInt(ModuleResponse::getSortOrder))
             .toList();
+    }
+
+    @Override
+    public List<ModuleResponse> getRoleWisePermittedActions(Long roleId) {
+        Role role = roleService.getRoleById(roleId);
+        List<Module> roleWiseModules = moduleRepository.getAllModulesForRole(role.getId());
+        return getModuleActionsByModules(roleWiseModules);
     }
 }
