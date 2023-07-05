@@ -1,7 +1,9 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
+import com.usb.pss.ipaservice.admin.dto.request.RoleActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RoleMenuRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RoleRequest;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RoleResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Role;
 
@@ -22,4 +24,6 @@ public interface RoleService {
     void deactivateRole(Long roleId);
     void addRoleMenu(Long roleId, RoleMenuRequest roleMenuRequest);
     void removeRoleMenu(Long roleId, RoleMenuRequest roleMenuRequest);
+    void updateRoleAction(RoleActionRequest request);
+    List<ModuleResponse> getRoleWisePermittedActions(Long roleId);
 }
