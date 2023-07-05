@@ -10,8 +10,6 @@ import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,7 +71,7 @@ public class UserController {
 
     @GetMapping("/{userId}/actions")
     @Operation(summary = "retrieve the list of actions module wise of a user ")
-    public ResponseEntity<List<ModuleResponse>> getModuleWiseUserActions(@PathVariable Long userId) {
-        return new ResponseEntity<>(actionService.getModuleActionsByUserId(userId), HttpStatus.OK);
+    public List<ModuleResponse> getModuleWiseUserActions(@PathVariable Long userId) {
+        return actionService.getModuleActionsByUserId(userId);
     }
 }
