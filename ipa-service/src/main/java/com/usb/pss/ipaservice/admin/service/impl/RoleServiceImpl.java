@@ -130,6 +130,7 @@ public class RoleServiceImpl implements RoleService {
         role.getPermittedMenus().addAll(menus);
         role.getPermittedMenus().retainAll(menus);
         roleRepository.save(role);
+        //TODO: need to consider update in user table after updating role
     }
 
     @Override
