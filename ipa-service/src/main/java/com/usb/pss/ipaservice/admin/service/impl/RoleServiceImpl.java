@@ -7,7 +7,6 @@ import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RoleResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Menu;
-import com.usb.pss.ipaservice.admin.model.entity.Module;
 import com.usb.pss.ipaservice.admin.model.entity.Role;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
 import com.usb.pss.ipaservice.admin.repository.RoleRepository;
