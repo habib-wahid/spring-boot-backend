@@ -8,13 +8,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Set;
 
 @Entity
 @Getter
@@ -36,6 +35,9 @@ public class Action extends BaseAuditorEntity {
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permittedActions")
     private Set<User> users;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permittedActions")
+    private Set<Role> roles;
 
     @Override
     public boolean equals(Object o) {

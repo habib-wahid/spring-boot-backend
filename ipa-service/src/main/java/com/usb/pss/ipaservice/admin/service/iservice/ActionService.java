@@ -21,4 +21,5 @@ public interface ActionService {
     List<ModuleResponse> getModuleActions();
 
     List<ModuleResponse> getModuleActionsByUserId(Long userId);
+
 }

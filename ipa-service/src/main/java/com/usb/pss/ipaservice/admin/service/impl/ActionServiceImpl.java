@@ -1,20 +1,14 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.ActionRequest;
-import com.usb.pss.ipaservice.admin.dto.response.ActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.AdminActionResponse;
-import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
-import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
-import com.usb.pss.ipaservice.admin.dto.response.SubModuleResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
-import com.usb.pss.ipaservice.admin.model.entity.Menu;
-import com.usb.pss.ipaservice.admin.model.entity.Module;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
-import com.usb.pss.ipaservice.admin.repository.ModuleRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.utils.DaprUtils;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -29,7 +23,6 @@ import java.util.Set;
 public class ActionServiceImpl implements ActionService {
 
     private final ActionRepository actionRepository;
-    private final ModuleRepository moduleRepository;
 
     @Override
     public List<Action> getAllActionsByIdsWithMenu(Set<Long> actionIds) {

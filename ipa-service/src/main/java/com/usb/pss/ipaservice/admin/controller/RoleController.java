@@ -1,7 +1,9 @@
 package com.usb.pss.ipaservice.admin.controller;
 
+import com.usb.pss.ipaservice.admin.dto.request.RoleActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RoleMenuRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RoleRequest;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RoleResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,5 +78,15 @@ public class RoleController {
     public void removeRoleMenus(@Validated @RequestBody RoleMenuRequest roleMenuRequest,
                                                    @PathVariable Long roleId) {
         roleService.removeRoleMenu(roleId, roleMenuRequest);
+    }
+
+    @PutMapping("/roleWiseAction")
+    public void updateRoleWiseAction(@RequestBody @Validated RoleActionRequest request) {
+        roleService.updateRoleAction(request);
+    }
+
+    @GetMapping("/{roleId}/roleWiseAction")
+    public List<ModuleResponse> getRoleWiseAction(@PathVariable Long roleId) {
+        return roleService.getRoleWisePermittedActions(roleId);
     }
 }
