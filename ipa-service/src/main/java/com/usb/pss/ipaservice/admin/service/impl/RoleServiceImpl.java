@@ -121,7 +121,7 @@ public class RoleServiceImpl implements RoleService {
     public void updateRoleAction(RoleActionRequest request) {
         Role role = roleRepository.findRoleAndFetchMenuAndActionsById(request.roleId())
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND));
-        List<Action> updatedActions = actionRepository.findActionAndFetchMenuByIdIn(request.actionIds());
+        List<Action> updatedActions = actionRepository.findActionFetchMenuAllByIdIn(request.actionIds());
         Set<Menu> menus = updatedActions.stream()
             .map(Action::getMenu)
             .collect(Collectors.toSet());

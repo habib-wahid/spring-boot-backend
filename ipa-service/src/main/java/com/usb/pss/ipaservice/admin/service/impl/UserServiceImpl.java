@@ -3,12 +3,15 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Menu;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
+import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
+import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
@@ -33,8 +36,10 @@ import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MenuServiceImpl menuService;
+    private final MenuService menuService;
     private final ActionService actionService;
+    private final ModuleService moduleService;
+
 
     public void registerUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -106,6 +111,11 @@ public class UserServiceImpl implements UserService {
                 menuService.prepareResponse(menu, menuResponse);
                 return menuResponse;
             }).collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<ModuleResponse> getAllModuleWiseActionsById(Long userId) {
+        return moduleService.getModuleActionsByUserId(userId);
     }
 
     @Override

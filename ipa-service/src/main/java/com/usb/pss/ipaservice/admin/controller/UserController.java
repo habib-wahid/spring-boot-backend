@@ -6,7 +6,6 @@ import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
-import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ import static com.usb.pss.ipaservice.common.APIEndpointConstants.USER_ENDPOINT;
 public class UserController {
 
     private final UserService userService;
-    private final ActionService actionService;
 
     @PostMapping
     @Operation(summary = "Register a new user.")
@@ -72,6 +70,6 @@ public class UserController {
     @GetMapping("/{userId}/actions")
     @Operation(summary = "retrieve the list of actions module wise of a user ")
     public List<ModuleResponse> getModuleWiseUserActions(@PathVariable Long userId) {
-        return actionService.getModuleActionsByUserId(userId);
+        return userService.getAllModuleWiseActionsById(userId);
     }
 }
