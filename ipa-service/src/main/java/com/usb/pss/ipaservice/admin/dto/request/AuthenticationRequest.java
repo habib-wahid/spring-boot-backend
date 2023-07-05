@@ -6,6 +6,7 @@ public record AuthenticationRequest(
 
         @NotBlank
         String username,
+        @NotBlank
         String password
 ) {
 
