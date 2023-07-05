@@ -30,10 +30,9 @@ public class ActionServiceImpl implements ActionService {
     private final ModuleRepository moduleRepository;
 
     @Override
-    public Set<Action> getAllActionsByIds(Set<Long> actionId) {
+    public Set<Action> getAllActionsByIds(List<Long> actionId) {
         return new HashSet<>(actionRepository.findAllById(actionId));
     }
-
 
 
     @Override

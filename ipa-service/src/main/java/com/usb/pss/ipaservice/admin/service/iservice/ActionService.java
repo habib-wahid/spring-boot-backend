@@ -10,7 +10,7 @@ import java.util.Set;
 
 public interface ActionService {
 
-    Set<Action> getAllActionsByIds(Set<Long> actionId);
+    Set<Action> getAllActionsByIds(List<Long> actionId);
     void saveUserAction(ActionRequest actionRequest);
     AdminActionResponse getUserActionById(Long actionId);
     String deleteUserActionById(Long actionId);

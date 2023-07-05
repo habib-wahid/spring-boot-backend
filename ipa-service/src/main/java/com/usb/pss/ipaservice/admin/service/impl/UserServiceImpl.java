@@ -84,9 +84,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userActionRequest.userId());
         Set<Action> actions = actionService.getAllActionsByIds(userActionRequest.actionIds());
         Set<Menu> menus = actions.stream()
-            .filter(Objects::nonNull)
             .map(Action::getMenu)
-            .filter(Objects::nonNull)
             .collect(Collectors.toSet());
         user.getPermittedMenus().addAll(menus);
         user.getPermittedMenus().retainAll(menus);
