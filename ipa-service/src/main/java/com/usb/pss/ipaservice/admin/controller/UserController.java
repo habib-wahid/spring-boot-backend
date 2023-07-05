@@ -4,12 +4,17 @@ import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
+import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +32,7 @@ import static com.usb.pss.ipaservice.common.APIEndpointConstants.USER_ENDPOINT;
 public class UserController {
 
     private final UserService userService;
+    private final ActionService actionService;
 
     @PostMapping
     @Operation(summary = "Register a new user.")
@@ -58,11 +64,16 @@ public class UserController {
         return userService.getUserAllPermittedMenu();
     }
 
-    @PutMapping("/{userId}/actions")
+    @PutMapping("/actions")
     @Operation(summary = "add a set of actions to a user")
     public void updateUserActions(
         @RequestBody @Validated UserActionRequest userActionRequest) {
         userService.updateUserActions(userActionRequest);
     }
 
+    @GetMapping("/{userId}/actions")
+    @Operation(summary = "retrieve the list of actions module wise of a user ")
+    public ResponseEntity<List<ModuleResponse>> getModuleWiseUserActions(@PathVariable Long userId) {
+        return new ResponseEntity<>(actionService.getModuleActionsByUserId(userId), HttpStatus.OK);
+    }
 }

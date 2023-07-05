@@ -10,9 +10,15 @@ import java.util.Set;
 
 public interface ActionService {
 
-    Set<Action> getAllActionsByIds(List<Long> actionId);
+    List<Action> getAllActionsByIdsWithMenu(Set<Long> actionId);
+
     void saveUserAction(ActionRequest actionRequest);
+
     AdminActionResponse getUserActionById(Long actionId);
+
     String deleteUserActionById(Long actionId);
+
     List<ModuleResponse> getModuleActions();
+
+    List<ModuleResponse> getModuleActionsByUserId(Long userId);
 }

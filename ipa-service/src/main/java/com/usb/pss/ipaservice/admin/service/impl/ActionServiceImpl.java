@@ -16,13 +16,13 @@ import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.utils.DaprUtils;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +32,8 @@ public class ActionServiceImpl implements ActionService {
     private final ModuleRepository moduleRepository;
 
     @Override
-    public Set<Action> getAllActionsByIds(List<Long> actionId) {
-        return new HashSet<>(actionRepository.findAllById(actionId));
+    public List<Action> getAllActionsByIdsWithMenu(Set<Long> actionIds) {
+        return actionRepository.findActionFetchMenuAllByIdIn(actionIds);
     }
 
 
@@ -49,13 +49,11 @@ public class ActionServiceImpl implements ActionService {
         if (DaprUtils.getUserActionFromDapr(actionId) != null) {
             return DaprUtils.getUserActionFromDapr(actionId);
         } else {
+            Action action = actionRepository.findById(actionId).get();
             AdminActionResponse adminActionResponse = new AdminActionResponse();
-            Optional<Action> actionOptional = actionRepository.findById(actionId);
-            actionOptional.ifPresent(action -> {
-                adminActionResponse.setId(action.getId());
-                adminActionResponse.setActionName(action.getName());
-                DaprUtils.saveUserActionInDapr(actionId, adminActionResponse);
-            });
+            adminActionResponse.setId(action.getId());
+            adminActionResponse.setActionName(action.getName());
+            DaprUtils.saveUserActionInDapr(actionId, adminActionResponse);
             return adminActionResponse;
         }
     }
@@ -72,6 +70,11 @@ public class ActionServiceImpl implements ActionService {
     @Override
     public List<ModuleResponse> getModuleActions() {
         List<Module> modules = moduleRepository.findAllByParentModuleIsNull();
+        return getModuleResponsesFromModules(modules);
+    }
+
+    @NotNull
+    private static List<ModuleResponse> getModuleResponsesFromModules(List<Module> modules) {
         return modules.stream().map(
                 module -> getModuleResponseBuilder(module)
                     .subModules(
@@ -86,7 +89,7 @@ public class ActionServiceImpl implements ActionService {
                                                     .actions(
                                                         menu.getActions()
                                                             .stream().map(
-                                                                action -> getActionResponseBuilder(action)
+                                                                ActionServiceImpl::getActionResponseBuilder
                                                             ).toList()
                                                     )
                                                     .build()
@@ -102,40 +105,47 @@ public class ActionServiceImpl implements ActionService {
             .toList();
     }
 
+    @Override
+    public List<ModuleResponse> getModuleActionsByUserId(Long userId) {
+        List<Module> modules = moduleRepository.findAllModuleByUserId(userId);
+        return getModuleResponsesFromModules(modules);
+    }
+
+
     private static ActionResponse getActionResponseBuilder(Action action) {
         return ActionResponse
-                .builder()
-                .id(action.getId())
-                .name(action.getName())
-                .description(action.getDescription())
-                .build();
+            .builder()
+            .id(action.getId())
+            .name(action.getName())
+            .description(action.getDescription())
+            .build();
     }
 
     private static MenuResponse.MenuResponseBuilder getMenuResponseBuilder(Menu menu) {
         return MenuResponse
-                .builder()
-                .id(menu.getId())
-                .name(menu.getName())
-                .description(menu.getDescription())
-                .url(menu.getUrl())
-                .sortOrder(menu.getSortOrder());
+            .builder()
+            .id(menu.getId())
+            .name(menu.getName())
+            .description(menu.getDescription())
+            .url(menu.getUrl())
+            .sortOrder(menu.getSortOrder());
     }
 
     private static SubModuleResponse.SubModuleResponseBuilder getSubModuleResponseBuilder(Module subModule) {
         return SubModuleResponse
-                .builder()
-                .id(subModule.getId())
-                .name(String.valueOf(subModule.getName()))
-                .description(subModule.getDescription())
-                .sortOrder(subModule.getSortOrder());
+            .builder()
+            .id(subModule.getId())
+            .name(String.valueOf(subModule.getName()))
+            .description(subModule.getDescription())
+            .sortOrder(subModule.getSortOrder());
     }
 
     private static ModuleResponse.ModuleResponseBuilder getModuleResponseBuilder(Module module) {
         return ModuleResponse
-                .builder()
-                .id(module.getId())
-                .name(String.valueOf(module.getName()))
-                .description(module.getDescription())
-                .sortOrder(module.getSortOrder());
+            .builder()
+            .id(module.getId())
+            .name(String.valueOf(module.getName()))
+            .description(module.getDescription())
+            .sortOrder(module.getSortOrder());
     }
 }

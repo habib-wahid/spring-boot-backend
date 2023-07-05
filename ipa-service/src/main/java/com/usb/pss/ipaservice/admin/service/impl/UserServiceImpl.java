@@ -62,6 +62,11 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
     }
 
+    private User getUserWithMenuAndActionById(Long userId) {
+        return userRepository.findUserWithMenusAndActionsById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
+    }
+
     @Override
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
@@ -81,15 +86,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserActions(UserActionRequest userActionRequest) {
-        User user = getUserById(userActionRequest.userId());
-        Set<Action> actions = actionService.getAllActionsByIds(userActionRequest.actionIds());
-        Set<Menu> menus = actions.stream()
+        User user = getUserWithMenuAndActionById(userActionRequest.userId());
+        List<Action> actions = actionService.getAllActionsByIdsWithMenu(userActionRequest.actionIds());
+        List<Menu> menus = actions.stream()
             .map(Action::getMenu)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toList());
         user.getPermittedMenus().addAll(menus);
         user.getPermittedMenus().retainAll(menus);
         user.getPermittedActions().addAll(actions);
         user.getPermittedActions().retainAll(actions);
+        userRepository.save(user);
     }
 
     @Override
