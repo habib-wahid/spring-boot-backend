@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
+import static java.util.stream.Collectors.toList;
+
 
 @Service
 @RequiredArgsConstructor
@@ -95,7 +97,7 @@ public class UserServiceImpl implements UserService {
         List<Action> actions = actionService.getAllActionsByIdsWithMenu(userActionRequest.actionIds());
         List<Menu> menus = actions.stream()
             .map(Action::getMenu)
-            .collect(Collectors.toList());
+            .collect(toList());
         user.getPermittedMenus().addAll(menus);
         user.getPermittedMenus().retainAll(menus);
         user.getPermittedActions().addAll(actions);
@@ -114,7 +116,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ModuleResponse> getAllModuleWiseActionsById(Long userId) {
+    public List<ModuleResponse> getModuleWiseUserActions(Long userId) {
         return moduleService.getModuleActionsByUserId(userId);
     }
 

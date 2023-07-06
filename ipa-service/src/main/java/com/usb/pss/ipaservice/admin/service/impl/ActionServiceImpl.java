@@ -23,7 +23,7 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     public List<Action> getAllActionsByIdsWithMenu(Set<Long> actionIds) {
-        return actionRepository.findActionFetchMenuAllByIdIn(actionIds);
+        return actionRepository.findActionAndFetchMenuByIdIn(actionIds);
     }
 
 

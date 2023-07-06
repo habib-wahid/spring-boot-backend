@@ -23,5 +23,5 @@ public interface UserService {
 
     Set<MenuResponse> getAllPermittedMenuByUser(User user);
 
-    List<ModuleResponse> getAllModuleWiseActionsById(Long userId);
+    List<ModuleResponse> getModuleWiseUserActions(Long userId);
 }

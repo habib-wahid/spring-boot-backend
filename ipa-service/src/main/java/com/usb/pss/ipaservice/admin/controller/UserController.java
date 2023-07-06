@@ -61,15 +61,15 @@ public class UserController {
     }
 
     @PutMapping("/actions")
-    @Operation(summary = "add a set of actions to a user")
+    @Operation(summary = "update actions for a user")
     public void updateUserActions(
         @RequestBody @Validated UserActionRequest userActionRequest) {
         userService.updateUserActions(userActionRequest);
     }
 
     @GetMapping("/{userId}/actions")
-    @Operation(summary = "retrieve the list of actions module wise of a user ")
+    @Operation(summary = "retrieve the list of actions module wise for a user ")
     public List<ModuleResponse> getModuleWiseUserActions(@PathVariable Long userId) {
-        return userService.getAllModuleWiseActionsById(userId);
+        return userService.getModuleWiseUserActions(userId);
     }
 }
