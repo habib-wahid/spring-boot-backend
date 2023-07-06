@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<ModuleResponse> getModuleWiseUserActions(Long userId) {
-        return moduleService.getModuleActionsByUserId(userId);
+        return moduleService.getModuleWiseUserActions(userId);
     }
 
     @Override

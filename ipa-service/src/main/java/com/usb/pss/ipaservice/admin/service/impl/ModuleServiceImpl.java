@@ -38,7 +38,7 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public List<ModuleResponse> getModuleActionsByUserId(Long userId) {
+    public List<ModuleResponse> getModuleWiseUserActions(Long userId) {
         List<Module> modules = moduleRepository.findAllModuleByUserId(userId);
         return getModuleResponsesFromModules(modules);
     }
