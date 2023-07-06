@@ -6,5 +6,5 @@ import com.usb.pss.ipaservice.admin.model.entity.PasswordPolicy;
 public interface PasswordPolicyService {
 
     void updatePassPolicy(PasswordPolicyRequest request);
-    PasswordPolicy getPasswordPolicyById(Long id);
+    PasswordPolicy getPasswordPolicy();
 }

@@ -18,7 +18,7 @@ public class PasswordPolicyServiceImpl implements PasswordPolicyService {
 
     @Override
     public void updatePassPolicy(PasswordPolicyRequest request) {
-        PasswordPolicy passwordPolicy = getPasswordPolicyById(1L);
+        PasswordPolicy passwordPolicy = getPasswordPolicy();
 
         passwordPolicy.setPasswordLength(request.passwordLength());
         passwordPolicy.setContainsUppercase(request.containsUppercase());
@@ -30,8 +30,8 @@ public class PasswordPolicyServiceImpl implements PasswordPolicyService {
     }
 
     @Override
-    public PasswordPolicy getPasswordPolicyById(Long id) {
-        return passwordPolicyRepository.findById(id)
+    public PasswordPolicy getPasswordPolicy() {
+        return passwordPolicyRepository.findById(1L)
             .orElseThrow(() -> new ResourceNotFoundException(PASSWORD_POLICY_NOT_FOUND));
     }
 }
