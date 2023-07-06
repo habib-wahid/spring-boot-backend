@@ -34,6 +34,9 @@ public class Action extends BaseAuditorEntity {
     private Menu menu;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permittedActions")
+    private Set<User> users;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permittedActions")
     private Set<Role> roles;
 
     @Override

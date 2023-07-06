@@ -6,4 +6,5 @@ import java.util.List;
 public interface ModuleService {
     List<ModuleResponse> getModuleActions();
     List<ModuleResponse> getAllModulesByRole(Long roleId);
+    List<ModuleResponse> getModuleWiseUserActions(Long userId);
 }

@@ -1,8 +1,9 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
-import com.usb.pss.ipaservice.admin.dto.request.UserMenuRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 
 import com.usb.pss.ipaservice.admin.model.entity.User;
@@ -18,10 +19,9 @@ public interface UserService {
 
     Set<MenuResponse> getUserAllPermittedMenu();
 
-    void addUserMenus(Long userId, UserMenuRequest userMenuRequest);
-
-    void removeUserMenus(Long userId, UserMenuRequest userMenuRequest);
+    void updateUserActions(UserActionRequest userActionRequest);
 
     Set<MenuResponse> getAllPermittedMenuByUser(User user);
 
+    List<ModuleResponse> getModuleWiseUserActions(Long userId);
 }

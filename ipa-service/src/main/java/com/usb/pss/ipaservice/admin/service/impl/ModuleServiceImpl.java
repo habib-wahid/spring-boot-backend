@@ -9,10 +9,14 @@ import com.usb.pss.ipaservice.admin.model.entity.Menu;
 import com.usb.pss.ipaservice.admin.model.entity.Module;
 import com.usb.pss.ipaservice.admin.repository.ModuleRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
+
 import java.util.Comparator;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @RequiredArgsConstructor
@@ -24,17 +28,23 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public List<ModuleResponse> getModuleActions() {
         List<Module> modules = moduleRepository.findAllByParentModuleIsNull();
-        return getModuleActions(modules);
+        return getModuleResponsesFromModules(modules);
     }
 
     @Override
     public List<ModuleResponse> getAllModulesByRole(Long roleId) {
         List<Module> modules = moduleRepository.getAllModulesForRole(roleId);
-        return getModuleActions(modules);
+        return getModuleResponsesFromModules(modules);
     }
 
+    @Override
+    public List<ModuleResponse> getModuleWiseUserActions(Long userId) {
+        List<Module> modules = moduleRepository.findAllModuleByUserId(userId);
+        return getModuleResponsesFromModules(modules);
+    }
 
-    private List<ModuleResponse> getModuleActions(List<Module> modules) {
+    @NotNull
+    private List<ModuleResponse> getModuleResponsesFromModules(List<Module> modules) {
         return modules.stream().map(
                 module -> getModuleResponseBuilder(module)
                     .subModules(
@@ -64,6 +74,7 @@ public class ModuleServiceImpl implements ModuleService {
             ).sorted(Comparator.comparingInt(ModuleResponse::getSortOrder))
             .toList();
     }
+
 
     private ActionResponse getActionResponseBuilder(Action action) {
         return ActionResponse

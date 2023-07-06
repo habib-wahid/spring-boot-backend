@@ -5,6 +5,7 @@ import com.usb.pss.ipaservice.admin.dto.response.MenuResponseWithIdName;
 import com.usb.pss.ipaservice.admin.model.entity.Menu;
 
 import com.usb.pss.ipaservice.admin.model.entity.User;
+
 import java.util.List;
 import java.util.Set;
 
@@ -33,4 +34,6 @@ public interface MenuService {
     void addUserMenu(User user, Set<Menu> menuSet);
 
     List<MenuResponseWithIdName> getAllMenuResponseWithIdName();
+
+    void prepareResponse(Menu menu, MenuResponse menuResponse);
 }

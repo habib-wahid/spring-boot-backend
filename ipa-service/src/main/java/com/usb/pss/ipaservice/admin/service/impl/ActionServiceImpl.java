@@ -8,15 +8,24 @@ import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.utils.DaprUtils;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
+
 
 @Service
 @RequiredArgsConstructor
 public class ActionServiceImpl implements ActionService {
 
     private final ActionRepository actionRepository;
+
+    @Override
+    public List<Action> getAllActionsByIdsWithMenu(Set<Long> actionIds) {
+        return actionRepository.findActionAndFetchMenuByIdIn(actionIds);
+    }
+
 
     @Override
     public void saveUserAction(ActionRequest actionRequest) {
@@ -30,13 +39,11 @@ public class ActionServiceImpl implements ActionService {
         if (DaprUtils.getUserActionFromDapr(actionId) != null) {
             return DaprUtils.getUserActionFromDapr(actionId);
         } else {
+            Action action = actionRepository.findById(actionId).get();
             AdminActionResponse adminActionResponse = new AdminActionResponse();
-            Optional<Action> actionOptional = actionRepository.findById(actionId);
-            actionOptional.ifPresent(action -> {
-                adminActionResponse.setId(action.getId());
-                adminActionResponse.setActionName(action.getName());
-                DaprUtils.saveUserActionInDapr(actionId, adminActionResponse);
-            });
+            adminActionResponse.setId(action.getId());
+            adminActionResponse.setActionName(action.getName());
+            DaprUtils.saveUserActionInDapr(actionId, adminActionResponse);
             return adminActionResponse;
         }
     }
