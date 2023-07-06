@@ -13,7 +13,8 @@ public enum ExceptionConstant {
     DUPLICATE_MENU_URL("Menu URL already exists."),
     MENU_NOT_FOUND("Menu not found."),
     DUPLICATE_ROLE_NAME("Role name already exists."),
-    ROLE_NOT_FOUND("Role not found.");
+    ROLE_NOT_FOUND("Role not found."),
+    PASSWORD_POLICY_NOT_FOUND("Password Policy not found with this id");
 
     private final String message;
 
