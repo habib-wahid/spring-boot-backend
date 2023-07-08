@@ -2,12 +2,15 @@ package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserRoleActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Menu;
+import com.usb.pss.ipaservice.admin.model.entity.Role;
 import com.usb.pss.ipaservice.admin.model.entity.User;
+import com.usb.pss.ipaservice.admin.repository.RoleRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
@@ -18,6 +21,7 @@ import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.LoggedUserHelper;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
@@ -28,8 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.*;
 import static java.util.stream.Collectors.toList;
 
 
@@ -41,7 +44,7 @@ public class UserServiceImpl implements UserService {
     private final MenuService menuService;
     private final ActionService actionService;
     private final ModuleService moduleService;
-
+    private final RoleRepository roleRepository;
 
     public void registerUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -66,12 +69,12 @@ public class UserServiceImpl implements UserService {
 
     private User getUserById(Long id) {
         return userRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
     private User getUserWithMenuAndActionById(Long userId) {
         return userRepository.findUserWithMenusAndActionsById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
     @Override
@@ -121,6 +124,56 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateUserRole(UserRoleActionRequest userRoleActionRequest) {
+        User user = userRepository.findById(userRoleActionRequest.userId())
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+        List<Role> updatedRoles = roleRepository.findAllByIdIn(userRoleActionRequest.userRole());
+
+        Set<Role> userCurrentRoles = user.getRoles();
+        Set<Action> userCurrentActions = user.getPermittedActions();
+        Set<Menu> userCurrentMenus = user.getPermittedMenus();
+
+        Set<Role> deletedRoles = userCurrentRoles.stream().filter(role -> !updatedRoles.contains(role)).collect(Collectors.toSet());
+        Set<Role> newAddedRoles = updatedRoles.stream().filter(role -> !userCurrentRoles.contains(role)).collect(Collectors.toSet());
+        userCurrentRoles.addAll(updatedRoles);
+        userCurrentRoles.retainAll(updatedRoles);
+        user.setRoles(userCurrentRoles);
+
+        Set<Action> deletedActions = new HashSet<>();
+
+        deleteAction(deletedRoles,userCurrentActions,deletedActions);
+        addAction(newAddedRoles,userCurrentActions);
+        user.setPermittedActions(userCurrentActions);
+
+        deleteMenu(userCurrentMenus,deletedActions);
+        addMenu(userCurrentMenus,userCurrentActions);
+        user.setPermittedMenus(userCurrentMenus);
+
+        userRepository.save(user);
+    }
+
+    private void addMenu(Set<Menu> userCurrentMenus, Set<Action> addedActions) {
+        addedActions.stream().forEach(action -> userCurrentMenus.add(action.getMenu()));
+    }
+
+    private void deleteMenu(Set<Menu> userCurrentMenus, Set<Action> deletedActions) {
+        deletedActions.stream().forEach(action -> userCurrentMenus.remove(action.getMenu()));
+    }
+
+    public void deleteAction(Set<Role> deletedRoles,Set<Action>userCurrentActions, Set<Action> deletedActions){
+        deletedRoles.stream().forEach(role -> {
+            userCurrentActions.removeAll(role.getPermittedActions());
+            deletedActions.addAll(role.getPermittedActions());
+        });
+    }
+
+    public void addAction(Set<Role> newAddedRoles,Set<Action>userCurrentActions){
+        newAddedRoles.stream().forEach(role -> {
+            userCurrentActions.addAll(role.getPermittedActions());
+        });
+    }
+
+    @Override
     public Set<MenuResponse> getUserAllPermittedMenu() {
 
         User user = getUserById(LoggedUserHelper.getCurrentUserId().get());
@@ -131,5 +184,7 @@ public class UserServiceImpl implements UserService {
                 return menuResponse;
             }).collect(Collectors.toSet());
     }
+
+
 
 }
