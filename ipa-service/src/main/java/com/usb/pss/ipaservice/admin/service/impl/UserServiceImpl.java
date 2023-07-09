@@ -16,7 +16,6 @@ import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
-import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.LoggedUserHelper;
@@ -56,37 +55,37 @@ public class UserServiceImpl implements UserService {
         }
 
         var user = User.builder()
-            .firstName(request.firstName())
-            .lastName(request.lastName())
-            .email(request.email())
-            .username(request.username())
-            .password(passwordEncoder.encode(request.password()))
-            .active(true)
-            .build();
+                .firstName(request.firstName())
+                .lastName(request.lastName())
+                .email(request.email())
+                .username(request.username())
+                .password(passwordEncoder.encode(request.password()))
+                .active(true)
+                .build();
 
         userRepository.save(user);
     }
 
     private User getUserById(Long id) {
         return userRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
     private User getUserWithMenuAndActionById(Long userId) {
         return userRepository.findUserWithMenusAndActionsById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
     @Override
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
-            .stream()
-            .filter(Objects::nonNull)
-            .map(user -> {
-                UserResponse userResponse = new UserResponse();
-                prepareResponse(user, userResponse);
-                return userResponse;
-            }).toList();
+                .stream()
+                .filter(Objects::nonNull)
+                .map(user -> {
+                    UserResponse userResponse = new UserResponse();
+                    prepareResponse(user, userResponse);
+                    return userResponse;
+                }).toList();
     }
 
     private void prepareResponse(User user, UserResponse userResponse) {
@@ -99,8 +98,8 @@ public class UserServiceImpl implements UserService {
         User user = getUserWithMenuAndActionById(userActionRequest.userId());
         List<Action> actions = actionService.getAllActionsByIdsWithMenu(userActionRequest.actionIds());
         List<Menu> menus = actions.stream()
-            .map(Action::getMenu)
-            .collect(toList());
+                .map(Action::getMenu)
+                .collect(toList());
         user.getPermittedMenus().addAll(menus);
         user.getPermittedMenus().retainAll(menus);
         user.getPermittedActions().addAll(actions);
@@ -111,11 +110,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Set<MenuResponse> getAllPermittedMenuByUser(User user) {
         return user.getPermittedMenus().stream()
-            .map(menu -> {
-                MenuResponse menuResponse = new MenuResponse();
-                menuService.prepareResponse(menu, menuResponse);
-                return menuResponse;
-            }).collect(Collectors.toSet());
+                .map(menu -> {
+                    MenuResponse menuResponse = new MenuResponse();
+                    menuService.prepareResponse(menu, menuResponse);
+                    return menuResponse;
+                }).collect(Collectors.toSet());
     }
 
     @Override
@@ -125,29 +124,33 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserRole(UserRoleActionRequest userRoleActionRequest) {
-        User user = userRepository.findById(userRoleActionRequest.userId())
+        User user = userRepository.findUserWithMenusAndActionsById(userRoleActionRequest.userId())
                 .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
-        List<Role> updatedRoles = roleRepository.findAllByIdIn(userRoleActionRequest.userRole());
+        List<Role> updatedRoles = roleRepository.findAllRoleAndMenuAndActionByIdIn(userRoleActionRequest.roleIds());
 
-        Set<Role> userCurrentRoles = user.getRoles();
-        Set<Action> userCurrentActions = user.getPermittedActions();
-        Set<Menu> userCurrentMenus = user.getPermittedMenus();
+        Set<Role> deletedRoles = user.getRoles().stream().filter(role -> !updatedRoles.contains(role)).collect(Collectors.toSet());
+        Set<Role> newAddedRoles = updatedRoles.stream().filter(role -> !user.getRoles().contains(role)).collect(Collectors.toSet());
+        user.getRoles().addAll(updatedRoles);
+        user.getRoles().retainAll(updatedRoles);
 
-        Set<Role> deletedRoles = userCurrentRoles.stream().filter(role -> !updatedRoles.contains(role)).collect(Collectors.toSet());
-        Set<Role> newAddedRoles = updatedRoles.stream().filter(role -> !userCurrentRoles.contains(role)).collect(Collectors.toSet());
-        userCurrentRoles.addAll(updatedRoles);
-        userCurrentRoles.retainAll(updatedRoles);
-        user.setRoles(userCurrentRoles);
+        Set<Action> deletedActions = deletedRoles.stream().flatMap(
+                role -> role.getPermittedActions().stream()
+        ).collect(Collectors.toSet());
 
-        Set<Action> deletedActions = new HashSet<>();
+        Set<Action> newAddedActions = newAddedRoles.stream().flatMap(
+                role -> role.getPermittedActions().stream()
+        ).collect(Collectors.toSet());
 
-        deleteAction(deletedRoles,userCurrentActions,deletedActions);
-        addAction(newAddedRoles,userCurrentActions);
-        user.setPermittedActions(userCurrentActions);
+        user.getPermittedActions().removeAll(deletedActions);
+        user.getPermittedActions().addAll(newAddedActions);
 
-        deleteMenu(userCurrentMenus,deletedActions);
-        addMenu(userCurrentMenus,userCurrentActions);
-        user.setPermittedMenus(userCurrentMenus);
+        Set<Menu> updatedMenus = user.getPermittedActions()
+                .stream()
+                .map(Action::getMenu)
+                .collect(Collectors.toSet());
+
+        user.getPermittedMenus().addAll(updatedMenus);
+        user.getPermittedMenus().retainAll(updatedMenus);
 
         userRepository.save(user);
     }
@@ -160,14 +163,14 @@ public class UserServiceImpl implements UserService {
         deletedActions.stream().forEach(action -> userCurrentMenus.remove(action.getMenu()));
     }
 
-    public void deleteAction(Set<Role> deletedRoles,Set<Action>userCurrentActions, Set<Action> deletedActions){
+    public void deleteAction(Set<Role> deletedRoles, Set<Action> userCurrentActions, Set<Action> deletedActions) {
         deletedRoles.stream().forEach(role -> {
             userCurrentActions.removeAll(role.getPermittedActions());
             deletedActions.addAll(role.getPermittedActions());
         });
     }
 
-    public void addAction(Set<Role> newAddedRoles,Set<Action>userCurrentActions){
+    public void addAction(Set<Role> newAddedRoles, Set<Action> userCurrentActions) {
         newAddedRoles.stream().forEach(role -> {
             userCurrentActions.addAll(role.getPermittedActions());
         });
@@ -178,13 +181,12 @@ public class UserServiceImpl implements UserService {
 
         User user = getUserById(LoggedUserHelper.getCurrentUserId().get());
         return user.getPermittedMenus().stream()
-            .map(menu -> {
-                MenuResponse menuResponse = new MenuResponse();
-                menuService.prepareResponse(menu, menuResponse);
-                return menuResponse;
-            }).collect(Collectors.toSet());
+                .map(menu -> {
+                    MenuResponse menuResponse = new MenuResponse();
+                    menuService.prepareResponse(menu, menuResponse);
+                    return menuResponse;
+                }).collect(Collectors.toSet());
     }
-
 
 
 }

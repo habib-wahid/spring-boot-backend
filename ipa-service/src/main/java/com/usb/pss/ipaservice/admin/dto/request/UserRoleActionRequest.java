@@ -8,6 +8,6 @@ public record UserRoleActionRequest(
         @NotNull
         Long userId,
         @NotNull
-        Set<Long> userRole
+        Set<Long> roleIds
 ) {
 }
