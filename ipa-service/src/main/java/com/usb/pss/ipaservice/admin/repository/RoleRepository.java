@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
     Optional<Role> findByNameIgnoreCase(String roleName);
@@ -14,4 +15,9 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 
     @EntityGraph(attributePaths = {"permittedMenus", "permittedActions"})
     Optional<Role> findRoleAndFetchMenuAndActionsById(Long roleId);
+
+
+    @EntityGraph(attributePaths = {"permittedActions", "permittedActions.menu"})
+    List<Role> findAllRoleAndMenuAndActionByIdIn(Set<Long> roles);
+
 }

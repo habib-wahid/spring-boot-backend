@@ -3,6 +3,7 @@ package com.usb.pss.ipaservice.admin.controller;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserRoleActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
@@ -63,7 +64,7 @@ public class UserController {
     @PutMapping("/actions")
     @Operation(summary = "update actions for a user")
     public void updateUserActions(
-        @RequestBody @Validated UserActionRequest userActionRequest) {
+            @RequestBody @Validated UserActionRequest userActionRequest) {
         userService.updateUserActions(userActionRequest);
     }
 
@@ -71,5 +72,12 @@ public class UserController {
     @Operation(summary = "retrieve the list of actions module wise for a user ")
     public List<ModuleResponse> getModuleWiseUserActions(@PathVariable Long userId) {
         return userService.getModuleWiseUserActions(userId);
+    }
+
+    @PutMapping("/roles")
+    public void updateUserRole(
+            @RequestBody UserRoleActionRequest userRoleActionRequest
+    ) {
+        userService.updateUserRole(userRoleActionRequest);
     }
 }
