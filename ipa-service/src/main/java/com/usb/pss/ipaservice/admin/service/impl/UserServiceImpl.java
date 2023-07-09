@@ -17,9 +17,11 @@ import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.LoggedUserHelper;
-
-import java.util.*;
-
+import java.util.Optional;
+import java.util.List;
+import java.util.Set;
+import java.util.Objects;
+import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,7 @@ import java.util.stream.Collectors;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
-import static java.util.stream.Collectors.toList;
+
 
 
 @Service
@@ -36,7 +38,7 @@ import static java.util.stream.Collectors.toList;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MenuServiceImpl menuService;
+    private final MenuService menuService;
     private final ActionService actionService;
     private final ModuleService moduleService;
 
@@ -95,7 +97,7 @@ public class UserServiceImpl implements UserService {
         List<Action> actions = actionService.getAllActionsByIdsWithMenu(userActionRequest.actionIds());
         List<Menu> menus = actions.stream()
             .map(Action::getMenu)
-            .collect(toList());
+            .toList();
         user.getPermittedMenus().addAll(menus);
         user.getPermittedMenus().retainAll(menus);
         user.getPermittedActions().addAll(actions);
