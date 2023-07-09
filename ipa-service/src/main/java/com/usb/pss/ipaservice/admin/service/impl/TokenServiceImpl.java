@@ -25,14 +25,17 @@ public class TokenServiceImpl implements TokenService {
 
     public RefreshToken createNewRefreshToken(User user) {
         return refreshTokenRepository.save(
-                new RefreshToken(UUID.randomUUID(), user, LocalDateTime.now().plusSeconds(refreshTokenExpiration))
+            RefreshToken.builder()
+                .user(user)
+                .expiration(LocalDateTime.now().plusSeconds(refreshTokenExpiration))
+                .build()
         );
 
     }
 
     public RefreshToken getRefreshTokenById(UUID token) {
         return refreshTokenRepository.findByTokenId(token)
-                .orElseThrow(() -> new ResourceNotFoundException(INVALID_ACCESS_TOKEN));
+            .orElseThrow(() -> new ResourceNotFoundException(INVALID_ACCESS_TOKEN));
 
     }
 
