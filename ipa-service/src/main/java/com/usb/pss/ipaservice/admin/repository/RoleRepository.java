@@ -17,7 +17,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     Optional<Role> findRoleAndFetchMenuAndActionsById(Long roleId);
 
 
-    @EntityGraph(attributePaths = {"permittedActions", "permittedActions.menu", "permittedMenus"})
+    @EntityGraph(attributePaths = {"permittedActions", "permittedActions.menu"})
     List<Role> findAllRoleAndMenuAndActionByIdIn(Set<Long> roles);
 
 }

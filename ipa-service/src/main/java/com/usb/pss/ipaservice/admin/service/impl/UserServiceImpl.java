@@ -77,6 +77,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
     }
 
+    private List<Role> getAllRoleAndMenuAndActions(Set<Long> roleIds) {
+        return roleRepository.findAllRoleAndMenuAndActionByIdIn(roleIds);
+    }
+
     @Override
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
@@ -125,9 +129,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserRole(UserRoleActionRequest userRoleActionRequest) {
-        User user = userRepository.findUserWithMenusAndActionsById(userRoleActionRequest.userId())
-                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
-        List<Role> updatedRoles = roleRepository.findAllRoleAndMenuAndActionByIdIn(userRoleActionRequest.roleIds());
+        User user = this.getUserWithMenuAndActionById(userRoleActionRequest.userId());
+        List<Role> updatedRoles = this.getAllRoleAndMenuAndActions(userRoleActionRequest.roleIds());
 
         Set<Role> deletedRoles = user.getRoles().stream().filter(role -> !updatedRoles.contains(role)).collect(Collectors.toSet());
         Set<Role> newAddedRoles = updatedRoles.stream().filter(role -> !user.getRoles().contains(role)).collect(Collectors.toSet());
@@ -167,6 +170,5 @@ public class UserServiceImpl implements UserService {
                     return menuResponse;
                 }).collect(Collectors.toSet());
     }
-
 
 }
