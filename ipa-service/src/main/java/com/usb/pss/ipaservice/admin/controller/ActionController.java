@@ -4,6 +4,7 @@ import com.usb.pss.ipaservice.admin.dto.request.ActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AdminActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.service.impl.ActionServiceImpl;
+import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import static com.usb.pss.ipaservice.common.APIEndpointConstants.ACTION_ENDPOINT
 public class ActionController {
 
     private final ActionServiceImpl actionService;
+    private final ModuleService moduleService;
 
     @PostMapping()
     public ResponseEntity<String> save(@RequestBody ActionRequest actionRequest) {
@@ -40,7 +42,7 @@ public class ActionController {
 
     @GetMapping("/moduleWiseActions")
     public ResponseEntity<List<ModuleResponse>> getModuleWiseUserActions() {
-        return new ResponseEntity<>(actionService.getModuleActions(), HttpStatus.OK);
+        return new ResponseEntity<>(moduleService.getModuleActions(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{actionId}")

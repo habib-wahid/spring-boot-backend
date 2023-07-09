@@ -8,8 +8,10 @@ import com.usb.pss.ipaservice.admin.repository.MenuRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
+
 import java.util.HashSet;
 import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,19 +26,19 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Menu getMenuById(Long menuId) {
         return menuRepository.findById(menuId)
-                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND));
     }
 
     @Override
     public Menu getMenuByName(String menuName) {
         return menuRepository.findByNameIgnoreCase(menuName)
-                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND));
     }
 
     @Override
     public Menu getMenuByUrl(String menuUrl) {
         return menuRepository.findByUrlIgnoreCase(menuUrl)
-                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.MENU_NOT_FOUND));
     }
 
     @Override
@@ -50,11 +52,11 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuResponse> getAllMenuResponse() {
         return menuRepository.findAll().stream()
-                .map(menu -> {
-                    MenuResponse menuResponse = new MenuResponse();
-                    prepareResponse(menu, menuResponse);
-                    return menuResponse;
-                }).toList();
+            .map(menu -> {
+                MenuResponse menuResponse = new MenuResponse();
+                prepareResponse(menu, menuResponse);
+                return menuResponse;
+            }).toList();
     }
 
     @Override
@@ -87,6 +89,7 @@ public class MenuServiceImpl implements MenuService {
             }).toList();
     }
 
+    @Override
     public void prepareResponse(Menu menu, MenuResponse menuResponse) {
         menuResponse.setId(menu.getId());
         menuResponse.setName(menu.getName());

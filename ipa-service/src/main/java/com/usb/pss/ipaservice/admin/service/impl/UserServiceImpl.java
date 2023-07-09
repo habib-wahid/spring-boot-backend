@@ -1,12 +1,17 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
-import com.usb.pss.ipaservice.admin.dto.request.UserMenuRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
+import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Menu;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
+import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
+import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
+import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
@@ -23,6 +28,8 @@ import java.util.stream.Collectors;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
+import static java.util.stream.Collectors.toList;
+
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +37,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final MenuServiceImpl menuService;
+    private final ActionService actionService;
+    private final ModuleService moduleService;
 
     public void registerUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -57,6 +66,11 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
     }
 
+    private User getUserWithMenuAndActionById(Long userId) {
+        return userRepository.findUserWithMenusAndActionsById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
+    }
+
     @Override
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
@@ -76,18 +90,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUserMenus(Long userId, UserMenuRequest userMenuRequest) {
-        User user = getUserById(userId);
-        Set<Menu> menuList = menuService.getAllMenuByIds(userMenuRequest.menuIds());
-        menuService.addUserMenu(user, menuList);
-        userRepository.save(user);
-    }
-
-    @Override
-    public void removeUserMenus(Long userId, UserMenuRequest userMenuRequest) {
-        User user = getUserById(userId);
-        Set<Menu> menuList = menuService.getAllMenuByIds(userMenuRequest.menuIds());
-        menuService.removeUserMenu(user, menuList);
+    public void updateUserActions(UserActionRequest userActionRequest) {
+        User user = getUserWithMenuAndActionById(userActionRequest.userId());
+        List<Action> actions = actionService.getAllActionsByIdsWithMenu(userActionRequest.actionIds());
+        List<Menu> menus = actions.stream()
+            .map(Action::getMenu)
+            .collect(toList());
+        user.getPermittedMenus().addAll(menus);
+        user.getPermittedMenus().retainAll(menus);
+        user.getPermittedActions().addAll(actions);
+        user.getPermittedActions().retainAll(actions);
         userRepository.save(user);
     }
 
@@ -99,6 +111,11 @@ public class UserServiceImpl implements UserService {
                 menuService.prepareResponse(menu, menuResponse);
                 return menuResponse;
             }).collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<ModuleResponse> getModuleWiseUserActions(Long userId) {
+        return moduleService.getModuleWiseUserActions(userId);
     }
 
     @Override
