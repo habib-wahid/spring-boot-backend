@@ -28,7 +28,7 @@ public class ActionController {
     private final ActionServiceImpl actionService;
 
     @PostMapping()
-    public ResponseEntity<String> saveAction(@RequestBody ActionRequest actionRequest) {
+    public ResponseEntity<String> save(@RequestBody ActionRequest actionRequest) {
         actionService.saveUserAction(actionRequest);
         return new ResponseEntity<>("User action saved", HttpStatus.OK);
     }
@@ -38,13 +38,13 @@ public class ActionController {
         return new ResponseEntity<>(actionService.getUserActionById(actionId), HttpStatus.OK);
     }
 
-    @GetMapping("/module-wise-actions")
+    @GetMapping("/moduleWiseActions")
     public ResponseEntity<List<ModuleResponse>> getModuleWiseUserActions() {
         return new ResponseEntity<>(actionService.getModuleActions(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{actionId}")
-    public ResponseEntity<String> deleteAction(@PathVariable Long actionId) {
+    public ResponseEntity<String> delete(@PathVariable Long actionId) {
         return new ResponseEntity<>(actionService.deleteUserActionById(actionId), HttpStatus.OK);
     }
 

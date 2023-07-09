@@ -92,8 +92,7 @@ public class MenuServiceImpl implements MenuService {
         menuResponse.setName(menu.getName());
         menuResponse.setUrl(menu.getUrl());
         menuResponse.setIcon(menu.getIcon());
-//        menuResponse.setServiceId(menu.getModuleX().getId());
-//        menuResponse.setServiceName(menu.getModuleX().getName());
+
     }
 
     private void prepareResponseWithIdName(Menu menu, MenuResponseWithIdName menuResponseWithIdName) {

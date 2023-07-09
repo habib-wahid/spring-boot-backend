@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
-    private final String SECURITY_SCHEME_NAME = "JWT Token";
+    private static final String SECURITY_SCHEME_NAME = "JWT Token";
 
     @Bean
     public OpenAPI openAPI() {
