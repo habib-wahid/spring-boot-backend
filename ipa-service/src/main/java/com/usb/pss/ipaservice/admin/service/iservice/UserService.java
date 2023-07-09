@@ -25,5 +25,6 @@ public interface UserService {
     Set<MenuResponse> getAllPermittedMenuByUser(User user);
 
     List<ModuleResponse> getModuleWiseUserActions(Long userId);
+
     void updateUserRole(UserRoleActionRequest userRoleActionRequest);
 }
