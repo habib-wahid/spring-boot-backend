@@ -19,4 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = {"permittedMenus", "permittedActions"})
     Optional<User> findUserWithMenusAndActionsById(Long userId);
 
+    @EntityGraph(attributePaths = {"roles", "permittedMenus", "permittedActions"})
+    Optional<User> findUserWithRolesMenusAndActionsById(Long userId);
+
 }

@@ -2,12 +2,15 @@ package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserRoleActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Menu;
+import com.usb.pss.ipaservice.admin.model.entity.Role;
 import com.usb.pss.ipaservice.admin.model.entity.User;
+import com.usb.pss.ipaservice.admin.repository.RoleRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
@@ -41,7 +44,7 @@ public class UserServiceImpl implements UserService {
     private final MenuService menuService;
     private final ActionService actionService;
     private final ModuleService moduleService;
-
+    private final RoleRepository roleRepository;
 
     public void registerUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -52,38 +55,34 @@ public class UserServiceImpl implements UserService {
             throw new RuleViolationException(DUPLICATE_USERNAME);
         }
 
-        var user = User.builder()
-            .firstName(request.firstName())
-            .lastName(request.lastName())
-            .email(request.email())
-            .username(request.username())
-            .password(passwordEncoder.encode(request.password()))
-            .active(true)
-            .build();
+        var user = User.builder().firstName(request.firstName()).lastName(request.lastName()).email(request.email()).username(request.username()).password(passwordEncoder.encode(request.password())).active(true).build();
 
         userRepository.save(user);
     }
 
     private User getUserById(Long id) {
-        return userRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
     }
 
     private User getUserWithMenuAndActionById(Long userId) {
-        return userRepository.findUserWithMenusAndActionsById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
+        return userRepository.findUserWithMenusAndActionsById(userId).orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
+    }
+
+    private User getUserWithRoleAndMenuAndActionById(Long userId) {
+        return userRepository.findUserWithRolesMenusAndActionsById(userId).orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
+    }
+
+    private List<Role> getAllRoleAndMenuAndActions(Set<Long> roleIds) {
+        return roleRepository.findAllRoleAndMenuAndActionByIdIn(roleIds);
     }
 
     @Override
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAll()
-            .stream()
-            .filter(Objects::nonNull)
-            .map(user -> {
-                UserResponse userResponse = new UserResponse();
-                prepareResponse(user, userResponse);
-                return userResponse;
-            }).toList();
+        return userRepository.findAll().stream().filter(Objects::nonNull).map(user -> {
+            UserResponse userResponse = new UserResponse();
+            prepareResponse(user, userResponse);
+            return userResponse;
+        }).toList();
     }
 
     private void prepareResponse(User user, UserResponse userResponse) {
@@ -95,9 +94,7 @@ public class UserServiceImpl implements UserService {
     public void updateUserActions(UserActionRequest userActionRequest) {
         User user = getUserWithMenuAndActionById(userActionRequest.userId());
         List<Action> actions = actionService.getAllActionsByIdsWithMenu(userActionRequest.actionIds());
-        List<Menu> menus = actions.stream()
-            .map(Action::getMenu)
-            .collect(toList());
+        List<Menu> menus = actions.stream().map(Action::getMenu).collect(toList());
         user.getPermittedMenus().addAll(menus);
         user.getPermittedMenus().retainAll(menus);
         user.getPermittedActions().addAll(actions);
@@ -107,12 +104,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<MenuResponse> getAllPermittedMenuByUser(User user) {
-        return user.getPermittedMenus().stream()
-            .map(menu -> {
-                MenuResponse menuResponse = new MenuResponse();
-                menuService.prepareResponse(menu, menuResponse);
-                return menuResponse;
-            }).collect(Collectors.toSet());
+        return user.getPermittedMenus().stream().map(menu -> {
+            MenuResponse menuResponse = new MenuResponse();
+            menuService.prepareResponse(menu, menuResponse);
+            return menuResponse;
+        }).collect(Collectors.toSet());
     }
 
     @Override
@@ -121,15 +117,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateUserRole(UserRoleActionRequest userRoleActionRequest) {
+        User user = this.getUserWithRoleAndMenuAndActionById(userRoleActionRequest.userId());
+        List<Role> updatedRoles = this.getAllRoleAndMenuAndActions(userRoleActionRequest.roleIds());
+
+        Set<Role> deletedRoles = user.getRoles().stream().filter(role -> !updatedRoles.contains(role)).collect(Collectors.toSet());
+        Set<Role> newAddedRoles = updatedRoles.stream().filter(role -> !user.getRoles().contains(role)).collect(Collectors.toSet());
+        user.getRoles().addAll(updatedRoles);
+        user.getRoles().retainAll(updatedRoles);
+
+        Set<Action> deletedActions = deletedRoles.stream().flatMap(role -> role.getPermittedActions().stream()).collect(Collectors.toSet());
+
+        Set<Action> newAddedActions = newAddedRoles.stream().flatMap(role -> role.getPermittedActions().stream()).collect(Collectors.toSet());
+
+        user.getPermittedActions().removeAll(deletedActions);
+        user.getPermittedActions().addAll(newAddedActions);
+
+        Set<Menu> updatedMenus = user.getPermittedActions().stream().map(Action::getMenu).collect(Collectors.toSet());
+
+        user.getPermittedMenus().addAll(updatedMenus);
+        user.getPermittedMenus().retainAll(updatedMenus);
+
+        userRepository.save(user);
+    }
+
+    @Override
     public Set<MenuResponse> getUserAllPermittedMenu() {
 
         User user = getUserById(LoggedUserHelper.getCurrentUserId().get());
-        return user.getPermittedMenus().stream()
-            .map(menu -> {
-                MenuResponse menuResponse = new MenuResponse();
-                menuService.prepareResponse(menu, menuResponse);
-                return menuResponse;
-            }).collect(Collectors.toSet());
+        return user.getPermittedMenus().stream().map(menu -> {
+            MenuResponse menuResponse = new MenuResponse();
+            menuService.prepareResponse(menu, menuResponse);
+            return menuResponse;
+        }).collect(Collectors.toSet());
     }
 
 }

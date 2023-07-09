@@ -2,6 +2,7 @@ package com.usb.pss.ipaservice.admin.service.iservice;
 
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserRoleActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
@@ -24,4 +25,6 @@ public interface UserService {
     Set<MenuResponse> getAllPermittedMenuByUser(User user);
 
     List<ModuleResponse> getModuleWiseUserActions(Long userId);
+
+    void updateUserRole(UserRoleActionRequest userRoleActionRequest);
 }
