@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -39,11 +40,13 @@ public class ActionServiceImpl implements ActionService {
         if (DaprUtils.getUserActionFromDapr(actionId) != null) {
             return DaprUtils.getUserActionFromDapr(actionId);
         } else {
-            Action action = actionRepository.findById(actionId).get();
             AdminActionResponse adminActionResponse = new AdminActionResponse();
-            adminActionResponse.setId(action.getId());
-            adminActionResponse.setActionName(action.getName());
-            DaprUtils.saveUserActionInDapr(actionId, adminActionResponse);
+            Optional<Action> actionOptional = actionRepository.findById(actionId);
+            actionOptional.ifPresent(action -> {
+                adminActionResponse.setId(action.getId());
+                adminActionResponse.setActionName(action.getName());
+                DaprUtils.saveUserActionInDapr(actionId, adminActionResponse);
+            });
             return adminActionResponse;
         }
     }

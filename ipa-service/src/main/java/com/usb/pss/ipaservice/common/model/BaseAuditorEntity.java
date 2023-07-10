@@ -18,11 +18,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class BaseAuditorEntity extends BaseEntity {
 
-    /*  To-Do list:
-     * Need to implement two dates
-     * Server date
-     * system date
-     */
+    //ToDo list: Need to implement two dates Server date and system date
 
     @CreatedDate
     @Column(name = "created_date", updatable = false)
@@ -31,6 +27,9 @@ public abstract class BaseAuditorEntity extends BaseEntity {
     @CreatedBy
     @Column(name = "created_by")
     private Long createdBy;
+
+    private Long updatedBy;
+    private LocalDateTime updatedDate;
 
     @Version
     private int version;
@@ -43,7 +42,7 @@ public abstract class BaseAuditorEntity extends BaseEntity {
 
     @PreUpdate
     private void onModification() {
-        createdDate = LocalDateTime.now();
-        LoggedUserHelper.getCurrentUserId().ifPresent(currentLoggedUser -> createdBy = currentLoggedUser);
+        updatedDate = LocalDateTime.now();
+        LoggedUserHelper.getCurrentUserId().ifPresent(currentLoggedUser -> updatedBy = currentLoggedUser);
     }
 }

@@ -31,7 +31,7 @@ public class AuthenticationController {
         return authenticationService.authenticate(request);
     }
 
-    @PostMapping("/refresh-token")
+    @PostMapping("/refreshToken")
     public RefreshAccessTokenResponse refreshAccessToken(@RequestHeader(HttpHeaders.AUTHORIZATION) UUID token) {
         return authenticationService.refreshAccessToken(token);
     }

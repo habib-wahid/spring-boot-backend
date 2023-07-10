@@ -24,7 +24,7 @@ public class TokenBlackListingService implements BlackListingService {
 
     @Override
     public void blackListTokenWithExpiryTime(String token, long timeToLive) {
-//        To Do: we need to make sure tenant aware caching
+//        ToDo: we need to make sure tenant aware caching
         redisTemplate.opsForHash().put(token, hashKey, CacheConfig.BLACKLIST_CACHE_NAME);
         redisTemplate.expire(token, timeToLive, TimeUnit.SECONDS);
     }

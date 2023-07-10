@@ -96,7 +96,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void deactivateRole(Long roleId) {
-        // will be implemented later if needed
+        //TODO will be implemented later if needed
     }
 
     @Override

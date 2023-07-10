@@ -20,20 +20,18 @@ import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.LoggedUserHelper;
-
+import java.util.Optional;
 import java.util.Set;
-
+import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
-import static java.util.stream.Collectors.toList;
+
 
 
 @Service
@@ -88,13 +86,14 @@ public class UserServiceImpl implements UserService {
     private void prepareResponse(User user, UserResponse userResponse) {
         userResponse.setId(user.getId());
         userResponse.setName(user.getUsername());
+
     }
 
     @Override
     public void updateUserActions(UserActionRequest userActionRequest) {
         User user = getUserWithMenuAndActionById(userActionRequest.userId());
         List<Action> actions = actionService.getAllActionsByIdsWithMenu(userActionRequest.actionIds());
-        List<Menu> menus = actions.stream().map(Action::getMenu).collect(toList());
+        List<Menu> menus = actions.stream().map(Action::getMenu).toList();
         user.getPermittedMenus().addAll(menus);
         user.getPermittedMenus().retainAll(menus);
         user.getPermittedActions().addAll(actions);
@@ -143,13 +142,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<MenuResponse> getUserAllPermittedMenu() {
-
-        User user = getUserById(LoggedUserHelper.getCurrentUserId().get());
-        return user.getPermittedMenus().stream().map(menu -> {
-            MenuResponse menuResponse = new MenuResponse();
-            menuService.prepareResponse(menu, menuResponse);
-            return menuResponse;
-        }).collect(Collectors.toSet());
+        Optional<Long> optionalUserId = LoggedUserHelper.getCurrentUserId();
+        optionalUserId.ifPresent(userId ->
+            getUserById(userId).getPermittedMenus().stream()
+                    .map(menu -> {
+                        MenuResponse menuResponse = new MenuResponse();
+                        menuService.prepareResponse(menu, menuResponse);
+                        return menuResponse;
+                    }).collect(Collectors.toSet())
+        );
+        return new HashSet<>();
     }
 
 }

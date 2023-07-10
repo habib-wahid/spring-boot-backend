@@ -21,7 +21,7 @@ import java.util.Map;
 @EnableCaching
 public class CacheConfig {
 
-    public final static String BLACKLIST_CACHE_NAME = "jwt_token_black_list";
+    public static final String BLACKLIST_CACHE_NAME = "jwt_token_black_list";
     @Value("${application.security.jwt.expiration:0}")
     private int tokenDuration;
 
@@ -38,7 +38,7 @@ public class CacheConfig {
 
     @Bean
     RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
-        return (builder) -> {
+        return builder -> {
             Map<String, RedisCacheConfiguration> configurationMap = new HashMap<>();
             configurationMap.put(BLACKLIST_CACHE_NAME, RedisCacheConfiguration.defaultCacheConfig().entryTtl(
                     Duration.ofSeconds(tokenDuration)));
