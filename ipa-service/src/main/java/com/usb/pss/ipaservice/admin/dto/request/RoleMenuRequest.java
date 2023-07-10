@@ -8,5 +8,6 @@ import java.util.List;
  */
 
 public record RoleMenuRequest(
-   List<Long> roleMenuIds
-) {}
+    List<Long> roleMenuIds
+) {
+}

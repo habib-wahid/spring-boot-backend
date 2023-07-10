@@ -6,20 +6,20 @@ import jakarta.validation.constraints.NotBlank;
 
 
 public record RegistrationRequest(
-        @NotBlank
-        String firstName,
-        String lastName,
-        @NotBlank
-        @Email
-        String email,
-        @NotBlank
-        String username,
-        @NotBlank
-        @ValidPassword
-        String password,
-        @NotBlank
-        String confirmPassword,
-        Long groupId
+    @NotBlank
+    String firstName,
+    String lastName,
+    @NotBlank
+    @Email
+    String email,
+    @NotBlank
+    String username,
+    @NotBlank
+    @ValidPassword
+    String password,
+    @NotBlank
+    String confirmPassword,
+    Long groupId
 ) {
 
 }

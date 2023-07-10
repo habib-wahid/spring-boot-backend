@@ -1,4 +1,6 @@
+
 package com.usb.pss.ipaservice.config;
+
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -41,7 +43,7 @@ public class CacheConfig {
         return builder -> {
             Map<String, RedisCacheConfiguration> configurationMap = new HashMap<>();
             configurationMap.put(BLACKLIST_CACHE_NAME, RedisCacheConfiguration.defaultCacheConfig().entryTtl(
-                    Duration.ofSeconds(tokenDuration)));
+                Duration.ofSeconds(tokenDuration)));
             builder.withInitialCacheConfigurations(configurationMap);
         };
     }

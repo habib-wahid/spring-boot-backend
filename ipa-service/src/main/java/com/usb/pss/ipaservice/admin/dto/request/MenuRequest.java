@@ -8,10 +8,11 @@ import jakarta.validation.constraints.NotBlank;
  */
 
 public record MenuRequest(
-        @NotBlank
-        String name,
-        @NotBlank
-        String url,
-        String icon,
-        long serviceId
-) {}
+    @NotBlank
+    String name,
+    @NotBlank
+    String url,
+    String icon,
+    long serviceId
+) {
+}

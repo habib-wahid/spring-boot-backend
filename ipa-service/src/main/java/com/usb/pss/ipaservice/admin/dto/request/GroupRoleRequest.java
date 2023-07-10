@@ -8,5 +8,6 @@ import java.util.List;
  */
 
 public record GroupRoleRequest(
-   List<Long> groupRoleIds
-) {}
+    List<Long> groupRoleIds
+) {
+}

@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class IpaServiceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(IpaServiceApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(IpaServiceApplication.class, args);
 
-		System.out.println("Hello from IPA Service");
-	}
+        System.out.println("Hello from IPA Service");
+    }
 
 }

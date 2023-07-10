@@ -1,20 +1,19 @@
 package com.usb.pss.ipaservice.admin.controller;
 
+import static com.usb.pss.ipaservice.common.APIEndpointConstants.MENU_ENDPOINT;
+
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponseWithIdName;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-
-import static com.usb.pss.ipaservice.common.APIEndpointConstants.MENU_ENDPOINT;
 
 /**
  * @author Junaid Khan Pathan
@@ -24,7 +23,7 @@ import static com.usb.pss.ipaservice.common.APIEndpointConstants.MENU_ENDPOINT;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(MENU_ENDPOINT)
-@Tag(name = "Menu Controller", description = "API Endpoints for menu menu related operations.")
+@Tag(name = "Menu Controller", description = "API Endpoints for menu related operations.")
 public class MenuController {
     private final MenuService menuService;
 

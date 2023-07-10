@@ -10,12 +10,4 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 
     Optional<Menu> findByUrlIgnoreCase(String menuUrl);
 
-//    @Query("select new com.usb.pss.ipaservice.admin.dto.response.MenuResponse(" +
-//            "mn.id, " +
-//            "mn.name, " +
-//            "mn.url, " +
-//            "mn.icon, " +
-//            "mn.module.name) " +
-//            "from IpaAdminMenu mn")
-//    List<MenuResponse> findAllMenuResponse();
 }

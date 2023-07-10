@@ -18,7 +18,8 @@ public class TokenBlackListingService implements BlackListingService {
     @Value("${spring.data.redis.hashkey:pss2023Technonext}")
     private String hashKey;
 
-    private final ExpiringMap<String, String> expiringMap = ExpiringMap.builder().variableExpiration().maxSize(1000).build();
+    private final ExpiringMap<String, String> expiringMap =
+        ExpiringMap.builder().variableExpiration().maxSize(1000).build();
     @Value("${useExpiringMapToBlackListAccessToken}")
     private boolean useExpiringMapToBlackListAccessToken;
 

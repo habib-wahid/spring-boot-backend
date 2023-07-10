@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 
 public record UserRoleActionRequest(
-        @NotNull
-        Long userId,
-        @NotNull
-        Set<Long> roleIds
+    @NotNull
+    Long userId,
+    @NotNull
+    Set<Long> roleIds
 ) {
 }

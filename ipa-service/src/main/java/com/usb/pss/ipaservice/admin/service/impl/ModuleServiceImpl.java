@@ -24,7 +24,6 @@ public class ModuleServiceImpl implements ModuleService {
 
     private final ModuleRepository moduleRepository;
 
-
     @Override
     public List<ModuleResponse> getModuleActions() {
         List<Module> modules = moduleRepository.findAllByParentModuleIsNull();

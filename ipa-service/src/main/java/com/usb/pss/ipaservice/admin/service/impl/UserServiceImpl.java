@@ -20,18 +20,21 @@ import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.LoggedUserHelper;
+
 import java.util.Optional;
 import java.util.Set;
 import java.util.HashSet;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
-
 
 
 @Service
@@ -53,21 +56,25 @@ public class UserServiceImpl implements UserService {
             throw new RuleViolationException(DUPLICATE_USERNAME);
         }
 
-        var user = User.builder().firstName(request.firstName()).lastName(request.lastName()).email(request.email()).username(request.username()).password(passwordEncoder.encode(request.password())).active(true).build();
+        var user = User.builder().firstName(request.firstName()).lastName(request.lastName()).email(request.email())
+            .username(request.username()).password(passwordEncoder.encode(request.password())).active(true).build();
 
         userRepository.save(user);
     }
 
     private User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
+        return userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
     }
 
     private User getUserWithMenuAndActionById(Long userId) {
-        return userRepository.findUserWithMenusAndActionsById(userId).orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
+        return userRepository.findUserWithMenusAndActionsById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
     }
 
     private User getUserWithRoleAndMenuAndActionById(Long userId) {
-        return userRepository.findUserWithRolesMenusAndActionsById(userId).orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
+        return userRepository.findUserWithRolesMenusAndActionsById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
     }
 
     private List<Role> getAllRoleAndMenuAndActions(Set<Long> roleIds) {
@@ -120,14 +127,18 @@ public class UserServiceImpl implements UserService {
         User user = this.getUserWithRoleAndMenuAndActionById(userRoleActionRequest.userId());
         List<Role> updatedRoles = this.getAllRoleAndMenuAndActions(userRoleActionRequest.roleIds());
 
-        Set<Role> deletedRoles = user.getRoles().stream().filter(role -> !updatedRoles.contains(role)).collect(Collectors.toSet());
-        Set<Role> newAddedRoles = updatedRoles.stream().filter(role -> !user.getRoles().contains(role)).collect(Collectors.toSet());
+        Set<Role> deletedRoles =
+            user.getRoles().stream().filter(role -> !updatedRoles.contains(role)).collect(Collectors.toSet());
+        Set<Role> newAddedRoles =
+            updatedRoles.stream().filter(role -> !user.getRoles().contains(role)).collect(Collectors.toSet());
         user.getRoles().addAll(updatedRoles);
         user.getRoles().retainAll(updatedRoles);
 
-        Set<Action> deletedActions = deletedRoles.stream().flatMap(role -> role.getPermittedActions().stream()).collect(Collectors.toSet());
+        Set<Action> deletedActions =
+            deletedRoles.stream().flatMap(role -> role.getPermittedActions().stream()).collect(Collectors.toSet());
 
-        Set<Action> newAddedActions = newAddedRoles.stream().flatMap(role -> role.getPermittedActions().stream()).collect(Collectors.toSet());
+        Set<Action> newAddedActions =
+            newAddedRoles.stream().flatMap(role -> role.getPermittedActions().stream()).collect(Collectors.toSet());
 
         user.getPermittedActions().removeAll(deletedActions);
         user.getPermittedActions().addAll(newAddedActions);
@@ -145,11 +156,11 @@ public class UserServiceImpl implements UserService {
         Optional<Long> optionalUserId = LoggedUserHelper.getCurrentUserId();
         optionalUserId.ifPresent(userId ->
             getUserById(userId).getPermittedMenus().stream()
-                    .map(menu -> {
-                        MenuResponse menuResponse = new MenuResponse();
-                        menuService.prepareResponse(menu, menuResponse);
-                        return menuResponse;
-                    }).collect(Collectors.toSet())
+                .map(menu -> {
+                    MenuResponse menuResponse = new MenuResponse();
+                    menuService.prepareResponse(menu, menuResponse);
+                    return menuResponse;
+                }).collect(Collectors.toSet())
         );
         return new HashSet<>();
     }
