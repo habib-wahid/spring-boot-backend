@@ -26,7 +26,7 @@ public class ActionController {
     private final ModuleService moduleService;
 
     @GetMapping("/{actionId}")
-    @Operation(summary = "Get user action by id")
+    @Operation(summary = "Get user action with it's ID")
     public AdminActionResponse getAction(@PathVariable Long actionId) {
         return actionService.getUserActionById(actionId);
     }

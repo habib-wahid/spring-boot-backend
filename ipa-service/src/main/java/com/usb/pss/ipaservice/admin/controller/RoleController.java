@@ -81,13 +81,13 @@ public class RoleController {
     }
 
     @PutMapping("/roleWiseAction")
-    @Operation(summary = "update actions of a role")
+    @Operation(summary = "Update actions of a role")
     public void updateRoleWiseAction(@RequestBody @Validated RoleActionRequest request) {
         roleService.updateRoleAction(request);
     }
 
     @GetMapping("/{roleId}/roleWiseAction")
-    @Operation(summary = "Get actions of a role")
+    @Operation(summary = "Get actions of a role with it's ID")
     public List<ModuleResponse> getRoleWiseAction(@PathVariable Long roleId) {
         return roleService.getRoleWisePermittedActions(roleId);
     }
