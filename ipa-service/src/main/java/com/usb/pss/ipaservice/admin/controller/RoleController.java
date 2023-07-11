@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 import static com.usb.pss.ipaservice.common.APIEndpointConstants.ROLE_ENDPOINT;
@@ -55,7 +56,7 @@ public class RoleController {
     @PutMapping("/{roleId}")
     @Operation(summary = "update an existing role with valid role data and existing role's ID.")
     public void updateRole(@Validated @RequestBody RoleRequest roleRequest,
-                                              @PathVariable Long roleId) {
+                           @PathVariable Long roleId) {
         roleService.updateRole(roleRequest, roleId);
     }
 
@@ -68,23 +69,25 @@ public class RoleController {
     @PostMapping("/{roleId}/menus")
     @Operation(summary = "Add a list of menus to a role with it's ID.")
     public void addRoleMenus(@Validated @RequestBody RoleMenuRequest roleMenuRequest,
-                                                @PathVariable Long roleId) {
+                             @PathVariable Long roleId) {
         roleService.addRoleMenu(roleId, roleMenuRequest);
     }
 
     @PatchMapping("/{roleId}/menus")
     @Operation(summary = "Remove a list of menus to a role with it's ID.")
     public void removeRoleMenus(@Validated @RequestBody RoleMenuRequest roleMenuRequest,
-                                                   @PathVariable Long roleId) {
+                                @PathVariable Long roleId) {
         roleService.removeRoleMenu(roleId, roleMenuRequest);
     }
 
     @PutMapping("/roleWiseAction")
+    @Operation(summary = "update actions of a role")
     public void updateRoleWiseAction(@RequestBody @Validated RoleActionRequest request) {
         roleService.updateRoleAction(request);
     }
 
     @GetMapping("/{roleId}/roleWiseAction")
+    @Operation(summary = "get actions of a role")
     public List<ModuleResponse> getRoleWiseAction(@PathVariable Long roleId) {
         return roleService.getRoleWisePermittedActions(roleId);
     }

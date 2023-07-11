@@ -4,6 +4,7 @@ import static com.usb.pss.ipaservice.common.APIEndpointConstants.PASSWORD_POLICY
 
 import com.usb.pss.ipaservice.admin.dto.request.PasswordPolicyRequest;
 import com.usb.pss.ipaservice.admin.service.iservice.PasswordPolicyService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +22,7 @@ public class PasswordPolicyController {
     private final PasswordPolicyService passwordPolicyService;
 
     @PutMapping
+    @Operation(summary = "Update password policy")
     public void updatePasswordPolicy(@RequestBody @Validated PasswordPolicyRequest request) {
         passwordPolicyService.updatePassPolicy(request);
     }
