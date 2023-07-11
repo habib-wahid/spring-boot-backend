@@ -8,6 +8,7 @@ import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ import static com.usb.pss.ipaservice.common.APIEndpointConstants.USER_ENDPOINT;
 @RestController
 @RequestMapping(USER_ENDPOINT)
 @RequiredArgsConstructor
+@Tag(name = "User Controller", description = "API Endpoints for user related operations.")
 public class UserController {
 
     private final UserService userService;
@@ -49,21 +51,22 @@ public class UserController {
     }
 
     @PutMapping("/actions")
-    @Operation(summary = "update actions for a user")
+    @Operation(summary = "Update actions for a user")
     public void updateUserActions(
-        @RequestBody @Validated UserActionRequest userActionRequest) {
+            @RequestBody @Validated UserActionRequest userActionRequest) {
         userService.updateUserActions(userActionRequest);
     }
 
     @GetMapping("/{userId}/actions")
-    @Operation(summary = "retrieve the list of actions module wise for a user ")
+    @Operation(summary = "Retrieve the list of actions module wise for a user ")
     public List<ModuleResponse> getModuleWiseUserActions(@PathVariable Long userId) {
         return userService.getModuleWiseUserActions(userId);
     }
 
     @PutMapping("/roles")
+    @Operation(summary = "Update user role action and menu")
     public void updateUserRole(
-        @RequestBody UserRoleActionRequest userRoleActionRequest
+            @RequestBody UserRoleActionRequest userRoleActionRequest
     ) {
         userService.updateUserRole(userRoleActionRequest);
     }
