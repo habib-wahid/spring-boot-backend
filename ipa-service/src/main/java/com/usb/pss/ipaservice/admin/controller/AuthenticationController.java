@@ -32,19 +32,19 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    @Operation(summary = "user log-in")
+    @Operation(summary = "User log-in")
     public AuthenticationResponse authenticate(@RequestBody @Validated AuthenticationRequest request) {
         return authenticationService.authenticate(request);
     }
 
     @PostMapping("/refreshToken")
-    @Operation(summary = "refresh-token")
+    @Operation(summary = "Refresh-token")
     public RefreshAccessTokenResponse refreshAccessToken(@RequestHeader(HttpHeaders.AUTHORIZATION) UUID token) {
         return authenticationService.refreshAccessToken(token);
     }
 
     @PostMapping("/logout")
-    @Operation(summary = "user log-out")
+    @Operation(summary = "User log-out")
     public void logout(@RequestHeader(AUTHORIZATION) String authHeader,
                        @RequestBody @Validated LogoutRequest logoutRequest) {
         authenticationService.logout(authHeader, logoutRequest);

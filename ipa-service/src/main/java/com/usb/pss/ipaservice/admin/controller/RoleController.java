@@ -87,7 +87,7 @@ public class RoleController {
     }
 
     @GetMapping("/{roleId}/roleWiseAction")
-    @Operation(summary = "get actions of a role")
+    @Operation(summary = "Get actions of a role")
     public List<ModuleResponse> getRoleWiseAction(@PathVariable Long roleId) {
         return roleService.getRoleWisePermittedActions(roleId);
     }
