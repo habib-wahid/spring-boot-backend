@@ -27,12 +27,12 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
         Predicate<String> containsSpecialCharacter = p -> !p.matches("[A-Za-z0-9]*");
 
         return Stream.of(
-                containsSpaceCharacter.negate(),
-                pass -> password.length() >= passwordPolicy.getPasswordLength(),
-                pass -> !passwordPolicy.getContainsDigit() || containsDigitCharacter.test(password),
-                pass -> !passwordPolicy.getContainsUppercase() || containsUppercaseCharacter.test(password),
-                pass -> !passwordPolicy.getContainsLowercase() || containsLowercaseCharacter.test(password),
-                pass->  !passwordPolicy.getContainsSpecialCharacters() || containsSpecialCharacter.test(password)
+            containsSpaceCharacter.negate(),
+            pass -> password.length() >= passwordPolicy.getPasswordLength(),
+            pass -> !passwordPolicy.getContainsDigit() || containsDigitCharacter.test(password),
+            pass -> !passwordPolicy.getContainsUppercase() || containsUppercaseCharacter.test(password),
+            pass -> !passwordPolicy.getContainsLowercase() || containsLowercaseCharacter.test(password),
+            pass -> !passwordPolicy.getContainsSpecialCharacters() || containsSpecialCharacter.test(password)
         ).allMatch(validation -> validation.test(password));
 
     }

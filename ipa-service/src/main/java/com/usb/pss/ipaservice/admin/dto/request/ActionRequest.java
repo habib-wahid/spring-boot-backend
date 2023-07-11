@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
  */
 
 public record ActionRequest(
-        @NotBlank
-        String name
-) {}
+    @NotBlank
+    String name
+) {
+}

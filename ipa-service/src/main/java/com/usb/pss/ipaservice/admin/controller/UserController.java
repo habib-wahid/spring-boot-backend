@@ -2,7 +2,6 @@ package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
-import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserRoleActionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
@@ -37,18 +36,6 @@ public class UserController {
         userService.registerUser(request);
     }
 
-    @PutMapping("/group/assign")
-    @Operation(summary = "Assign a user to a group.")
-    public void assignGroup(@RequestBody @Validated UserGroupRequest request) {
-//        userService.updateGroup(request);
-    }
-
-    @PutMapping("/group/remove")
-    @Operation(summary = "Remove a user from a group.")
-    public void removeFromGroup(@RequestBody @Validated UserGroupRequest request) {
-//        userService.removeGroup(request);
-    }
-
     @GetMapping
     @Operation(summary = "Get all users in a list")
     public List<UserResponse> getAllUsers() {
@@ -64,7 +51,7 @@ public class UserController {
     @PutMapping("/actions")
     @Operation(summary = "update actions for a user")
     public void updateUserActions(
-            @RequestBody @Validated UserActionRequest userActionRequest) {
+        @RequestBody @Validated UserActionRequest userActionRequest) {
         userService.updateUserActions(userActionRequest);
     }
 
@@ -76,7 +63,7 @@ public class UserController {
 
     @PutMapping("/roles")
     public void updateUserRole(
-            @RequestBody UserRoleActionRequest userRoleActionRequest
+        @RequestBody UserRoleActionRequest userRoleActionRequest
     ) {
         userService.updateUserRole(userRoleActionRequest);
     }
