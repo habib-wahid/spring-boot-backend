@@ -3,6 +3,7 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserRoleActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_ID;
 
 
 @Service
@@ -148,6 +150,14 @@ public class UserServiceImpl implements UserService {
         user.getPermittedMenus().addAll(updatedMenus);
         user.getPermittedMenus().retainAll(updatedMenus);
 
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserStatusInfo(UserStatusRequest request) {
+        User user = userRepository.findById(request.userId())
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+        user.setActive(request.userStatus());
         userRepository.save(user);
     }
 

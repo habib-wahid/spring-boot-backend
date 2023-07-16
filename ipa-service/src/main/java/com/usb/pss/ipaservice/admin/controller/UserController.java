@@ -3,6 +3,7 @@ package com.usb.pss.ipaservice.admin.controller;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserRoleActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
@@ -69,5 +70,11 @@ public class UserController {
             @RequestBody UserRoleActionRequest userRoleActionRequest
     ) {
         userService.updateUserRole(userRoleActionRequest);
+    }
+
+    @PutMapping("/updateUserStatus")
+    @Operation(summary = "Update user activation status")
+    public void updateUserStatus(@Validated @RequestBody UserStatusRequest userStatusRequest) {
+        userService.updateUserStatusInfo(userStatusRequest);
     }
 }
