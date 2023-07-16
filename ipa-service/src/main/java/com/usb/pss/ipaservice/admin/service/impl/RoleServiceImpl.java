@@ -57,12 +57,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role getRoleByName(String roleName) {
-        return roleRepository.findByNameIgnoreCase(roleName)
-                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND));
-    }
-
-    @Override
     public RoleResponse getRoleResponseById(Long roleId) {
         Role role = getRoleById(roleId);
         RoleResponse roleResponse = new RoleResponse();
@@ -127,8 +121,8 @@ public class RoleServiceImpl implements RoleService {
             .collect(Collectors.toSet());
         role.getPermittedActions().addAll(updatedActions);
         role.getPermittedActions().retainAll(updatedActions);
-        role.getPermittedMenus().addAll(menus);
-        role.getPermittedMenus().retainAll(menus);
+//        role.getPermittedMenus().addAll(menus);
+//        role.getPermittedMenus().retainAll(menus);
         roleRepository.save(role);
         //TODO: need to consider update in user table after updating role
     }

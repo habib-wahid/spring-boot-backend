@@ -19,19 +19,14 @@ import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
-import com.usb.pss.ipaservice.utils.LoggedUserHelper;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.HashSet;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
@@ -101,21 +96,21 @@ public class UserServiceImpl implements UserService {
         User user = getUserWithMenuAndActionById(userActionRequest.userId());
         List<Action> actions = actionService.getAllActionsByIdsWithMenu(userActionRequest.actionIds());
         List<Menu> menus = actions.stream().map(Action::getMenu).toList();
-        user.getPermittedMenus().addAll(menus);
-        user.getPermittedMenus().retainAll(menus);
-        user.getPermittedActions().addAll(actions);
-        user.getPermittedActions().retainAll(actions);
+//        user.getPermittedMenus().addAll(menus);
+//        user.getPermittedMenus().retainAll(menus);
+        user.getAdditionalActions().addAll(actions);
+        user.getAdditionalActions().retainAll(actions);
         userRepository.save(user);
     }
 
-    @Override
-    public Set<MenuResponse> getAllPermittedMenuByUser(User user) {
-        return user.getPermittedMenus().stream().map(menu -> {
-            MenuResponse menuResponse = new MenuResponse();
-            menuService.prepareResponse(menu, menuResponse);
-            return menuResponse;
-        }).collect(Collectors.toSet());
-    }
+//    @Override
+//    public Set<MenuResponse> getAllPermittedMenuByUser(User user) {
+//        return user.getPermittedMenus().stream().map(menu -> {
+//            MenuResponse menuResponse = new MenuResponse();
+//            menuService.prepareResponse(menu, menuResponse);
+//            return menuResponse;
+//        }).collect(Collectors.toSet());
+//    }
 
     @Override
     public List<ModuleResponse> getModuleWiseUserActions(Long userId) {
@@ -124,44 +119,44 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserRole(UserRoleActionRequest userRoleActionRequest) {
-        User user = this.getUserWithRoleAndMenuAndActionById(userRoleActionRequest.userId());
-        List<Role> updatedRoles = this.getAllRoleAndMenuAndActions(userRoleActionRequest.roleIds());
+//        User user = this.getUserWithRoleAndMenuAndActionById(userRoleActionRequest.userId());
+//        List<Role> updatedRoles = this.getAllRoleAndMenuAndActions(userRoleActionRequest.roleIds());
+//
+//        Set<Role> deletedRoles =
+//            user.getRoles().stream().filter(role -> !updatedRoles.contains(role)).collect(Collectors.toSet());
+//        Set<Role> newAddedRoles =
+//            updatedRoles.stream().filter(role -> !user.getRoles().contains(role)).collect(Collectors.toSet());
+//        user.getRoles().addAll(updatedRoles);
+//        user.getRoles().retainAll(updatedRoles);
+//
+//        Set<Action> deletedActions =
+//            deletedRoles.stream().flatMap(role -> role.getPermittedActions().stream()).collect(Collectors.toSet());
+//
+//        Set<Action> newAddedActions =
+//            newAddedRoles.stream().flatMap(role -> role.getPermittedActions().stream()).collect(Collectors.toSet());
+//
+//        user.getAdditionalActions().removeAll(deletedActions);
+//        user.getAdditionalActions().addAll(newAddedActions);
+//
+//        Set<Menu> updatedMenus = user.getAdditionalActions().stream().map(Action::getMenu).collect(Collectors.toSet());
+//
+//        user.getPermittedMenus().addAll(updatedMenus);
+//        user.getPermittedMenus().retainAll(updatedMenus);
 
-        Set<Role> deletedRoles =
-            user.getRoles().stream().filter(role -> !updatedRoles.contains(role)).collect(Collectors.toSet());
-        Set<Role> newAddedRoles =
-            updatedRoles.stream().filter(role -> !user.getRoles().contains(role)).collect(Collectors.toSet());
-        user.getRoles().addAll(updatedRoles);
-        user.getRoles().retainAll(updatedRoles);
-
-        Set<Action> deletedActions =
-            deletedRoles.stream().flatMap(role -> role.getPermittedActions().stream()).collect(Collectors.toSet());
-
-        Set<Action> newAddedActions =
-            newAddedRoles.stream().flatMap(role -> role.getPermittedActions().stream()).collect(Collectors.toSet());
-
-        user.getPermittedActions().removeAll(deletedActions);
-        user.getPermittedActions().addAll(newAddedActions);
-
-        Set<Menu> updatedMenus = user.getPermittedActions().stream().map(Action::getMenu).collect(Collectors.toSet());
-
-        user.getPermittedMenus().addAll(updatedMenus);
-        user.getPermittedMenus().retainAll(updatedMenus);
-
-        userRepository.save(user);
+//        userRepository.save(user);
     }
 
     @Override
     public Set<MenuResponse> getUserAllPermittedMenu() {
-        Optional<Long> optionalUserId = LoggedUserHelper.getCurrentUserId();
-        optionalUserId.ifPresent(userId ->
-            getUserById(userId).getPermittedMenus().stream()
-                .map(menu -> {
-                    MenuResponse menuResponse = new MenuResponse();
-                    menuService.prepareResponse(menu, menuResponse);
-                    return menuResponse;
-                }).collect(Collectors.toSet())
-        );
+//        Optional<Long> optionalUserId = LoggedUserHelper.getCurrentUserId();
+//        optionalUserId.ifPresent(userId ->
+//            getUserById(userId).getPermittedMenus().stream()
+//                .map(menu -> {
+//                    MenuResponse menuResponse = new MenuResponse();
+//                    menuService.prepareResponse(menu, menuResponse);
+//                    return menuResponse;
+//                }).collect(Collectors.toSet())
+//        );
         return new HashSet<>();
     }
 

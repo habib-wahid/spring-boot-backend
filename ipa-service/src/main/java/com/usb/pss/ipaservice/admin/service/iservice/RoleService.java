@@ -17,7 +17,7 @@ import java.util.List;
 public interface RoleService {
     void createNewRole(RoleRequest roleRequest);
     Role getRoleById(Long roleId);
-    Role getRoleByName(String roleName);
+
     RoleResponse getRoleResponseById(Long roleId);
     List<RoleResponse> getAllRoleResponse();
     void updateRole(RoleRequest roleRequest, Long roleId);

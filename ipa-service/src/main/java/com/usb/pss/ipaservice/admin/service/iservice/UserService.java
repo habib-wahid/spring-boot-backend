@@ -22,7 +22,7 @@ public interface UserService {
 
     void updateUserActions(UserActionRequest userActionRequest);
 
-    Set<MenuResponse> getAllPermittedMenuByUser(User user);
+//    Set<MenuResponse> getAllPermittedMenuByUser(User user);
 
     List<ModuleResponse> getModuleWiseUserActions(Long userId);
 

@@ -7,12 +7,17 @@ import com.usb.pss.ipaservice.admin.dto.response.SubModuleResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Menu;
 import com.usb.pss.ipaservice.admin.model.entity.Module;
+import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.ModuleRepository;
+import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
+import com.usb.pss.ipaservice.common.ExceptionConstant;
+import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -23,6 +28,7 @@ import org.springframework.stereotype.Service;
 public class ModuleServiceImpl implements ModuleService {
 
     private final ModuleRepository moduleRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<ModuleResponse> getModuleActions() {
@@ -38,7 +44,12 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public List<ModuleResponse> getModuleWiseUserActions(Long userId) {
-        List<Module> modules = moduleRepository.findAllModuleByUserId(userId);
+        User user = userRepository.findUserAndFetchActionById(userId).orElseThrow(() -> new ResourceNotFoundException(
+            ExceptionConstant.USER_NOT_FOUND_BY_ID));
+
+        Set<Action> roleWiseAction = user.getRole().getPermittedActions();
+
+        List<Module> modules = moduleRepository.findAllModuleByUserId2(userId, roleWiseAction);
         return getModuleResponsesFromModules(modules);
     }
 
