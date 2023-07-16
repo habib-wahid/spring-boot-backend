@@ -11,6 +11,8 @@ public class APIEndpointConstants {
     public static final String GROUP_ENDPOINT = API_VERSION + "/groups";
     public static final String ROLE_ENDPOINT = API_VERSION + "/roles";
     public static final String MENU_ENDPOINT = API_VERSION + "/menus";
+
+    public static final String MODULE_ENDPOINT = API_VERSION + "/modules";
     public static final String ACTION_ENDPOINT = API_VERSION + "/actions";
     public static final String AIRCRAFT_ENDPOINT = API_VERSION + "/aircraft";
     public static final String PASSWORD_POLICY_ENDPOINT = API_VERSION + "/passwordPolicy";
