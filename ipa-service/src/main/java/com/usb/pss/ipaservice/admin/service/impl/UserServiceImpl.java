@@ -155,8 +155,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserStatusInfo(UserStatusRequest request) {
-        User user = userRepository.findById(request.userId())
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+        User user = getUserById(request.userId());
         user.setActive(request.userStatus());
         userRepository.save(user);
     }
