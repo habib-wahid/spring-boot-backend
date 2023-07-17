@@ -66,20 +66,6 @@ public class RoleController {
         roleService.deactivateRole(roleId);
     }
 
-    @PostMapping("/{roleId}/menus")
-    @Operation(summary = "Add a list of menus to a role with it's ID.")
-    public void addRoleMenus(@Validated @RequestBody RoleMenuRequest roleMenuRequest,
-                             @PathVariable Long roleId) {
-        roleService.addRoleMenu(roleId, roleMenuRequest);
-    }
-
-    @PatchMapping("/{roleId}/menus")
-    @Operation(summary = "Remove a list of menus to a role with it's ID.")
-    public void removeRoleMenus(@Validated @RequestBody RoleMenuRequest roleMenuRequest,
-                                @PathVariable Long roleId) {
-        roleService.removeRoleMenu(roleId, roleMenuRequest);
-    }
-
     @PutMapping("/roleWiseAction")
     @Operation(summary = "Update actions of a role")
     public void updateRoleWiseAction(@RequestBody @Validated RoleActionRequest request) {
