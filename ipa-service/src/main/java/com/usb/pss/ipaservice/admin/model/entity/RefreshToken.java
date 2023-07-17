@@ -30,7 +30,6 @@ public class RefreshToken {
     private UUID tokenId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
     private User user;
 
     private LocalDateTime expiration;

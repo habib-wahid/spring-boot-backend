@@ -30,10 +30,9 @@ public class Action extends BaseAuditorEntity {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permittedActions")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "additionalActions")
     private Set<User> users;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permittedActions")

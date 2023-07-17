@@ -38,7 +38,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refreshToken")
-    @Operation(summary = "Refresh-token")
+    @Operation(summary = "Refresh the the access token after token expired")
     public RefreshAccessTokenResponse refreshAccessToken(@RequestHeader(HttpHeaders.AUTHORIZATION) UUID token) {
         return authenticationService.refreshAccessToken(token);
     }
