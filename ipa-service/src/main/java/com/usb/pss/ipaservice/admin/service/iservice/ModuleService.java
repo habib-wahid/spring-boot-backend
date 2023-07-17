@@ -5,7 +5,7 @@ import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import java.util.List;
 
 public interface ModuleService {
-    List<ModuleResponse> getModuleActions();
+    List<ModuleResponse> getModuleWiseActions();
 
     List<ModuleResponse> getAllModulesByRole(Long roleId);
 

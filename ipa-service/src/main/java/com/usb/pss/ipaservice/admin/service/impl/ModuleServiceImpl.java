@@ -29,7 +29,7 @@ public class ModuleServiceImpl implements ModuleService {
     private final UserRepository userRepository;
 
     @Override
-    public List<ModuleResponse> getModuleActions() {
+    public List<ModuleResponse> getModuleWiseActions() {
         List<Module> modules = moduleRepository.findAllByParentModuleIsNull();
         return getModuleResponsesFromModules(modules);
     }

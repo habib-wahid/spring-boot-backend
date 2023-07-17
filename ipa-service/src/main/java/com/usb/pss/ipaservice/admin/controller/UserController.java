@@ -33,9 +33,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    @Operation(summary = "Register a new user.")
-    public void registerUser(@RequestBody @Validated RegistrationRequest request) {
-        userService.registerUser(request);
+    @Operation(summary = "Create a new user.")
+    public void createNewUser(@RequestBody @Validated RegistrationRequest request) {
+        userService.createNewUser(request);
     }
 
     @GetMapping
@@ -50,15 +50,15 @@ public class UserController {
         return userService.getUserAllPermittedMenu();
     }
 
-    @PutMapping("/actions")
-    @Operation(summary = "Add to additional action permission to a user")
+    @PutMapping("/additionalActions")
+    @Operation(summary = "Give additional action permission to a user")
     public void addAdditionalAction(
             @RequestBody @Validated UserActionRequest userActionRequest) {
         userService.addAdditionalAction(userActionRequest);
     }
 
     @GetMapping("/{userId}/actions")
-    @Operation(summary = "Retrieve the list of actions module wise for a user ")
+    @Operation(summary = "Retrieve module-wise action list for a user ")
     public List<ModuleResponse> getModuleWiseUserActions(@PathVariable Long userId) {
         return userService.getModuleWiseUserActions(userId);
     }

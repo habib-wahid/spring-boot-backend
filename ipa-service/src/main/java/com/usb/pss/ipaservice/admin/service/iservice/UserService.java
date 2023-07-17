@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface UserService {
 
-    void registerUser(RegistrationRequest request);
+    void createNewUser(RegistrationRequest request);
 
     List<UserResponse> getAllUsers();
 

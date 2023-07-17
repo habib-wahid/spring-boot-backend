@@ -33,8 +33,8 @@ public class ActionController {
 
     @GetMapping("/moduleWiseActions")
     @Operation(summary = "Get module wise menu and actions")
-    public List<ModuleResponse> getModuleWiseUserActions() {
-        return moduleService.getModuleActions();
+    public List<ModuleResponse> getModuleWiseActions() {
+        return moduleService.getModuleWiseActions();
     }
 
 }

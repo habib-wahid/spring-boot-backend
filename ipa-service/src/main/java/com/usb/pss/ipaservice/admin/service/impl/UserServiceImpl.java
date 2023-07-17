@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final ActionRepository actionRepository;
 
-    public void registerUser(RegistrationRequest request) {
+    public void createNewUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
             throw new RuleViolationException(PASSWORD_NOT_MATCH);
         }
