@@ -3,6 +3,7 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserRoleRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
@@ -12,8 +13,6 @@ import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
 import com.usb.pss.ipaservice.admin.repository.RoleRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
-import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
-import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
@@ -38,8 +37,6 @@ import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MenuService menuService;
-    private final ActionService actionService;
     private final ModuleService moduleService;
     private final RoleRepository roleRepository;
     private final ActionRepository actionRepository;
@@ -108,6 +105,15 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND));
 
         user.setRole(role);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserStatusInfo(UserStatusRequest request) {
+        User user = userRepository.findById(request.userId())
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+
+        user.setActive(request.userStatus());
         userRepository.save(user);
     }
 
