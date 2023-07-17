@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 
-@SuppressWarnings("checkstyle:LineLength")
 @Service
 @RequiredArgsConstructor
 public class ModuleServiceImpl implements ModuleService {
@@ -36,7 +35,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public List<ModuleResponseWithSubModuleAndMenu> getModuleWithSubModulesAndMenus() {
-        List<Module> modules = moduleRepository.findAllWithSubModulesAndMenusByParentModuleIsNull();
+        List<Module> modules = moduleRepository.findAllModulesWithSubModulesAndMenusByParentModuleIsNull();
         return getModuleResponseWithSubModulesAndMenusFromModules(modules);
     }
 
@@ -54,30 +53,64 @@ public class ModuleServiceImpl implements ModuleService {
 
     @NotNull
     private List<ModuleResponseWithSubModuleAndMenu> getModuleResponseWithSubModulesAndMenusFromModules(
-        List<Module> modules) {
-        return modules.stream().map(module -> getModuleResponseWithSubModuleAndName(module).subModules(
-                module.getSubModules().stream().map(subModule -> getSubModuleResponseWithMenuIdAndName(subModule).menus(
-                        subModule.getMenus().stream().map(this::getMenuResponseWithIdAndName).toList()).build())
-                    .sorted(Comparator.comparingInt(SubModuleResponseWithMenuIdAndName::getSortOrder)).toList())
-                .build())
-            .sorted(Comparator.comparingInt(ModuleResponseWithSubModuleAndMenu::getSortOrder)).toList();
+            List<Module> modules) {
+        return modules
+                .stream()
+                .map(module -> getModuleResponseWithSubModuleAndName(module)
+                        .subModules(
+                                module.getSubModules()
+                                        .stream()
+                                        .map(subModule -> getSubModuleResponseWithMenuIdAndName(subModule)
+                                                .menus(
+                                                        subModule.getMenus()
+                                                                .stream()
+                                                                .map(this::getMenuResponseWithIdAndName)
+                                                                .toList())
+                                                .build())
+                                        .sorted(Comparator.comparingInt(SubModuleResponseWithMenuIdAndName::getSortOrder))
+                                        .toList())
+                        .build())
+                .sorted(Comparator.comparingInt(ModuleResponseWithSubModuleAndMenu::getSortOrder))
+                .toList();
     }
 
     @NotNull
     private List<ModuleResponse> getModuleResponsesFromModules(List<Module> modules) {
-        return modules.stream().map(module -> getModuleResponseBuilder(module).subModules(
-                module.getSubModules().stream().map(subModule -> getSubModuleResponseBuilder(subModule).menus(
-                        subModule.getMenus().stream().map(menu -> getMenuResponseBuilder(menu).actions(
-                                menu.getActions().stream().map(this::getActionResponseBuilder).toList()).build())
-                            .sorted(Comparator.comparingInt(MenuResponse::getSortOrder)).toList()).build())
-                    .sorted(Comparator.comparingInt(SubModuleResponse::getSortOrder)).toList()).build())
-            .sorted(Comparator.comparingInt(ModuleResponse::getSortOrder)).toList();
+        return modules
+                .stream()
+                .map(module -> getModuleResponseBuilder(module)
+                        .subModules(
+                                module.getSubModules()
+                                        .stream()
+                                        .map(subModule -> getSubModuleResponseBuilder(subModule)
+                                                .menus(
+                                                        subModule.getMenus()
+                                                                .stream()
+                                                                .map(menu -> getMenuResponseBuilder(menu)
+                                                                        .actions(
+                                                                                menu.getActions()
+                                                                                        .stream()
+                                                                                        .map(this::getActionResponseBuilder)
+                                                                                        .toList())
+                                                                        .build())
+                                                                .sorted(Comparator.comparingInt(MenuResponse::getSortOrder))
+                                                                .toList())
+                                                .build())
+                                        .sorted(Comparator.comparingInt(SubModuleResponse::getSortOrder))
+                                        .toList())
+                        .build())
+                .sorted(Comparator.comparingInt(ModuleResponse::getSortOrder))
+                .toList();
     }
 
 
     private ActionResponse getActionResponseBuilder(Action action) {
-        return ActionResponse.builder().id(action.getId()).name(action.getName()).description(action.getDescription())
-            .build();
+        return ActionResponse
+                .builder()
+                .id(action.getId())
+                .name(action.getName())
+                .description(action.getDescription())
+                .build();
     }
 
     private MenuResponseWithIdName getMenuResponseWithIdAndName(Menu menu) {
@@ -85,32 +118,52 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     private SubModuleResponseWithMenuIdAndName.SubModuleResponseWithMenuIdAndNameBuilder
-        getSubModuleResponseWithMenuIdAndName(
-        Module subModule) {
-        return SubModuleResponseWithMenuIdAndName.builder().id(subModule.getId())
-            .name(String.valueOf(subModule.getName())).description(subModule.getDescription())
-            .sortOrder(subModule.getSortOrder());
+    getSubModuleResponseWithMenuIdAndName(
+            Module subModule) {
+        return SubModuleResponseWithMenuIdAndName
+                .builder()
+                .id(subModule.getId())
+                .name(String.valueOf(subModule.getName()))
+                .description(subModule.getDescription())
+                .sortOrder(subModule.getSortOrder());
     }
 
     private ModuleResponseWithSubModuleAndMenu.ModuleResponseWithSubModuleAndMenuBuilder
-        getModuleResponseWithSubModuleAndName(
-        Module module) {
-        return ModuleResponseWithSubModuleAndMenu.builder().id(module.getId()).name(String.valueOf(module.getName()))
-            .description(module.getDescription()).sortOrder(module.getSortOrder());
+    getModuleResponseWithSubModuleAndName(
+            Module module) {
+        return ModuleResponseWithSubModuleAndMenu
+                .builder()
+                .id(module.getId())
+                .name(String.valueOf(module.getName()))
+                .description(module.getDescription())
+                .sortOrder(module.getSortOrder());
     }
 
     private MenuResponse.MenuResponseBuilder getMenuResponseBuilder(Menu menu) {
-        return MenuResponse.builder().id(menu.getId()).name(menu.getName()).description(menu.getDescription())
-            .url(menu.getUrl()).sortOrder(menu.getSortOrder());
+        return MenuResponse
+                .builder()
+                .id(menu.getId())
+                .name(menu.getName())
+                .description(menu.getDescription())
+                .url(menu.getUrl())
+                .sortOrder(menu.getSortOrder());
     }
 
     private SubModuleResponse.SubModuleResponseBuilder getSubModuleResponseBuilder(Module subModule) {
-        return SubModuleResponse.builder().id(subModule.getId()).name(String.valueOf(subModule.getName()))
-            .description(subModule.getDescription()).sortOrder(subModule.getSortOrder());
+        return SubModuleResponse
+                .builder()
+                .id(subModule.getId())
+                .name(String.valueOf(subModule.getName()))
+                .description(subModule.getDescription())
+                .sortOrder(subModule.getSortOrder());
     }
 
     private ModuleResponse.ModuleResponseBuilder getModuleResponseBuilder(Module module) {
-        return ModuleResponse.builder().id(module.getId()).name(String.valueOf(module.getName()))
-            .description(module.getDescription()).sortOrder(module.getSortOrder());
+        return ModuleResponse
+                .builder()
+                .id(module.getId())
+                .name(String.valueOf(module.getName()))
+                .description(module.getDescription())
+                .sortOrder(module.getSortOrder());
     }
 }
