@@ -3,6 +3,7 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserRoleActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
@@ -148,6 +149,13 @@ public class UserServiceImpl implements UserService {
         user.getPermittedMenus().addAll(updatedMenus);
         user.getPermittedMenus().retainAll(updatedMenus);
 
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserStatusInfo(UserStatusRequest request) {
+        User user = getUserById(request.userId());
+        user.setActive(request.userStatus());
         userRepository.save(user);
     }
 
