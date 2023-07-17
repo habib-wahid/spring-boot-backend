@@ -11,16 +11,14 @@ import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.ModuleRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.List;
 
 
 @Service
@@ -44,12 +42,13 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public List<ModuleResponse> getModuleWiseUserActions(Long userId) {
-        User user = userRepository.findUserAndFetchActionById(userId).orElseThrow(() -> new ResourceNotFoundException(
-            ExceptionConstant.USER_NOT_FOUND_BY_ID));
+        User user = userRepository.findUserFetchAdditionalActionsById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException(
+                ExceptionConstant.USER_NOT_FOUND_BY_ID));
 
-        Set<Action> roleWiseAction = user.getRole().getPermittedActions();
-
-        List<Module> modules = moduleRepository.findAllModuleByUserId2(userId, roleWiseAction);
+        List<Module> modules = moduleRepository.findModuleWiseUserActions(
+            user.getRole(), user.getAdditionalActions()
+        );
         return getModuleResponsesFromModules(modules);
     }
 

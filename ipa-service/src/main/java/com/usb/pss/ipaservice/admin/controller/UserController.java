@@ -2,7 +2,7 @@ package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
-import com.usb.pss.ipaservice.admin.dto.request.UserRoleActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserRoleRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
@@ -51,10 +51,10 @@ public class UserController {
     }
 
     @PutMapping("/actions")
-    @Operation(summary = "Update actions for a user")
-    public void updateUserActions(
+    @Operation(summary = "Add to additional action permission to a user")
+    public void addAdditionalAction(
             @RequestBody @Validated UserActionRequest userActionRequest) {
-        userService.updateUserActions(userActionRequest);
+        userService.addAdditionalAction(userActionRequest);
     }
 
     @GetMapping("/{userId}/actions")
@@ -64,10 +64,10 @@ public class UserController {
     }
 
     @PutMapping("/roles")
-    @Operation(summary = "Update user role action and menu")
+    @Operation(summary = "Update role of a user")
     public void updateUserRole(
-            @RequestBody UserRoleActionRequest userRoleActionRequest
+            @RequestBody UserRoleRequest userRoleRequest
     ) {
-        userService.updateUserRole(userRoleActionRequest);
+        userService.updateUserRole(userRoleRequest);
     }
 }

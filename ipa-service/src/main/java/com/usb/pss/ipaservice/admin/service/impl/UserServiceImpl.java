@@ -2,21 +2,20 @@ package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
-import com.usb.pss.ipaservice.admin.dto.request.UserRoleActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserRoleRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
-import com.usb.pss.ipaservice.admin.model.entity.Menu;
 import com.usb.pss.ipaservice.admin.model.entity.Role;
 import com.usb.pss.ipaservice.admin.model.entity.User;
+import com.usb.pss.ipaservice.admin.repository.ActionRepository;
 import com.usb.pss.ipaservice.admin.repository.RoleRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
-import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +29,8 @@ import java.util.Set;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.ROLE_NOT_FOUND;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_ID;
 
 
 @Service
@@ -41,6 +42,7 @@ public class UserServiceImpl implements UserService {
     private final ActionService actionService;
     private final ModuleService moduleService;
     private final RoleRepository roleRepository;
+    private final ActionRepository actionRepository;
 
     public void registerUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -55,25 +57,6 @@ public class UserServiceImpl implements UserService {
             .username(request.username()).password(passwordEncoder.encode(request.password())).active(true).build();
 
         userRepository.save(user);
-    }
-
-    private User getUserById(Long id) {
-        return userRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
-    }
-
-    private User getUserWithMenuAndActionById(Long userId) {
-        return userRepository.findUserWithMenusAndActionsById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
-    }
-
-    private User getUserWithRoleAndMenuAndActionById(Long userId) {
-        return userRepository.findUserWithRolesMenusAndActionsById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
-    }
-
-    private List<Role> getAllRoleAndMenuAndActions(Set<Long> roleIds) {
-        return roleRepository.findAllRoleAndMenuAndActionByIdIn(roleIds);
     }
 
     @Override
@@ -92,14 +75,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserActions(UserActionRequest userActionRequest) {
-        User user = getUserWithMenuAndActionById(userActionRequest.userId());
-        List<Action> actions = actionService.getAllActionsByIdsWithMenu(userActionRequest.actionIds());
-        List<Menu> menus = actions.stream().map(Action::getMenu).toList();
-//        user.getPermittedMenus().addAll(menus);
-//        user.getPermittedMenus().retainAll(menus);
+    public void addAdditionalAction(UserActionRequest userActionRequest) {
+        User user = userRepository.findUserFetchAdditionalActionsById(userActionRequest.userId())
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+
+        List<Action> actions = actionRepository.findByIdIn(userActionRequest.actionIds());
+
         user.getAdditionalActions().addAll(actions);
-        user.getAdditionalActions().retainAll(actions);
         userRepository.save(user);
     }
 
@@ -118,32 +100,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserRole(UserRoleActionRequest userRoleActionRequest) {
-//        User user = this.getUserWithRoleAndMenuAndActionById(userRoleActionRequest.userId());
-//        List<Role> updatedRoles = this.getAllRoleAndMenuAndActions(userRoleActionRequest.roleIds());
-//
-//        Set<Role> deletedRoles =
-//            user.getRoles().stream().filter(role -> !updatedRoles.contains(role)).collect(Collectors.toSet());
-//        Set<Role> newAddedRoles =
-//            updatedRoles.stream().filter(role -> !user.getRoles().contains(role)).collect(Collectors.toSet());
-//        user.getRoles().addAll(updatedRoles);
-//        user.getRoles().retainAll(updatedRoles);
-//
-//        Set<Action> deletedActions =
-//            deletedRoles.stream().flatMap(role -> role.getPermittedActions().stream()).collect(Collectors.toSet());
-//
-//        Set<Action> newAddedActions =
-//            newAddedRoles.stream().flatMap(role -> role.getPermittedActions().stream()).collect(Collectors.toSet());
-//
-//        user.getAdditionalActions().removeAll(deletedActions);
-//        user.getAdditionalActions().addAll(newAddedActions);
-//
-//        Set<Menu> updatedMenus = user.getAdditionalActions().stream().map(Action::getMenu).collect(Collectors.toSet());
-//
-//        user.getPermittedMenus().addAll(updatedMenus);
-//        user.getPermittedMenus().retainAll(updatedMenus);
+    public void updateUserRole(UserRoleRequest userRoleRequest) {
+        User user = userRepository.findById(userRoleRequest.userId())
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
 
-//        userRepository.save(user);
+        Role role = roleRepository.findById(userRoleRequest.roleId())
+            .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND));
+
+        user.setRole(role);
+        userRepository.save(user);
     }
 
     @Override

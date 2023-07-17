@@ -11,4 +11,6 @@ public interface ActionRepository extends JpaRepository<Action, Long> {
     @EntityGraph(attributePaths = {"menu"})
     List<Action> findActionAndFetchMenuByIdIn(Collection<Long> ids);
 
+    List<Action> findByIdIn(Collection<Long> ids);
+
 }
