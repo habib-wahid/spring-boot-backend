@@ -39,7 +39,6 @@ public class Menu extends BaseAuditorEntity {
     private Integer sortOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "module_id")
     private Module module;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "menu")

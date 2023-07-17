@@ -36,7 +36,6 @@ public class Module extends BaseAuditorEntity {
     private Integer sortOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_module_id")
     private Module parentModule;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parentModule")

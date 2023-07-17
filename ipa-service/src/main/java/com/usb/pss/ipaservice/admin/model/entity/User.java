@@ -45,11 +45,9 @@ public class User extends BaseAuditorEntity implements UserDetails {
     private boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id")
     private Role role;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "personal_info_id")
     private PersonalInfo personalInfo;
 
     @ManyToMany(fetch = FetchType.LAZY)
