@@ -2,7 +2,8 @@ package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
-import com.usb.pss.ipaservice.admin.dto.request.UserRoleActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserRoleRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,9 +35,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    @Operation(summary = "Register a new user.")
-    public void registerUser(@RequestBody @Validated RegistrationRequest request) {
-        userService.registerUser(request);
+    @Operation(summary = "Create a new user.")
+    public void createNewUser(@RequestBody @Validated RegistrationRequest request) {
+        userService.createNewUser(request);
     }
 
     @GetMapping
@@ -50,24 +52,30 @@ public class UserController {
         return userService.getUserAllPermittedMenu();
     }
 
-    @PutMapping("/actions")
-    @Operation(summary = "Update actions for a user")
-    public void updateUserActions(
+    @PutMapping("/additionalActions")
+    @Operation(summary = "Give additional action permission to a user")
+    public void addAdditionalAction(
             @RequestBody @Validated UserActionRequest userActionRequest) {
-        userService.updateUserActions(userActionRequest);
+        userService.addAdditionalAction(userActionRequest);
     }
 
     @GetMapping("/{userId}/actions")
-    @Operation(summary = "Retrieve the list of actions module wise for a user ")
+    @Operation(summary = "Retrieve module-wise action list for a user ")
     public List<ModuleResponse> getModuleWiseUserActions(@PathVariable Long userId) {
         return userService.getModuleWiseUserActions(userId);
     }
 
     @PutMapping("/roles")
-    @Operation(summary = "Update user role action and menu")
+    @Operation(summary = "Update role of a user")
     public void updateUserRole(
-            @RequestBody UserRoleActionRequest userRoleActionRequest
+            @RequestBody UserRoleRequest userRoleRequest
     ) {
-        userService.updateUserRole(userRoleActionRequest);
+        userService.updateUserRole(userRoleRequest);
+    }
+
+    @PatchMapping("/updateUserStatus")
+    @Operation(summary = "Update user activation status")
+    public void updateUserStatus(@Validated @RequestBody UserStatusRequest userStatusRequest) {
+        userService.updateUserStatusInfo(userStatusRequest);
     }
 }

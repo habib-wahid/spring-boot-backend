@@ -3,7 +3,6 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
-import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
 import com.usb.pss.ipaservice.admin.model.entity.RefreshToken;
 import com.usb.pss.ipaservice.admin.model.entity.User;
@@ -15,7 +14,8 @@ import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.utils.SecurityUtils;
-import java.util.Set;
+
+import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -57,12 +57,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String accessToken = jwtService.generateAccessToken(user);
         RefreshToken refreshToken = tokenService.createNewRefreshToken(user);
-        Set<MenuResponse> menuResponseSet = userService.getAllPermittedMenuByUser(user);
+//        Set<MenuResponse> menuResponseSet = userService.getAllPermittedMenuByUser(user);
 
         return AuthenticationResponse.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken.getTokenId())
-            .menuResponseSet(menuResponseSet)
+            .menuResponseSet(new HashSet<>())
             .build();
 
 //        return new AuthenticationResponse(accessToken, refreshToken.getTokenId());
