@@ -1,7 +1,6 @@
 package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.request.RoleActionRequest;
-import com.usb.pss.ipaservice.admin.dto.request.RoleMenuRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RoleRequest;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RoleResponse;
@@ -64,20 +63,6 @@ public class RoleController {
     @Operation(summary = "Deactivate an active role with it's ID.")
     public void deactivateRole(@PathVariable Long roleId) {
         roleService.deactivateRole(roleId);
-    }
-
-    @PostMapping("/{roleId}/menus")
-    @Operation(summary = "Add a list of menus to a role with it's ID.")
-    public void addRoleMenus(@Validated @RequestBody RoleMenuRequest roleMenuRequest,
-                             @PathVariable Long roleId) {
-        roleService.addRoleMenu(roleId, roleMenuRequest);
-    }
-
-    @PatchMapping("/{roleId}/menus")
-    @Operation(summary = "Remove a list of menus to a role with it's ID.")
-    public void removeRoleMenus(@Validated @RequestBody RoleMenuRequest roleMenuRequest,
-                                @PathVariable Long roleId) {
-        roleService.removeRoleMenu(roleId, roleMenuRequest);
     }
 
     @PutMapping("/roleWiseAction")

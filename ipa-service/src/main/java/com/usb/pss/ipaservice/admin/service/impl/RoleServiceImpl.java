@@ -1,12 +1,10 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.RoleActionRequest;
-import com.usb.pss.ipaservice.admin.dto.request.RoleMenuRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RoleRequest;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RoleResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
-import com.usb.pss.ipaservice.admin.model.entity.Menu;
 import com.usb.pss.ipaservice.admin.model.entity.Role;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
 import com.usb.pss.ipaservice.admin.repository.RoleRepository;
@@ -16,8 +14,6 @@ import com.usb.pss.ipaservice.admin.service.iservice.RoleService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -53,13 +49,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role getRoleById(Long roleId) {
         return roleRepository.findById(roleId)
-                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND));
-    }
-
-    @Override
-    public Role getRoleByName(String roleName) {
-        return roleRepository.findByNameIgnoreCase(roleName)
-                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND));
     }
 
     @Override
@@ -73,11 +63,11 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<RoleResponse> getAllRoleResponse() {
         return roleRepository.findAllByOrderByCreatedDateDesc().stream()
-                .map(role -> {
-                    RoleResponse roleResponse = new RoleResponse();
-                    prepareResponse(role, roleResponse);
-                    return roleResponse;
-                }).toList();
+            .map(role -> {
+                RoleResponse roleResponse = new RoleResponse();
+                prepareResponse(role, roleResponse);
+                return roleResponse;
+            }).toList();
     }
 
     @Override
@@ -100,37 +90,15 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void addRoleMenu(Long roleId, RoleMenuRequest roleMenuRequest) {
-        Role role = getRoleById(roleId);
-        List<Menu> menuList = roleMenuRequest.roleMenuIds().stream()
-                .map(menuService::getMenuById).toList();
-        menuList.forEach(role::addMenu);
-        roleRepository.save(role);
-    }
-
-    @Override
-    public void removeRoleMenu(Long roleId, RoleMenuRequest roleMenuRequest) {
-        Role role = getRoleById(roleId);
-        List<Menu> menuList = roleMenuRequest.roleMenuIds().stream()
-                .map(menuService::getMenuById).toList();
-        menuList.forEach(role::removeMenu);
-        roleRepository.save(role);
-    }
-
-    @Override
     public void updateRoleAction(RoleActionRequest request) {
         Role role = roleRepository.findRoleAndFetchMenuAndActionsById(request.roleId())
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.ROLE_NOT_FOUND));
+
         List<Action> updatedActions = actionRepository.findActionAndFetchMenuByIdIn(request.actionIds());
-        Set<Menu> menus = updatedActions.stream()
-            .map(Action::getMenu)
-            .collect(Collectors.toSet());
         role.getPermittedActions().addAll(updatedActions);
         role.getPermittedActions().retainAll(updatedActions);
-        role.getPermittedMenus().addAll(menus);
-        role.getPermittedMenus().retainAll(menus);
+
         roleRepository.save(role);
-        //TODO: need to consider update in user table after updating role
     }
 
     @Override

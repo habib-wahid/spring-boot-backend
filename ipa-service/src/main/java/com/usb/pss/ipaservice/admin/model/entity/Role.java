@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 
@@ -34,29 +33,10 @@ public class Role extends BaseAuditorEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "adm_role_wise_menu_mapping",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "menu_id"))
-    private Set<Menu> permittedMenus = new HashSet<>();
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "adm_role_wise_action_mapping",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "action_id"))
+        name = "adm_role_wise_action_mapping",
+        joinColumns = @JoinColumn(name = "role_id"),
+        inverseJoinColumns = @JoinColumn(name = "action_id"))
     private Set<Action> permittedActions = new HashSet<>();
-
-    public void addMenu(Menu menu) {
-        if (Objects.nonNull(menu)) {
-            this.permittedMenus.add(menu);
-        }
-    }
-
-    public void removeMenu(Menu menu) {
-        if (Objects.nonNull(menu)) {
-            this.permittedMenus.remove(menu);
-        }
-    }
 
     @Override
     public boolean equals(Object o) {
