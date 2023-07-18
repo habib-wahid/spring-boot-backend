@@ -25,4 +25,19 @@ public class LoggedUserHelper {
             .map(User::getId);
 
     }
+
+
+    public static Optional<User> getCurrentUser() {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth instanceof AnonymousAuthenticationToken) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(auth.getPrincipal())
+            .filter(User.class::isInstance)
+            .map(User.class::cast);
+
+    }
+
 }
