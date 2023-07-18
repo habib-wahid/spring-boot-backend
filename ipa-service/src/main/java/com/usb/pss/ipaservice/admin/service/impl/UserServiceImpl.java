@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
+import com.usb.pss.ipaservice.admin.dto.request.ChangePassowrdRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserRoleRequest;
@@ -17,6 +18,7 @@ import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
+import com.usb.pss.ipaservice.utils.LoggedUserHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
@@ -129,6 +132,20 @@ public class UserServiceImpl implements UserService {
 //                }).collect(Collectors.toSet())
 //        );
         return new HashSet<>();
+    }
+
+
+    @Override
+    public void changeUserPassword(ChangePassowrdRequest request) {
+        Optional<User> optionalUserId = LoggedUserHelper.getCurrentUser();
+        optionalUserId.ifPresent(user -> {
+            if ((passwordEncoder.matches(request.oldPassword(), user.getPassword())) &&
+                request.newPassword().equals(request.confirmPassword())) {
+                user.setPassword(passwordEncoder.encode(request.newPassword()));
+                userRepository.save(user);
+            }
+        });
+
     }
 
 }

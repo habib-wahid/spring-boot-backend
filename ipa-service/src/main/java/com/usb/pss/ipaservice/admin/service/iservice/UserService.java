@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
+import com.usb.pss.ipaservice.admin.dto.request.ChangePassowrdRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserRoleRequest;
@@ -28,4 +29,6 @@ public interface UserService {
     void updateUserRole(UserRoleRequest userRoleRequest);
 
     void updateUserStatusInfo(UserStatusRequest request);
+
+    void changeUserPassword(ChangePassowrdRequest request);
 }
