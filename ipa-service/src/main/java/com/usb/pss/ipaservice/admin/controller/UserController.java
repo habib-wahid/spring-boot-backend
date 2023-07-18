@@ -1,6 +1,6 @@
 package com.usb.pss.ipaservice.admin.controller;
 
-import com.usb.pss.ipaservice.admin.dto.request.ChangePassowrdRequest;
+import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserRoleRequest;
@@ -80,11 +80,11 @@ public class UserController {
         userService.updateUserStatusInfo(userStatusRequest);
     }
 
-    @PutMapping("/changePassowrd")
+    @PutMapping("/changePassword")
     @Operation(summary = "Update user password")
     public void updateUserRole(
-        @RequestBody ChangePassowrdRequest changePassowrdRequest
+        @RequestBody ChangePasswordRequest changePasswordRequest
     ) {
-        userService.changeUserPassword(changePassowrdRequest);
+        userService.changeUserPassword(changePasswordRequest);
     }
 }

@@ -1,6 +1,6 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
-import com.usb.pss.ipaservice.admin.dto.request.ChangePassowrdRequest;
+import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserRoleRequest;
@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void changeUserPassword(ChangePassowrdRequest request) {
+    public void changeUserPassword(ChangePasswordRequest request) {
         Optional<User> optionalUser = LoggedUserHelper.getCurrentUser();
         optionalUser.ifPresent(user -> {
             if ((passwordEncoder.matches(request.currentPassword(), user.getPassword()))) {
