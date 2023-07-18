@@ -80,7 +80,7 @@ public class UserController {
         userService.updateUserStatusInfo(userStatusRequest);
     }
 
-    @PutMapping("/changePassowrd")
+    @PutMapping("/changePassword")
     @Operation(summary = "Update user password")
     public void updateUserRole(
         @RequestBody ChangePasswordRequest changePasswordRequest
