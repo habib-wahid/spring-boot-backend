@@ -15,6 +15,9 @@ public interface ModuleRepository extends JpaRepository<Module, Long> {
     @EntityGraph(attributePaths = {"subModules", "subModules.menus", "subModules.menus.actions"})
     List<Module> findAllByParentModuleIsNull();
 
+    @EntityGraph(attributePaths = {"subModules", "subModules.menus"})
+    List<Module> findAllModulesWithSubModulesAndMenusByParentModuleIsNull();
+
     @Query("select md from Module md left join fetch md.subModules smd left join fetch smd.menus mn" +
         " left join fetch mn.actions ac left join ac.roles rl where ac in :actions or rl = :role and" +
         " md.parentModule is null")
