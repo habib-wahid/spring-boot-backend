@@ -29,7 +29,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.usb.pss.ipaservice.common.ExceptionConstant.CURRENT_PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.NEW_PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.ROLE_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_ID;
@@ -137,12 +139,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeUserPassword(ChangePassowrdRequest request) {
-        Optional<User> optionalUserId = LoggedUserHelper.getCurrentUser();
-        optionalUserId.ifPresent(user -> {
-            if ((passwordEncoder.matches(request.oldPassword(), user.getPassword())) &&
-                request.newPassword().equals(request.confirmPassword())) {
-                user.setPassword(passwordEncoder.encode(request.newPassword()));
-                userRepository.save(user);
+        Optional<User> optionalUser = LoggedUserHelper.getCurrentUser();
+        optionalUser.ifPresent(user -> {
+            if ((passwordEncoder.matches(request.currentPassword(), user.getPassword()))) {
+                if (request.newPassword().equals(request.confirmPassword())) {
+                    user.setPassword(passwordEncoder.encode(request.newPassword()));
+                    userRepository.save(user);
+                } else {
+                    throw new RuleViolationException(NEW_PASSWORD_NOT_MATCH);
+                }
+
+            } else {
+                throw new RuleViolationException(CURRENT_PASSWORD_NOT_MATCH);
             }
         });
 

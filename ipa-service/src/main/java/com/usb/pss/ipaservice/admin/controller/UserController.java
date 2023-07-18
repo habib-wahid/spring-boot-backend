@@ -56,7 +56,7 @@ public class UserController {
     @PutMapping("/additionalActions")
     @Operation(summary = "Give additional action permission to a user")
     public void addAdditionalAction(
-            @RequestBody @Validated UserActionRequest userActionRequest) {
+        @RequestBody @Validated UserActionRequest userActionRequest) {
         userService.addAdditionalAction(userActionRequest);
     }
 
@@ -69,7 +69,7 @@ public class UserController {
     @PutMapping("/roles")
     @Operation(summary = "Update role of a user")
     public void updateUserRole(
-            @RequestBody UserRoleRequest userRoleRequest
+        @RequestBody UserRoleRequest userRoleRequest
     ) {
         userService.updateUserRole(userRoleRequest);
     }

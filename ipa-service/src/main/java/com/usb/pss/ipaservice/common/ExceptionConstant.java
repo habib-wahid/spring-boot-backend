@@ -14,7 +14,9 @@ public enum ExceptionConstant {
     MENU_NOT_FOUND("Menu not found."),
     DUPLICATE_ROLE_NAME("Role name already exists."),
     ROLE_NOT_FOUND("Role not found."),
-    PASSWORD_POLICY_NOT_FOUND("Password Policy not found with this id");
+    PASSWORD_POLICY_NOT_FOUND("Password Policy not found with this id"),
+    CURRENT_PASSWORD_NOT_MATCH("Current Passwords mismatched."),
+    NEW_PASSWORD_NOT_MATCH("New Passwords mismatched.");
 
     private final String message;
 
