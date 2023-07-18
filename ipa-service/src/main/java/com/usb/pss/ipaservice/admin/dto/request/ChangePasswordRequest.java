@@ -3,7 +3,7 @@ package com.usb.pss.ipaservice.admin.dto.request;
 import com.usb.pss.ipaservice.common.validation.ValidPassword;
 import jakarta.validation.constraints.NotBlank;
 
-public record ChangePassowrdRequest(
+public record ChangePasswordRequest(
 
     @NotBlank
     String currentPassword,
