@@ -11,9 +11,6 @@ public record ChangePassowrdRequest(
     @NotBlank
     @ValidPassword
     String newPassword,
-
-    @NotBlank
-    @ValidPassword
     String confirmPassword
 ) {
 
