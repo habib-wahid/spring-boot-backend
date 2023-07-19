@@ -1,10 +1,5 @@
-package com.usb.pss.ipaservice.admin.model.entity;
+package com.usb.pss.ipaservice.admin.dto.response;
 
-import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,20 +8,16 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "adm_personal_info")
-public class PersonalInfo extends BaseAuditorEntity {
+public class PersonalInfoResponse {
     private String firstName;
     private String lastName;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Department department;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Designation designation;
+    private String designation;
+    private String department;
     private String emailOfficial;
     private String emailOther;
     private String mobileNumber;

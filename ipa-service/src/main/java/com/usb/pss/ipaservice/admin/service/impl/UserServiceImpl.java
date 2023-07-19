@@ -9,6 +9,7 @@ import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
+import com.usb.pss.ipaservice.admin.model.entity.PersonalInfo;
 import com.usb.pss.ipaservice.admin.model.entity.Role;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
@@ -55,9 +56,22 @@ public class UserServiceImpl implements UserService {
             throw new RuleViolationException(DUPLICATE_USERNAME);
         }
 
-        var user = User.builder().firstName(request.firstName()).lastName(request.lastName()).email(request.email())
-            .username(request.username()).password(passwordEncoder.encode(request.password())).active(true).build();
-
+        var user = User
+            .builder()
+            .firstName(request.firstName())
+            .lastName(request.lastName())
+            .email(request.email())
+            .username(request.username())
+            .password(passwordEncoder.encode(request.password()))
+            .active(true)
+            .build();
+        var userPersonalInfo = PersonalInfo
+            .builder()
+            .firstName(request.firstName())
+            .lastName(request.lastName())
+            .emailOfficial(request.email())
+            .build();
+        user.setPersonalInfo(userPersonalInfo);
         userRepository.save(user);
     }
 
