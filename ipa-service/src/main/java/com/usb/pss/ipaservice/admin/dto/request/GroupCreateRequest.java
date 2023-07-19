@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
  * @date Jun 17, 2023
  */
 
-public record RoleRequest(
+public record GroupCreateRequest(
     @NotBlank
     String name,
     String description

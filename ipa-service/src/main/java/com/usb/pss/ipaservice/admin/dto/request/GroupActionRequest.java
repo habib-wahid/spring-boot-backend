@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 
-public record RoleActionRequest(
+public record GroupActionRequest(
     @NotNull
-    Long roleId,
+    Long groupId,
     @NotEmpty
     Set<Long> actionIds
 ) {

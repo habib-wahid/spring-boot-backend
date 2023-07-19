@@ -35,7 +35,7 @@ public class Action extends BaseAuditorEntity {
     private Set<User> users;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permittedActions")
-    private Set<Role> roles;
+    private Set<Group> groups;
 
     @Override
     public boolean equals(Object o) {
