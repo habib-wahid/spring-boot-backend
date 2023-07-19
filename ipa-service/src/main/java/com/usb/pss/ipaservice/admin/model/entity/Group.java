@@ -24,8 +24,8 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "adm_role")
-public class Role extends BaseAuditorEntity {
+@Table(name = "adm_group")
+public class Group extends BaseAuditorEntity {
 
     @Column(unique = true)
     private String name;
@@ -33,8 +33,8 @@ public class Role extends BaseAuditorEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "adm_role_wise_action_mapping",
-        joinColumns = @JoinColumn(name = "role_id"),
+        name = "adm_group_wise_action_mapping",
+        joinColumns = @JoinColumn(name = "group_id"),
         inverseJoinColumns = @JoinColumn(name = "action_id"))
     private Set<Action> permittedActions = new HashSet<>();
 

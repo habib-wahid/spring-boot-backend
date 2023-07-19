@@ -44,8 +44,8 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public List<ModuleResponse> getAllModulesByRole(Long roleId) {
-        List<Module> modules = moduleRepository.getAllModulesForRole(roleId);
+    public List<ModuleResponse> getAllModulesByGroup(Long groupId) {
+        List<Module> modules = moduleRepository.getAllModulesForGroup(groupId);
         return getModuleResponsesFromModules(modules);
     }
 
@@ -56,7 +56,7 @@ public class ModuleServiceImpl implements ModuleService {
                 ExceptionConstant.USER_NOT_FOUND_BY_ID));
 
         List<Module> modules = moduleRepository.findModuleWiseUserActions(
-            user.getRole(), user.getAdditionalActions()
+            user.getGroup(), user.getAdditionalActions()
         );
         return getModuleResponsesFromModules(modules);
     }

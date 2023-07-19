@@ -3,7 +3,7 @@ package com.usb.pss.ipaservice.admin.service.iservice;
 import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
-import com.usb.pss.ipaservice.admin.dto.request.UserRoleRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
@@ -26,7 +26,7 @@ public interface UserService {
 
     List<ModuleResponse> getModuleWiseUserActions(Long userId);
 
-    void updateUserRole(UserRoleRequest userRoleRequest);
+    void updateUserGroup(UserGroupRequest userGroupRequest);
 
     void updateUserStatusInfo(UserStatusRequest request);
 

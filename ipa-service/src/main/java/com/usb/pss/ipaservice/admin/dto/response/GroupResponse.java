@@ -16,7 +16,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleResponse {
+public class GroupResponse {
     private Long id;
     private String name;
     private String description;
