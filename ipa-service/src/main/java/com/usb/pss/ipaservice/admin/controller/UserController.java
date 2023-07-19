@@ -82,7 +82,7 @@ public class UserController {
 
     @PutMapping("/changePassword")
     @Operation(summary = "Update user password")
-    public void updateUserRole(
+    public void changeUserPassword(
         @RequestBody ChangePasswordRequest changePasswordRequest
     ) {
         userService.changeUserPassword(changePasswordRequest);
