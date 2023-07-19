@@ -34,5 +34,5 @@ public class PersonalInfo extends BaseAuditorEntity {
     private String pointOfSales;
     private String accessLevel;
     private String airport;
-    private List<String> allowedCurrencies;
+    private List<Currency> allowedCurrencies;
 }
