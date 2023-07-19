@@ -17,6 +17,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "adm_personal_info")
 public class PersonalInfo extends BaseAuditorEntity {
+    private String firstName;
+    private String lastName;
+    private String designation;
+    private String department;
+    private String emailOfficial;
+    private String emailOther;
+    private String mobileNumber;
+    private String telephoneNumber;
     private String primaryMobileNo;
     private String additionalMobileNo;
 }
