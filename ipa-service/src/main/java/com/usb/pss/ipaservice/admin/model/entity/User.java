@@ -45,7 +45,7 @@ public class User extends BaseAuditorEntity implements UserDetails {
     private boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Role role;
+    private Group group;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private PersonalInfo personalInfo;
@@ -59,7 +59,7 @@ public class User extends BaseAuditorEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<Action> permittedActions = new HashSet<>(getRole().getPermittedActions());
+        Set<Action> permittedActions = new HashSet<>(getGroup().getPermittedActions());
         permittedActions.addAll(getAdditionalActions());
 
         return permittedActions

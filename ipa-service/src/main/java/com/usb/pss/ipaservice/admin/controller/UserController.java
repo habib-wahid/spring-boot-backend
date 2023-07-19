@@ -3,7 +3,7 @@ package com.usb.pss.ipaservice.admin.controller;
 import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
-import com.usb.pss.ipaservice.admin.dto.request.UserRoleRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
@@ -66,12 +66,12 @@ public class UserController {
         return userService.getModuleWiseUserActions(userId);
     }
 
-    @PutMapping("/roles")
-    @Operation(summary = "Update role of a user")
-    public void updateUserRole(
-        @RequestBody UserRoleRequest userRoleRequest
+    @PutMapping("/groups")
+    @Operation(summary = "Update group of a user")
+    public void updateUserGroup(
+        @RequestBody UserGroupRequest userGroupRequest
     ) {
-        userService.updateUserRole(userRoleRequest);
+        userService.updateUserGroup(userGroupRequest);
     }
 
     @PatchMapping("/updateUserStatus")

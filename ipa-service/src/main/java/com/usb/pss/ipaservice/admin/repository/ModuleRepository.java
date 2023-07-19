@@ -1,8 +1,8 @@
 package com.usb.pss.ipaservice.admin.repository;
 
 import com.usb.pss.ipaservice.admin.model.entity.Action;
+import com.usb.pss.ipaservice.admin.model.entity.Group;
 import com.usb.pss.ipaservice.admin.model.entity.Module;
-import com.usb.pss.ipaservice.admin.model.entity.Role;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,11 +19,11 @@ public interface ModuleRepository extends JpaRepository<Module, Long> {
     List<Module> findAllModulesWithSubModulesAndMenusByParentModuleIsNull();
 
     @Query("select md from Module md left join fetch md.subModules smd left join fetch smd.menus mn" +
-        " left join fetch mn.actions ac left join ac.roles rl where ac in :actions or rl = :role and" +
+        " left join fetch mn.actions ac left join ac.groups gr where ac in :actions or gr = :group and" +
         " md.parentModule is null")
-    List<Module> findModuleWiseUserActions(@Param("role") Role role, @Param("actions") Collection<Action> actions);
+    List<Module> findModuleWiseUserActions(@Param("group") Group group, @Param("actions") Collection<Action> actions);
 
     @Query("select md from Module md left join fetch md.subModules smd left join fetch smd.menus mn" +
-        " left join fetch mn.actions ac left join ac.roles rl where rl.id = :roleId and md.parentModule is null")
-    List<Module> getAllModulesForRole(@Param("roleId") Long roleId);
+        " left join fetch mn.actions ac left join ac.groups gr where gr.id = :groupId and md.parentModule is null")
+    List<Module> getAllModulesForGroup(@Param("groupId") Long groupId);
 }
