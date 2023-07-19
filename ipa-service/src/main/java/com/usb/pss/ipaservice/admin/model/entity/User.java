@@ -38,6 +38,8 @@ public class User extends BaseAuditorEntity implements UserDetails {
     private String username;
     private String password;
     private boolean active;
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
