@@ -13,7 +13,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 
     List<Role> findAllByOrderByCreatedDateDesc();
 
-    @EntityGraph(attributePaths = {"permittedMenus", "permittedActions"})
+    @EntityGraph(attributePaths = {"permittedActions", "permittedActions.menu"})
     Optional<Role> findRoleAndFetchMenuAndActionsById(Long roleId);
 
 

@@ -47,9 +47,9 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/permitted/menus")
+    @GetMapping("/permittedMenus")
     @Operation(summary = "Get all permitted menus by current logged in user")
-    public Set<MenuResponse> getMenuByUserId() {
+    public Set<MenuResponse> getPermittedMenusByUserId() {
         return userService.getUserAllPermittedMenu();
     }
 
@@ -74,9 +74,9 @@ public class UserController {
         userService.updateUserRole(userRoleRequest);
     }
 
-    @PatchMapping("/updateUserStatus")
+    @PatchMapping("/updateUserActiveStatus")
     @Operation(summary = "Update user activation status")
-    public void updateUserStatus(@Validated @RequestBody UserStatusRequest userStatusRequest) {
+    public void updateUserActiveStatus(@Validated @RequestBody UserStatusRequest userStatusRequest) {
         userService.updateUserStatusInfo(userStatusRequest);
     }
 
