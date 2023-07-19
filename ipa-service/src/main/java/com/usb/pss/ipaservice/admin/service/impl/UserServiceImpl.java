@@ -56,8 +56,8 @@ public class UserServiceImpl implements UserService {
         }
 
         var user = User
-            .builder().
-            firstName(request.firstName())
+            .builder()
+            .firstName(request.firstName())
             .lastName(request.lastName())
             .email(request.email())
             .username(request.username())
