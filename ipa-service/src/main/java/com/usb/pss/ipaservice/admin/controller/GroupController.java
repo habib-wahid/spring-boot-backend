@@ -65,7 +65,7 @@ public class GroupController {
         groupService.deactivateGroup(groupId);
     }
 
-    @PutMapping("/GroupWiseAction")
+    @PutMapping("/groupWiseAction")
     @Operation(summary = "Update actions of a Group")
     public void updateGroupWiseAction(@RequestBody @Validated GroupActionRequest request) {
         groupService.updateGroupWiseAction(request);

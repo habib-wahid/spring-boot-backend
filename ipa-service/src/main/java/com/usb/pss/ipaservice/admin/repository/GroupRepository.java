@@ -13,9 +13,8 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     List<Group> findAllByOrderByCreatedDateDesc();
 
-    @EntityGraph(attributePaths = {"permittedMenus", "permittedActions"})
-    Optional<Group> findGroupAndFetchMenuAndActionsById(Long groupId);
-
+    @EntityGraph(attributePaths = {"permittedActions"})
+    Optional<Group> findGroupAndFetchActionsById(Long groupId);
 
     @EntityGraph(attributePaths = {"permittedActions", "permittedActions.menu"})
     List<Group> findAllGroupAndMenuAndActionByIdIn(Set<Long> groups);

@@ -94,7 +94,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void updateGroupWiseAction(GroupActionRequest request) {
-        Group group = findGroupAndFetchMenuAndActionsById(request.groupId());
+        Group group = findGroupAndFetchActionsById(request.groupId());
 
         List<Action> updatedActions = actionRepository.findActionAndFetchMenuByIdIn(request.actionIds());
         group.getPermittedActions().addAll(updatedActions);
@@ -125,8 +125,8 @@ public class GroupServiceImpl implements GroupService {
         groupResponse.setDescription(group.getDescription());
     }
 
-    private Group findGroupAndFetchMenuAndActionsById(Long groupId) {
-        return groupRepository.findGroupAndFetchMenuAndActionsById(groupId)
+    private Group findGroupAndFetchActionsById(Long groupId) {
+        return groupRepository.findGroupAndFetchActionsById(groupId)
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.GROUP_NOT_FOUND));
     }
 }
