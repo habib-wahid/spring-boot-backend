@@ -22,6 +22,7 @@ public class MenuResponse {
     private Long id;
     private String name;
     private String description;
+    private String screenId;
     private String url;
     private String icon;
     private Integer sortOrder;
