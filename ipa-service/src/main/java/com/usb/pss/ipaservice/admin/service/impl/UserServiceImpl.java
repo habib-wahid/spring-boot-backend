@@ -6,15 +6,18 @@ import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
+import com.usb.pss.ipaservice.admin.dto.response.CurrencyResponse;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
-import com.usb.pss.ipaservice.admin.dto.response.UserInfoResponse;
+import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
+import com.usb.pss.ipaservice.admin.model.entity.Currency;
 import com.usb.pss.ipaservice.admin.model.entity.Group;
 import com.usb.pss.ipaservice.admin.model.entity.PersonalInfo;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
+import com.usb.pss.ipaservice.admin.repository.CurrencyRepository;
 import com.usb.pss.ipaservice.admin.repository.DepartmentRepository;
 import com.usb.pss.ipaservice.admin.repository.DesignationRepository;
 import com.usb.pss.ipaservice.admin.repository.GroupRepository;
@@ -25,15 +28,19 @@ import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.LoggedUserHelper;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import static com.usb.pss.ipaservice.common.ExceptionConstant.CURRENCY_NOT_FOUND_BY_ID;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.CURRENT_PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.GROUP_NOT_FOUND;
@@ -52,6 +59,7 @@ public class UserServiceImpl implements UserService {
     private final ActionRepository actionRepository;
     private final DepartmentRepository departmentRepository;
     private final DesignationRepository designationRepository;
+    private final CurrencyRepository currencyRepository;
 
     public void createNewUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -192,15 +200,34 @@ public class UserServiceImpl implements UserService {
         if (Objects.nonNull(updateUserInfoRequest.accessLevel())) {
             personalInfo.setAccessLevel(updateUserInfoRequest.accessLevel());
         }
+        if (!updateUserInfoRequest.allowedCurrencies().isEmpty()) {
+            Set<Currency> currencies = personalInfo.getAllowedCurrencies();
+            if (currencies != null && !currencies.isEmpty()) {
+                Set<Currency> updatedCurrencies = getCurrenciesFromIds(updateUserInfoRequest.allowedCurrencies());
+                currencies.retainAll(updatedCurrencies);
+                currencies.addAll(updatedCurrencies);
+            } else {
+                currencies = getCurrenciesFromIds(updateUserInfoRequest.allowedCurrencies());
+                personalInfo.setAllowedCurrencies(currencies);
+            }
+        }
         user.setPersonalInfo(personalInfo);
         userRepository.save(user);
     }
 
+    @NotNull
+    private Set<Currency> getCurrenciesFromIds(Set<Long> currencyIds) {
+        return currencyIds
+            .stream()
+            .map(this::getCurrencyById)
+            .collect(Collectors.toSet());
+    }
+
     @Override
-    public UserInfoResponse getUserInfo(Long id) {
+    public UserPersonalInfoResponse getUserPersonalInfo(Long id) {
         User user = getUserWithPersonalInfoById(id);
         PersonalInfo personalInfo = user.getPersonalInfo();
-        return UserInfoResponse.builder()
+        return UserPersonalInfoResponse.builder()
             .firstName(personalInfo.getFirstName())
             .lastName(personalInfo.getLastName())
             .emailOfficial(personalInfo.getEmailOfficial())
@@ -211,13 +238,31 @@ public class UserServiceImpl implements UserService {
             .telephoneNumber(personalInfo.getTelephoneNumber())
             .accessLevel(personalInfo.getAccessLevel())
             .pointOfSales(personalInfo.getPointOfSales())
+            .allowedCurrencies(getCurrencyResponsesFromCurrencies(personalInfo.getAllowedCurrencies()))
             .build();
     }
 
+    private List<CurrencyResponse> getCurrencyResponsesFromCurrencies(Collection<Currency> currencies) {
+        return currencies.stream()
+            .map(this::getCurrencyResponseFromCurrency)
+            .collect(Collectors.toList());
+    }
+
+    private CurrencyResponse getCurrencyResponseFromCurrency(Currency currency) {
+        CurrencyResponse currencyResponse = new CurrencyResponse();
+        currencyResponse.setCode(currency.getCode());
+        currencyResponse.setId(currency.getId());
+        return currencyResponse;
+    }
 
     private User getUserWithPersonalInfoById(Long userId) {
         return userRepository.findUserWithPersonalInfoById(userId)
             .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+    }
+
+    private Currency getCurrencyById(Long currencyId) {
+        return currencyRepository.findById(currencyId)
+            .orElseThrow(() -> new ResourceNotFoundException(CURRENCY_NOT_FOUND_BY_ID));
     }
 
 }

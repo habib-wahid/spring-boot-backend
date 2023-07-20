@@ -8,7 +8,7 @@ import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
-import com.usb.pss.ipaservice.admin.dto.response.UserInfoResponse;
+import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 
 import java.util.List;
@@ -36,5 +36,5 @@ public interface UserService {
 
     void updateUserPersonalInfo(UpdateUserInfoRequest updateUserInfoRequest);
 
-    UserInfoResponse getUserInfo(Long id);
+    UserPersonalInfoResponse getUserPersonalInfo(Long id);
 }

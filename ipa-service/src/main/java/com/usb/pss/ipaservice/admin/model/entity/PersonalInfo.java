@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -42,5 +43,5 @@ public class PersonalInfo extends BaseAuditorEntity {
         name = "adm_personal_info_currency_list",
         joinColumns = @JoinColumn(name = "personal_info_id"),
         inverseJoinColumns = @JoinColumn(name = "currency_id"))
-    private List<Currency> allowedCurrencies;
+    private Set<Currency> allowedCurrencies;
 }

@@ -17,7 +17,8 @@ public enum ExceptionConstant {
     NEW_PASSWORD_NOT_MATCH("New Passwords mismatched."),
 
     DEPARTMENT_NOT_FOUND("Department not found by id"),
-    DESIGNATION_NOT_FOUND("Designation not found by id");
+    DESIGNATION_NOT_FOUND("Designation not found by id"),
+    CURRENCY_NOT_FOUND_BY_ID("No currency exists with this id.");
 
     private final String message;
 
