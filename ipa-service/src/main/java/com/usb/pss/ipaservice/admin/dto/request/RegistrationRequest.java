@@ -19,7 +19,11 @@ public record RegistrationRequest(
     String password,
     @NotBlank
     String confirmPassword,
-    Long groupId
+    Long groupId,
+    @NotBlank
+    Long departmentId,
+    @NotBlank
+    Long designationId
 ) {
 
 }

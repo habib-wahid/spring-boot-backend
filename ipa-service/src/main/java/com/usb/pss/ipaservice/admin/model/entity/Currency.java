@@ -15,7 +15,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "currency")
+@Table(name = "adm_currency")
 public class Currency extends BaseAuditorEntity {
     private String name;
     private String code;

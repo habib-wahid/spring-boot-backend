@@ -14,7 +14,10 @@ public enum ExceptionConstant {
     MENU_NOT_FOUND("Menu not found."),
     PASSWORD_POLICY_NOT_FOUND("Password Policy not found with this id"),
     CURRENT_PASSWORD_NOT_MATCH("Current Passwords mismatched."),
-    NEW_PASSWORD_NOT_MATCH("New Passwords mismatched.");
+    NEW_PASSWORD_NOT_MATCH("New Passwords mismatched."),
+
+    DEPARTMENT_NOT_FOUND("Department not found by id"),
+    DESIGNATION_NOT_FOUND("Designation not found by id");
 
     private final String message;
 

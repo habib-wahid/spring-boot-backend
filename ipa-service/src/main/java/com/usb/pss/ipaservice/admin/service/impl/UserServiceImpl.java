@@ -13,6 +13,8 @@ import com.usb.pss.ipaservice.admin.model.entity.Group;
 import com.usb.pss.ipaservice.admin.model.entity.PersonalInfo;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
+import com.usb.pss.ipaservice.admin.repository.DepartmentRepository;
+import com.usb.pss.ipaservice.admin.repository.DesignationRepository;
 import com.usb.pss.ipaservice.admin.repository.GroupRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
@@ -46,6 +48,8 @@ public class UserServiceImpl implements UserService {
     private final ModuleService moduleService;
     private final GroupRepository groupRepository;
     private final ActionRepository actionRepository;
+    private final DepartmentRepository departmentRepository;
+    private final DesignationRepository designationRepository;
 
     public void createNewUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -70,6 +74,8 @@ public class UserServiceImpl implements UserService {
             .firstName(request.firstName())
             .lastName(request.lastName())
             .emailOfficial(request.email())
+            .department(departmentRepository.getReferenceById(request.departmentId()))
+            .designation(designationRepository.getReferenceById(request.designationId()))
             .build();
         user.setPersonalInfo(userPersonalInfo);
         userRepository.save(user);
