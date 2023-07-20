@@ -20,4 +20,5 @@ public class ActionResponse {
     private Long id;
     private String name;
     private String description;
+    private Integer sortOrder;
 }
