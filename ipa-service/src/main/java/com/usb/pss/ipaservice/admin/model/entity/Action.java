@@ -4,7 +4,6 @@ import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -30,14 +29,13 @@ public class Action extends BaseAuditorEntity {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permittedActions")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "additionalActions")
     private Set<User> users;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permittedActions")
-    private Set<Role> roles;
+    private Set<Group> groups;
 
     @Override
     public boolean equals(Object o) {

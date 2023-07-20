@@ -2,12 +2,10 @@ package com.usb.pss.ipaservice.admin.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Set;
-
-public record UserRoleActionRequest(
+public record UserStatusRequest(
     @NotNull
     Long userId,
     @NotNull
-    Set<Long> roleIds
+    Boolean userStatus
 ) {
 }

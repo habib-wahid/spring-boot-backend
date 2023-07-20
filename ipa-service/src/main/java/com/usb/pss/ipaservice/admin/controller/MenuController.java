@@ -47,8 +47,8 @@ public class MenuController {
         menuService.deactivateMenu(menuId);
     }
 
-    @GetMapping("/allWithIdName")
-    @Operation(summary = "Get all active menus with id and name in a list.")
+    @GetMapping("/getAllMenusWithIdAndName")
+    @Operation(summary = "Get all menus with id and name in a list.")
     public List<MenuResponseWithIdName> getAllMenusWithIdName() {
         return menuService.getAllMenuResponseWithIdName();
     }

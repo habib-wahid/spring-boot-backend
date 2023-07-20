@@ -8,10 +8,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,5 +29,10 @@ public class PasswordPolicyController {
     @Operation(summary = "Update password policy")
     public void updatePasswordPolicy(@RequestBody @Validated PasswordPolicyRequest request) {
         passwordPolicyService.updatePassPolicy(request);
+    }
+    @GetMapping
+    @Operation(summary = "Get All Password Policies")
+    public List<Map<String, Object>> getPasswordPolicies() {
+        return passwordPolicyService.getPasswordPolicies();
     }
 }
