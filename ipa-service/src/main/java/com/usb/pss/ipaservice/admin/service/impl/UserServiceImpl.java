@@ -2,11 +2,13 @@ package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
+import com.usb.pss.ipaservice.admin.dto.response.UserInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Group;
@@ -62,8 +64,6 @@ public class UserServiceImpl implements UserService {
 
         var user = User
             .builder()
-            .firstName(request.firstName())
-            .lastName(request.lastName())
             .email(request.email())
             .username(request.username())
             .password(passwordEncoder.encode(request.password()))
@@ -107,14 +107,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-//    @Override
-//    public Set<MenuResponse> getAllPermittedMenuByUser(User user) {
-//        return user.getPermittedMenus().stream().map(menu -> {
-//            MenuResponse menuResponse = new MenuResponse();
-//            menuService.prepareResponse(menu, menuResponse);
-//            return menuResponse;
-//        }).collect(Collectors.toSet());
-//    }
 
     @Override
     public List<ModuleResponse> getModuleWiseUserActions(Long userId) {
@@ -174,6 +166,58 @@ public class UserServiceImpl implements UserService {
             }
         });
 
+    }
+
+    @Override
+    public void updateUserPersonalInfo(UpdateUserInfoRequest updateUserInfoRequest) {
+        User user = getUserWithPersonalInfoById(updateUserInfoRequest.id());
+        PersonalInfo personalInfo = user.getPersonalInfo();
+        personalInfo.setFirstName(updateUserInfoRequest.firstName());
+        personalInfo.setLastName(updateUserInfoRequest.lastName());
+        personalInfo.setDepartment(departmentRepository.getReferenceById(updateUserInfoRequest.departmentId()));
+        personalInfo.setDesignation(designationRepository.getReferenceById(updateUserInfoRequest.designationId()));
+        personalInfo.setEmailOfficial(updateUserInfoRequest.emailOfficial());
+        if (Objects.nonNull(updateUserInfoRequest.emailOptional())) {
+            personalInfo.setEmailOther(updateUserInfoRequest.emailOptional());
+        }
+        if (Objects.nonNull(updateUserInfoRequest.mobileNumber())) {
+            personalInfo.setMobileNumber(updateUserInfoRequest.mobileNumber());
+        }
+        if (Objects.nonNull(updateUserInfoRequest.telephoneNumber())) {
+            personalInfo.setTelephoneNumber(updateUserInfoRequest.telephoneNumber());
+        }
+        if (Objects.nonNull(updateUserInfoRequest.pointOfSales())) {
+            personalInfo.setPointOfSales(updateUserInfoRequest.pointOfSales());
+        }
+        if (Objects.nonNull(updateUserInfoRequest.accessLevel())) {
+            personalInfo.setAccessLevel(updateUserInfoRequest.accessLevel());
+        }
+        user.setPersonalInfo(personalInfo);
+        userRepository.save(user);
+    }
+
+    @Override
+    public UserInfoResponse getUserInfo(Long id) {
+        User user = getUserWithPersonalInfoById(id);
+        PersonalInfo personalInfo = user.getPersonalInfo();
+        return UserInfoResponse.builder()
+            .firstName(personalInfo.getFirstName())
+            .lastName(personalInfo.getLastName())
+            .emailOfficial(personalInfo.getEmailOfficial())
+            .emailOther(personalInfo.getEmailOther())
+            .departmentName(personalInfo.getDepartment().getName())
+            .designationName(personalInfo.getDesignation().getName())
+            .mobileNumber(personalInfo.getMobileNumber())
+            .telephoneNumber(personalInfo.getTelephoneNumber())
+            .accessLevel(personalInfo.getAccessLevel())
+            .pointOfSales(personalInfo.getPointOfSales())
+            .build();
+    }
+
+
+    private User getUserWithPersonalInfoById(Long userId) {
+        return userRepository.findUserWithPersonalInfoById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
 }

@@ -2,11 +2,13 @@ package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
+import com.usb.pss.ipaservice.admin.dto.response.UserInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,6 +66,18 @@ public class UserController {
     @Operation(summary = "Retrieve module-wise action list for a user ")
     public List<ModuleResponse> getModuleWiseUserActions(@PathVariable Long userId) {
         return userService.getModuleWiseUserActions(userId);
+    }
+
+    @GetMapping("/{userId}")
+    @Operation(summary = "Retrieve user information with its id")
+    public UserInfoResponse getUserInfo(@PathVariable Long userId) {
+        return userService.getUserInfo(userId);
+    }
+
+    @PutMapping
+    @Operation(summary = "Update existing user information")
+    public void updateUserInfo(UpdateUserInfoRequest userInfoRequest) {
+        userService.updateUserPersonalInfo(userInfoRequest);
     }
 
     @PutMapping("/groups")
