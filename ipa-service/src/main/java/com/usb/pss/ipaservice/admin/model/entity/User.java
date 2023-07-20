@@ -57,9 +57,14 @@ public class User extends BaseAuditorEntity implements UserDetails {
         inverseJoinColumns = @JoinColumn(name = "action_id"))
     private Set<Action> additionalActions = new HashSet<>();
 
+    private Set<Action> getPermittedActionsFromGroup() {
+        return getGroup() == null ? new HashSet<>()
+            : new HashSet<>(getGroup().getPermittedActions());
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<Action> permittedActions = new HashSet<>(getGroup().getPermittedActions());
+        Set<Action> permittedActions = getPermittedActionsFromGroup();
         permittedActions.addAll(getAdditionalActions());
 
         return permittedActions

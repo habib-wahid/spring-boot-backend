@@ -29,7 +29,8 @@ public class Menu extends BaseAuditorEntity {
 
     private String description;
 
-    private String code;
+    @Column(unique = true)
+    private String screenId;
 
     @Column(unique = true)
     private String url;
@@ -38,7 +39,7 @@ public class Menu extends BaseAuditorEntity {
     private Integer sortOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Module module;
+    private SubModule subModule;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "menu")
     private Set<Action> actions;

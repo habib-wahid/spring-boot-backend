@@ -13,17 +13,17 @@ import java.util.List;
 
 public interface ModuleRepository extends JpaRepository<Module, Long> {
     @EntityGraph(attributePaths = {"subModules", "subModules.menus", "subModules.menus.actions"})
-    List<Module> findAllByParentModuleIsNull();
+    List<Module> findAllByOrderBySortOrder();
 
     @EntityGraph(attributePaths = {"subModules", "subModules.menus"})
-    List<Module> findAllModulesWithSubModulesAndMenusByParentModuleIsNull();
+    List<Module> findAllModulesWithSubModulesAndMenusByIdIsNotNull();
 
     @Query("select md from Module md left join fetch md.subModules smd left join fetch smd.menus mn" +
-        " left join fetch mn.actions ac left join ac.groups gr where ac in :actions or gr = :group and" +
-        " md.parentModule is null")
+        " left join fetch mn.actions ac left join ac.groups gr where ac in :actions or gr = :group"
+    )
     List<Module> findModuleWiseUserActions(@Param("group") Group group, @Param("actions") Collection<Action> actions);
 
     @Query("select md from Module md left join fetch md.subModules smd left join fetch smd.menus mn" +
-        " left join fetch mn.actions ac left join ac.groups gr where gr.id = :groupId and md.parentModule is null")
+        " left join fetch mn.actions ac left join ac.groups gr where gr.id = :groupId")
     List<Module> getAllModulesForGroup(@Param("groupId") Long groupId);
 }
