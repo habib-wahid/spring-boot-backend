@@ -7,7 +7,7 @@ import java.util.List;
  * @date Jun 17, 2023
  */
 
-public record RoleMenuRequest(
-    List<Long> roleMenuIds
+public record GroupMenuRequest(
+    List<Long> groupMenuIds
 ) {
 }

@@ -10,7 +10,7 @@ public interface ModuleService {
 
     List<ModuleResponseWithSubModuleAndMenu> getModuleWithSubModulesAndMenus();
 
-    List<ModuleResponse> getAllModulesByRole(Long roleId);
+    List<ModuleResponse> getAllModulesByGroup(Long groupId);
 
     List<ModuleResponse> getModuleWiseUserActions(Long userId);
 }

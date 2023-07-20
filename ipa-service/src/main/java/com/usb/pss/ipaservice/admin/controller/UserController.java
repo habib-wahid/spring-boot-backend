@@ -3,7 +3,7 @@ package com.usb.pss.ipaservice.admin.controller;
 import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
-import com.usb.pss.ipaservice.admin.dto.request.UserRoleRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
@@ -47,9 +47,9 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/permitted/menus")
+    @GetMapping("/permittedMenus")
     @Operation(summary = "Get all permitted menus by current logged in user")
-    public Set<MenuResponse> getMenuByUserId() {
+    public Set<MenuResponse> getPermittedMenusByUserId() {
         return userService.getUserAllPermittedMenu();
     }
 
@@ -66,17 +66,17 @@ public class UserController {
         return userService.getModuleWiseUserActions(userId);
     }
 
-    @PutMapping("/roles")
-    @Operation(summary = "Update role of a user")
-    public void updateUserRole(
-        @RequestBody UserRoleRequest userRoleRequest
+    @PutMapping("/groups")
+    @Operation(summary = "Update group of a user")
+    public void updateUserGroup(
+        @RequestBody UserGroupRequest userGroupRequest
     ) {
-        userService.updateUserRole(userRoleRequest);
+        userService.updateUserGroup(userGroupRequest);
     }
 
-    @PatchMapping("/updateUserStatus")
+    @PatchMapping("/updateUserActiveStatus")
     @Operation(summary = "Update user activation status")
-    public void updateUserStatus(@Validated @RequestBody UserStatusRequest userStatusRequest) {
+    public void updateUserActiveStatus(@Validated @RequestBody UserStatusRequest userStatusRequest) {
         userService.updateUserStatusInfo(userStatusRequest);
     }
 

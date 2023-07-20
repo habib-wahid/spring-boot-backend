@@ -3,17 +3,17 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
-import com.usb.pss.ipaservice.admin.dto.request.UserRoleRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
+import com.usb.pss.ipaservice.admin.model.entity.Group;
 import com.usb.pss.ipaservice.admin.model.entity.PersonalInfo;
-import com.usb.pss.ipaservice.admin.model.entity.Role;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
-import com.usb.pss.ipaservice.admin.repository.RoleRepository;
+import com.usb.pss.ipaservice.admin.repository.GroupRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
@@ -32,9 +32,9 @@ import java.util.Set;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.CURRENT_PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.GROUP_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.NEW_PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.ROLE_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_ID;
 
 
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModuleService moduleService;
-    private final RoleRepository roleRepository;
+    private final GroupRepository groupRepository;
     private final ActionRepository actionRepository;
 
     public void createNewUser(RegistrationRequest request) {
@@ -116,14 +116,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserRole(UserRoleRequest userRoleRequest) {
-        User user = userRepository.findById(userRoleRequest.userId())
+    public void updateUserGroup(UserGroupRequest userGroupRequest) {
+        User user = userRepository.findById(userGroupRequest.userId())
             .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
 
-        Role role = roleRepository.findById(userRoleRequest.roleId())
-            .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND));
+        Group group = groupRepository.findById(userGroupRequest.groupId())
+            .orElseThrow(() -> new ResourceNotFoundException(GROUP_NOT_FOUND));
 
-        user.setRole(role);
+        user.setGroup(group);
         userRepository.save(user);
     }
 
