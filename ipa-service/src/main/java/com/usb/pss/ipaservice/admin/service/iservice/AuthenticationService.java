@@ -17,7 +17,7 @@ public interface AuthenticationService {
 
     void logout(String authHeader, LogoutRequest request);
 
-    void updateResetPasswordToken(HttpServletRequest httpServletRequest, ForgotPasswordRequest forgotPasswordRequest);
+    void sendPasswordResetLink(HttpServletRequest httpServletRequest, ForgotPasswordRequest forgotPasswordRequest);
 
     void resetPassword(ResetPasswordRequest resetPasswordRequest);
 

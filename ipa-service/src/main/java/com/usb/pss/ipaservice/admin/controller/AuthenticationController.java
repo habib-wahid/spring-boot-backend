@@ -58,7 +58,7 @@ public class AuthenticationController {
     public void forgotPassword(HttpServletRequest httpServletRequest,
                                @RequestBody @Validated ForgotPasswordRequest forgotPasswordRequest
     ) {
-        authenticationService.updateResetPasswordToken(httpServletRequest, forgotPasswordRequest);
+        authenticationService.sendPasswordResetLink(httpServletRequest, forgotPasswordRequest);
     }
 
     @PostMapping("/resetPassword")

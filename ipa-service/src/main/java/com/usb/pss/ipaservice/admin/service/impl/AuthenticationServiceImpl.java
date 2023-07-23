@@ -114,7 +114,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void updateResetPasswordToken(HttpServletRequest httpServletRequest, ForgotPasswordRequest forgotPasswordRequest) {
+    public void sendPasswordResetLink(HttpServletRequest httpServletRequest, ForgotPasswordRequest forgotPasswordRequest) {
         User user = userRepository
                 .findUserByUsername(forgotPasswordRequest.userName())
                 .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
