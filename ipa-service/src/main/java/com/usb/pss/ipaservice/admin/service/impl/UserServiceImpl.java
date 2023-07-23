@@ -83,6 +83,7 @@ public class UserServiceImpl implements UserService {
             .username(request.username())
             .password(passwordEncoder.encode(request.password()))
             .active(true)
+            .group(findGroupById(request.groupId()))
             .build();
         Department department = findDepartmentById(request.departmentId());
         Designation designation = findDesignationById(request.designationId());
@@ -226,6 +227,11 @@ public class UserServiceImpl implements UserService {
 
     private List<Currency> getCurrenciesFromIds(Set<Long> currencyIds) {
         return currencyRepository.findByIdIn(currencyIds);
+    }
+
+    private Group findGroupById(Long groupId) {
+        return groupRepository.findById(groupId)
+            .orElseThrow(() -> new ResourceNotFoundException(GROUP_NOT_FOUND));
     }
 
     @Override
