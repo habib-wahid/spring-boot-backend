@@ -16,7 +16,10 @@ public enum ExceptionConstant {
     MENU_NOT_FOUND("Menu not found."),
     PASSWORD_POLICY_NOT_FOUND("Password Policy not found with this id"),
     CURRENT_PASSWORD_NOT_MATCH("Current Passwords mismatched."),
-    NEW_PASSWORD_NOT_MATCH("New Passwords mismatched.");
+    NEW_PASSWORD_NOT_MATCH("New Passwords mismatched."),
+    EMAIL_NOT_SENT("Email Not Sent"),
+    EMAIL_VALIDITY_EXPIRED("Email validity expired"),
+    RESET_TOKEN_NOT_FOUND("Reset token not found");
 
     private final String message;
 
