@@ -19,6 +19,6 @@ public interface AuthenticationService {
 
     void updateResetPasswordToken(HttpServletRequest httpServletRequest, ForgotPasswordRequest forgotPasswordRequest);
 
-    void resetPassword(String token, ResetPasswordRequest resetPasswordRequest);
+    void resetPassword(ResetPasswordRequest resetPasswordRequest);
 
 }

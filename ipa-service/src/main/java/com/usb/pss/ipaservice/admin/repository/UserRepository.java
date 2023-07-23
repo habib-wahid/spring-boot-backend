@@ -27,9 +27,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = {"groups", "permittedMenus", "permittedActions"})
     Optional<User> findUserWithGroupsMenusAndActionsById(Long userId);
-
-    @EntityGraph(attributePaths = {"roles", "permittedMenus", "permittedActions"})
-    Optional<User> findUserWithRolesMenusAndActionsById(Long userId);
-    Optional<User> findByEmail(String email);
-    Optional<User> findByResetPasswordToken(String token);
 }

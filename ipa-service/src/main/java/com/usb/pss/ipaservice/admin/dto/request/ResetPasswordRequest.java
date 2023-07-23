@@ -7,11 +7,10 @@ import jakarta.validation.constraints.NotBlank;
 public record ResetPasswordRequest(
 
         @NotBlank
-        @ValidPassword
-        String password,
-
+        String token,
         @NotBlank
         @ValidPassword
+        String password,
         String confirmPassword
 ) {
 }

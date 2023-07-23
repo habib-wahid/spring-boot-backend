@@ -43,8 +43,6 @@ public class User extends BaseAuditorEntity implements UserDetails {
     private String password;
     private String companyCode;
     private boolean active;
-    @Column(name = "reset_password_token")
-    private String resetPasswordToken;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Group group;

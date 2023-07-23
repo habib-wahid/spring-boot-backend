@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,8 +63,7 @@ public class AuthenticationController {
 
     @PostMapping("/resetPassword")
     @Operation(summary = "User reset password endpoint with reset token and password reset request body")
-    public void resetPassword(@Param(value = "token") String token,
-                              @RequestBody @Validated ResetPasswordRequest resetPasswordRequest) {
-        authenticationService.resetPassword(token, resetPasswordRequest);
+    public void resetPassword(@RequestBody @Validated ResetPasswordRequest resetPasswordRequest) {
+        authenticationService.resetPassword(resetPasswordRequest);
     }
 }

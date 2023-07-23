@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface PasswordResetRepository extends JpaRepository<PasswordReset, UUID> {
 
     @EntityGraph(attributePaths = {"user"})
-    Optional<PasswordReset> findPasswordResetByPasswordResetToken(UUID token);
+    Optional<PasswordReset> findPasswordResetByTokenId(UUID token);
 }
