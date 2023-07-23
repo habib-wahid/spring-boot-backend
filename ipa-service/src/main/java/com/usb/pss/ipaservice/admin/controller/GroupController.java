@@ -9,6 +9,7 @@ import com.usb.pss.ipaservice.admin.service.iservice.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,42 +37,49 @@ public class GroupController {
     private final GroupService groupService;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('VIEW_GROUP')")
     @Operation(summary = "Get active Groups in a list.")
     public List<GroupResponse> getAllGroups() {
         return groupService.getAllGroupResponse();
     }
 
     @GetMapping("/{groupId}")
+    @PreAuthorize("hasAnyAuthority('VIEW_GROUP')")
     @Operation(summary = "Get a single Group with it's ID.")
     public GroupResponse getGroupById(@Validated @PathVariable Long groupId) {
         return groupService.getGroupResponseById(groupId);
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('CREATE_GROUP')")
     @Operation(summary = "Create a new Group with valid Group data.")
     public void createNewGroup(@Validated @RequestBody GroupCreateRequest groupCreateRequest) {
         groupService.createNewGroup(groupCreateRequest);
     }
 
     @PutMapping
+    @PreAuthorize("hasAnyAuthority('UPDATE_GROUP')")
     @Operation(summary = "update an existing Group with valid Group data and existing Group's ID.")
     public void updateGroup(@Validated @RequestBody GroupUpdateRequest groupCreateRequest) {
         groupService.updateGroup(groupCreateRequest);
     }
 
     @PatchMapping("/{groupId}")
+    @PreAuthorize("hasAnyAuthority('UPDATE_GROUP')")
     @Operation(summary = "Deactivate an active Group with it's ID.")
     public void deactivateGroup(@PathVariable Long groupId) {
         groupService.deactivateGroup(groupId);
     }
 
     @PutMapping("/groupWiseAction")
+    @PreAuthorize("hasAnyAuthority('UPDATE_GROUP_ACTION_PERMISSION')")
     @Operation(summary = "Update actions of a Group")
     public void updateGroupWiseAction(@RequestBody @Validated GroupActionRequest request) {
         groupService.updateGroupWiseAction(request);
     }
 
     @GetMapping("/{groupId}/GroupWiseAction")
+    @PreAuthorize("hasAnyAuthority('VIEW_GROUP')")
     @Operation(summary = "Get actions of a Group with it's ID")
     public List<ModuleResponse> getGroupWiseAction(@PathVariable Long groupId) {
         return groupService.getGroupWisePermittedActions(groupId);
