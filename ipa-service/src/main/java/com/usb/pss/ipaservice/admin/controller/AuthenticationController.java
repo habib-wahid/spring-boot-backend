@@ -4,7 +4,9 @@ import static com.usb.pss.ipaservice.common.APIEndpointConstants.AUTHENTICATION_
 import static com.usb.pss.ipaservice.common.SecurityConstants.AUTHORIZATION;
 
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
+import com.usb.pss.ipaservice.admin.dto.request.ForgotPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;
+import com.usb.pss.ipaservice.admin.dto.request.ResetPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
@@ -13,6 +15,7 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
@@ -48,5 +51,19 @@ public class AuthenticationController {
     public void logout(@RequestHeader(AUTHORIZATION) String authHeader,
                        @RequestBody @Validated LogoutRequest logoutRequest) {
         authenticationService.logout(authHeader, logoutRequest);
+    }
+
+    @PostMapping("/forgotPassword")
+    @Operation(summary = "User forgot password endpoint")
+    public void forgotPassword(HttpServletRequest httpServletRequest,
+                               @RequestBody @Validated ForgotPasswordRequest forgotPasswordRequest
+    ) {
+        authenticationService.sendPasswordResetLink(httpServletRequest, forgotPasswordRequest);
+    }
+
+    @PostMapping("/resetPassword")
+    @Operation(summary = "User reset password endpoint with reset token and password reset request body")
+    public void resetPassword(@RequestBody @Validated ResetPasswordRequest resetPasswordRequest) {
+        authenticationService.resetPassword(resetPasswordRequest);
     }
 }

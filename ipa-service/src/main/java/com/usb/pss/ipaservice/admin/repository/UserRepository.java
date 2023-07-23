@@ -35,5 +35,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = {"groups", "permittedMenus", "permittedActions"})
     Optional<User> findUserWithGroupsMenusAndActionsById(Long userId);
-
 }
