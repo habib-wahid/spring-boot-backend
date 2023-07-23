@@ -214,12 +214,13 @@ insert into adm_menu(id, name, description, url, icon, screen_id, sub_module_id,
              'refund request management', '0225', 19, 106, 0),
             (107, 'BLACKLIST_AND_WHITELIST_PERSON', 'Blacklist & Whitelist Person', 'blacklist whitelist',
              'blacklist whitelist', '0226', 19, 107, 0),
-            (108, 'TICKETS_TO_PROTECT', 'Tickets to Protect', 'tickets to protect', 'tickets to protect', '0231', 20,
-             108, 0),
-            (109, 'DOCUMENTATION', 'Documentation', 'documentation', 'documentation', '0241', 21, 109, 0),
-            (110, 'USER_STATUS', 'User Status', 'user status', 'user status', '0242', 21, 110, 0),
-            (111, 'PROCESSING_QUEUE', 'Processing Queue', 'processing queue', 'processing queue', '0243', 21, 111, 0),
-            (112, 'PNR_GOV', 'PNR Gov', 'pnr gov', 'pnr gov', '0244', 21, 112, 0))
+            (108, 'PASSWORD_POLICY', 'Password Policies', 'password policy', 'password policy', '0227', 19, 108, 0),
+            (109, 'TICKETS_TO_PROTECT', 'Tickets to Protect', 'tickets to protect', 'tickets to protect', '0231', 20,
+             109, 0),
+            (110, 'DOCUMENTATION', 'Documentation', 'documentation', 'documentation', '0241', 21, 110, 0),
+            (111, 'USER_STATUS', 'User Status', 'user status', 'user status', '0242', 21, 111, 0),
+            (112, 'PROCESSING_QUEUE', 'Processing Queue', 'processing queue', 'processing queue', '0243', 21, 112, 0),
+            (113, 'PNR_GOV', 'PNR Gov', 'pnr gov', 'pnr gov', '0244', 21, 113, 0))
     on conflict do nothing;
 
 -- Insert Action
@@ -259,7 +260,19 @@ insert into adm_action(id, name, description, menu_id, sort_order, version)
             (33, 'CREATE_FLIGHT_SCHEDULE', 'Add a Flight Schedule', 10, 33, 0),
             (34, 'VIEW_CONNECTING_FLIGHT', 'View Connecting Flights', 11, 34, 0),
             (35, 'PUBLISH_CONNECTING_FLIGHT', 'Publish Connecting Flights', 11, 35, 0),
-            (36, 'UNPUBLISH_CONNECTING_FLIGHT', 'Un publish Connecting Flights', 11, 36, 0))
+            (36, 'UNPUBLISH_CONNECTING_FLIGHT', 'Un publish Connecting Flights', 11, 36, 0),
+            (37, 'VIEW_GROUP', 'View Group Information', 102, 37, 0),
+            (38, 'CREATE_GROUP', 'Create a New Group', 102, 38, 0),
+            (39, 'UPDATE_GROUP', 'Update Group Information', 102, 39, 0),
+            (40, 'UPDATE_GROUP_ACTION_PERMISSION', 'Update Action Permission of a Group', 102, 40, 0),
+            (41, 'VIEW_USER', 'View User Information', 103, 41, 0),
+            (42, 'CREATE_USER', 'Create a New User', 103, 42, 0),
+            (43, 'UPDATE_USER', 'Update User Information', 103, 43, 0),
+            (44, 'UPDATE_USER_GROUP', 'Update Assigned Group of a User', 103, 44, 0),
+            (45, 'UPDATE_USER_ADDITIONAL_ACTIONS', 'Update Additional Actions of a User', 103, 45, 0),
+            (46, 'UPDATE_USER_ACTIVE_STATUS', 'Activate/Deactivate a User', 103, 46, 0),
+            (47, 'VIEW_PASSWORD_POLICY', 'View Password Policies', 108, 47, 0),
+            (48, 'UPDATE_PASSWORD_POLICY', 'Update Password Policies', 108, 48, 0))
     on conflict do nothing;
 
 -- Give 'ADMIN' group to all action permission
