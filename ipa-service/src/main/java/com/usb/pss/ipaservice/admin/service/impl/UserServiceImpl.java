@@ -228,15 +228,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserPersonalInfoResponse getUserPersonalInfo(Long id) {
-        User user = getUserWithPersonalInfoById(id);
+    public UserPersonalInfoResponse getUserPersonalInfo(Long userId) {
+        User user = getUserWithPersonalInfoById(userId);
         PersonalInfo personalInfo = user.getPersonalInfo();
         return UserPersonalInfoResponse.builder()
             .firstName(personalInfo.getFirstName())
             .lastName(personalInfo.getLastName())
             .emailOfficial(personalInfo.getEmailOfficial())
             .emailOther(personalInfo.getEmailOther())
-            .designationResponse(getDesignationResponse(personalInfo.getDesignation(), personalInfo.getDepartment()))
+            .designationResponse(
+                getDesignationResponseWithDepartmentResponse(personalInfo.getDesignation(),
+                    personalInfo.getDepartment()))
             .mobileNumber(personalInfo.getMobileNumber())
             .telephoneNumber(personalInfo.getTelephoneNumber())
             .accessLevel(personalInfo.getAccessLevel())
@@ -245,7 +247,8 @@ public class UserServiceImpl implements UserService {
             .build();
     }
 
-    private DesignationResponse getDesignationResponse(Designation designation, Department department) {
+    private DesignationResponse getDesignationResponseWithDepartmentResponse(Designation designation,
+                                                                             Department department) {
         DepartmentResponse departmentResponse = new DepartmentResponse();
         departmentResponse.setId(department.getId());
         departmentResponse.setDepartmentName(department.getName());
