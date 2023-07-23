@@ -34,12 +34,17 @@ public class PersonalInfo extends BaseAuditorEntity {
     private String emailOther;
     private String mobileNumber;
     private String telephoneNumber;
-    private String pointOfSales;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "adm_personal_info_point_of_sales_mapping",
+        joinColumns = @JoinColumn(name = "personal_info_id"),
+        inverseJoinColumns = @JoinColumn(name = "point_of_sales_id"))
+    private Set<PointOfSale> pointOfSales;
     private String accessLevel;
     private String airport;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "adm_personal_info_currency_list",
+        name = "adm_personal_info_currency_mapping",
         joinColumns = @JoinColumn(name = "personal_info_id"),
         inverseJoinColumns = @JoinColumn(name = "currency_id"))
     private Set<Currency> allowedCurrencies;

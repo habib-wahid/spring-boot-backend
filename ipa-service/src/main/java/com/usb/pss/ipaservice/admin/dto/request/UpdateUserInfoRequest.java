@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.dto.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +14,9 @@ public record UpdateUserInfoRequest(
     @NotEmpty
     String lastName,
     @NotEmpty
+    @Email
     String emailOfficial,
+    @Email
     String emailOptional,
     @NotNull
     Long departmentId,
@@ -21,9 +24,11 @@ public record UpdateUserInfoRequest(
     Long designationId,
     String mobileNumber,
     String telephoneNumber,
-    String pointOfSales,
+    @NotEmpty
+    Set<Long> pointOfSales,
     String accessLevel,
     String airport,
+    @NotEmpty
     Set<Long> allowedCurrencies
 ) {
 }

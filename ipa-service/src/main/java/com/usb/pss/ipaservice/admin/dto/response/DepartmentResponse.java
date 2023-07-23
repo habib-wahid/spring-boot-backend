@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CurrencyResponse {
+public class DepartmentResponse {
     private Long id;
-    private String name;
-    private String code;
+    private String departmentName;
 }

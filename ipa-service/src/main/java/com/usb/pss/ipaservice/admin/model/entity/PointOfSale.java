@@ -14,8 +14,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "adm_department")
-public class Department extends BaseAuditorEntity {
+@Table(name = "adm_point_of_sale")
+public class PointOfSale extends BaseAuditorEntity {
     @Column(unique = true)
     private String name;
 }

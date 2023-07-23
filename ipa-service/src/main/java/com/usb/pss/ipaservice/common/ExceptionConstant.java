@@ -17,7 +17,12 @@ public enum ExceptionConstant {
     NEW_PASSWORD_NOT_MATCH("New Passwords mismatched."),
 
     DEPARTMENT_NOT_FOUND("Department not found by id"),
+    DUPLICATE_DEPARTMENT_NAME("A department already exists with this name"),
     DESIGNATION_NOT_FOUND("Designation not found by id"),
+    DUPLICATE_DESIGNATION("Designation Already exists under this department"),
+    POINT_OF_SALES_NOT_FOUND("Point of Sales not found by ID"),
+    DUPLICATE_POINT_OF_SALES("Point of Sales already exists by this name"),
+
     CURRENCY_NOT_FOUND_BY_ID("No currency exists with this id.");
 
     private final String message;

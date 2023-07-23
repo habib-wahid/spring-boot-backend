@@ -2,7 +2,7 @@ package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.request.CreateDesignationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UpdateDesignationRequest;
-import com.usb.pss.ipaservice.admin.model.entity.Designation;
+import com.usb.pss.ipaservice.admin.dto.response.DesignationResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.DesignationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,14 +29,19 @@ public class DesignationController {
 
     @GetMapping("/{designationId}")
     @Operation(summary = "Get designation with it's ID")
-    public Designation getDesignationByID(@Validated @PathVariable Long designationId) {
+    public DesignationResponse getDesignationByID(@Validated @PathVariable Long designationId) {
         return designationService.getDesignationById(designationId);
     }
 
     @GetMapping
     @Operation(summary = "Get all designations")
-    public List<Designation> getAllDesignations() {
+    public List<DesignationResponse> getAllDesignations() {
         return designationService.getAllDesignations();
+    }
+
+    @GetMapping("/{departmentId}")
+    public List<DesignationResponse> getAllDesignationsByDepartmentId(@Validated @PathVariable Long departmentId) {
+        return designationService.getAllDesignationsByDepartmentId(departmentId);
     }
 
     @PostMapping

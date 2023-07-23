@@ -7,20 +7,27 @@ import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.CurrencyResponse;
+import com.usb.pss.ipaservice.admin.dto.response.DepartmentResponse;
+import com.usb.pss.ipaservice.admin.dto.response.DesignationResponse;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
+import com.usb.pss.ipaservice.admin.dto.response.PointOfSaleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Currency;
+import com.usb.pss.ipaservice.admin.model.entity.Department;
+import com.usb.pss.ipaservice.admin.model.entity.Designation;
 import com.usb.pss.ipaservice.admin.model.entity.Group;
 import com.usb.pss.ipaservice.admin.model.entity.PersonalInfo;
+import com.usb.pss.ipaservice.admin.model.entity.PointOfSale;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
 import com.usb.pss.ipaservice.admin.repository.CurrencyRepository;
 import com.usb.pss.ipaservice.admin.repository.DepartmentRepository;
 import com.usb.pss.ipaservice.admin.repository.DesignationRepository;
 import com.usb.pss.ipaservice.admin.repository.GroupRepository;
+import com.usb.pss.ipaservice.admin.repository.PointOfSaleRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
@@ -38,10 +45,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static com.usb.pss.ipaservice.common.ExceptionConstant.CURRENCY_NOT_FOUND_BY_ID;
+
 import static com.usb.pss.ipaservice.common.ExceptionConstant.CURRENT_PASSWORD_NOT_MATCH;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.DEPARTMENT_NOT_FOUND;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.DESIGNATION_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.GROUP_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.NEW_PASSWORD_NOT_MATCH;
@@ -60,6 +68,7 @@ public class UserServiceImpl implements UserService {
     private final DepartmentRepository departmentRepository;
     private final DesignationRepository designationRepository;
     private final CurrencyRepository currencyRepository;
+    private final PointOfSaleRepository pointOfSaleRepository;
 
     public void createNewUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -77,13 +86,19 @@ public class UserServiceImpl implements UserService {
             .password(passwordEncoder.encode(request.password()))
             .active(true)
             .build();
+        Department department = findDepartmentById(request.departmentId());
+        Designation designation = findDesignationByIdAndDepartment(request.designationId(), department);
+        Set<PointOfSale> pointOfSales = getPointOfSalesFromIds(request.pointOfSaleIds());
+        Set<Currency> currencies = getCurrenciesFromIds(request.currencyIds());
         var userPersonalInfo = PersonalInfo
             .builder()
             .firstName(request.firstName())
             .lastName(request.lastName())
             .emailOfficial(request.email())
-            .department(departmentRepository.getReferenceById(request.departmentId()))
-            .designation(designationRepository.getReferenceById(request.designationId()))
+            .department(department)
+            .designation(designation)
+            .allowedCurrencies(currencies)
+            .pointOfSales(pointOfSales)
             .build();
         user.setPersonalInfo(userPersonalInfo);
         userRepository.save(user);
@@ -182,45 +197,34 @@ public class UserServiceImpl implements UserService {
         PersonalInfo personalInfo = user.getPersonalInfo();
         personalInfo.setFirstName(updateUserInfoRequest.firstName());
         personalInfo.setLastName(updateUserInfoRequest.lastName());
-        personalInfo.setDepartment(departmentRepository.getReferenceById(updateUserInfoRequest.departmentId()));
-        personalInfo.setDesignation(designationRepository.getReferenceById(updateUserInfoRequest.designationId()));
+        Department department = findDepartmentById(updateUserInfoRequest.departmentId());
+        Designation designation = findDesignationByIdAndDepartment(updateUserInfoRequest.designationId(), department);
+        personalInfo.setDepartment(department);
+        personalInfo.setDesignation(designation);
         personalInfo.setEmailOfficial(updateUserInfoRequest.emailOfficial());
-        if (Objects.nonNull(updateUserInfoRequest.emailOptional())) {
-            personalInfo.setEmailOther(updateUserInfoRequest.emailOptional());
-        }
-        if (Objects.nonNull(updateUserInfoRequest.mobileNumber())) {
-            personalInfo.setMobileNumber(updateUserInfoRequest.mobileNumber());
-        }
-        if (Objects.nonNull(updateUserInfoRequest.telephoneNumber())) {
-            personalInfo.setTelephoneNumber(updateUserInfoRequest.telephoneNumber());
-        }
-        if (Objects.nonNull(updateUserInfoRequest.pointOfSales())) {
-            personalInfo.setPointOfSales(updateUserInfoRequest.pointOfSales());
-        }
-        if (Objects.nonNull(updateUserInfoRequest.accessLevel())) {
-            personalInfo.setAccessLevel(updateUserInfoRequest.accessLevel());
-        }
-        if (!updateUserInfoRequest.allowedCurrencies().isEmpty()) {
-            Set<Currency> currencies = personalInfo.getAllowedCurrencies();
-            if (currencies != null && !currencies.isEmpty()) {
-                Set<Currency> updatedCurrencies = getCurrenciesFromIds(updateUserInfoRequest.allowedCurrencies());
-                currencies.retainAll(updatedCurrencies);
-                currencies.addAll(updatedCurrencies);
-            } else {
-                currencies = getCurrenciesFromIds(updateUserInfoRequest.allowedCurrencies());
-                personalInfo.setAllowedCurrencies(currencies);
-            }
-        }
-        user.setPersonalInfo(personalInfo);
+        personalInfo.setEmailOther(updateUserInfoRequest.emailOptional());
+        personalInfo.setMobileNumber(updateUserInfoRequest.mobileNumber());
+        personalInfo.setTelephoneNumber(updateUserInfoRequest.telephoneNumber());
+        personalInfo.setPointOfSales(getPointOfSalesFromIds(updateUserInfoRequest.pointOfSales()));
+        personalInfo.setAccessLevel(updateUserInfoRequest.accessLevel());
+        Set<Currency> currencies = personalInfo.getAllowedCurrencies();
+        Set<Currency> updatedCurrencies = getCurrenciesFromIds(updateUserInfoRequest.allowedCurrencies());
+        currencies.retainAll(updatedCurrencies);
+        currencies.addAll(updatedCurrencies);
+        Set<PointOfSale> pointOfSales = personalInfo.getPointOfSales();
+        Set<PointOfSale> updatedPointOfSales = getPointOfSalesFromIds(updateUserInfoRequest.pointOfSales());
+        pointOfSales.retainAll(updatedPointOfSales);
+        pointOfSales.addAll(updatedPointOfSales);
         userRepository.save(user);
+    }
+
+    private Set<PointOfSale> getPointOfSalesFromIds(Set<Long> pointOfSaleIds) {
+        return pointOfSaleRepository.findByIdIn(pointOfSaleIds);
     }
 
     @NotNull
     private Set<Currency> getCurrenciesFromIds(Set<Long> currencyIds) {
-        return currencyIds
-            .stream()
-            .map(this::getCurrencyById)
-            .collect(Collectors.toSet());
+        return currencyRepository.findByIdIn(currencyIds);
     }
 
     @Override
@@ -232,27 +236,48 @@ public class UserServiceImpl implements UserService {
             .lastName(personalInfo.getLastName())
             .emailOfficial(personalInfo.getEmailOfficial())
             .emailOther(personalInfo.getEmailOther())
-            .departmentName(personalInfo.getDepartment().getName())
-            .designationName(personalInfo.getDesignation().getName())
+            .designationResponse(getDesignationResponse(personalInfo.getDesignation(), personalInfo.getDepartment()))
             .mobileNumber(personalInfo.getMobileNumber())
             .telephoneNumber(personalInfo.getTelephoneNumber())
             .accessLevel(personalInfo.getAccessLevel())
-            .pointOfSales(personalInfo.getPointOfSales())
+            .pointOfSales(getPointOfSalesResponses(personalInfo.getPointOfSales()))
             .allowedCurrencies(getCurrencyResponsesFromCurrencies(personalInfo.getAllowedCurrencies()))
             .build();
+    }
+
+    private DesignationResponse getDesignationResponse(Designation designation, Department department) {
+        DepartmentResponse departmentResponse = new DepartmentResponse();
+        departmentResponse.setId(department.getId());
+        departmentResponse.setDepartmentName(department.getName());
+        DesignationResponse designationResponse = new DesignationResponse();
+        designationResponse.setId(designation.getId());
+        designationResponse.setDesignationName(designation.getName());
+        designationResponse.setDepartmentResponse(departmentResponse);
+        return designationResponse;
     }
 
     private List<CurrencyResponse> getCurrencyResponsesFromCurrencies(Collection<Currency> currencies) {
         return currencies.stream()
             .map(this::getCurrencyResponseFromCurrency)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private CurrencyResponse getCurrencyResponseFromCurrency(Currency currency) {
         CurrencyResponse currencyResponse = new CurrencyResponse();
         currencyResponse.setCode(currency.getCode());
         currencyResponse.setId(currency.getId());
+        currencyResponse.setName(currencyResponse.getName());
         return currencyResponse;
+    }
+
+    private PointOfSaleResponse getPointOfSaleResponseFromPointOfSale(PointOfSale pointOfSale) {
+        return new PointOfSaleResponse(pointOfSale.getId(), pointOfSale.getName());
+    }
+
+    private List<PointOfSaleResponse> getPointOfSalesResponses(Collection<PointOfSale> pointOfSales) {
+        return pointOfSales.stream()
+            .map(this::getPointOfSaleResponseFromPointOfSale)
+            .toList();
     }
 
     private User getUserWithPersonalInfoById(Long userId) {
@@ -260,9 +285,15 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
-    private Currency getCurrencyById(Long currencyId) {
-        return currencyRepository.findById(currencyId)
-            .orElseThrow(() -> new ResourceNotFoundException(CURRENCY_NOT_FOUND_BY_ID));
+
+    private Department findDepartmentById(Long departmentId) {
+        return departmentRepository.findById(departmentId)
+            .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT_NOT_FOUND));
+    }
+
+    private Designation findDesignationByIdAndDepartment(Long designationId, Department department) {
+        return designationRepository.findByIdAndDepartment(designationId, department)
+            .orElseThrow(() -> new ResourceNotFoundException(DESIGNATION_NOT_FOUND));
     }
 
 }

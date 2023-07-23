@@ -2,7 +2,7 @@ package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.request.CreateDepartmentRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UpdateDepartmentRequest;
-import com.usb.pss.ipaservice.admin.model.entity.Department;
+import com.usb.pss.ipaservice.admin.dto.response.DepartmentResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.DepartmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,13 +29,13 @@ public class DepartmentController {
 
     @GetMapping("/{departmentId}")
     @Operation(summary = "Get department with it's ID")
-    public Department getDepartment(@Validated @PathVariable Long departmentId) {
+    public DepartmentResponse getDepartment(@Validated @PathVariable Long departmentId) {
         return departmentService.getDepartment(departmentId);
     }
 
     @GetMapping
     @Operation(summary = "Get all departments")
-    public List<Department> getAllDepartments() {
+    public List<DepartmentResponse> getAllDepartments() {
         return departmentService.getAllDepartments();
     }
 

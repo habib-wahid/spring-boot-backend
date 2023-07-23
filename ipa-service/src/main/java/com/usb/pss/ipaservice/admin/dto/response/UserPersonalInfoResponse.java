@@ -16,13 +16,12 @@ import java.util.List;
 public class UserPersonalInfoResponse {
     private String firstName;
     private String lastName;
-    private String departmentName;
-    private String designationName;
+    private DesignationResponse designationResponse;
     private String emailOfficial;
     private String emailOther;
     private String mobileNumber;
     private String telephoneNumber;
-    private String pointOfSales;
+    private List<PointOfSaleResponse> pointOfSales;
     private String accessLevel;
     private String airport;
     private List<CurrencyResponse> allowedCurrencies;

@@ -7,6 +7,8 @@ public record UpdateDesignationRequest(
     @NotNull
     Long id,
     @NotEmpty
-    String name
+    String name,
+    @NotNull
+    Long departmentId
 ) {
 }
