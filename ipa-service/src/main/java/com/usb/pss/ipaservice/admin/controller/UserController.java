@@ -14,6 +14,7 @@ import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -38,12 +39,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('CREATE_GROUP')")
     @Operation(summary = "Create a new user.")
     public void createNewUser(@Validated @RequestBody RegistrationRequest request) {
         userService.createNewUser(request);
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('VIEW_USER')")
     @Operation(summary = "Get all users in a list")
     public List<UserResponse> getAllUsers() {
         return userService.getAllUsers();
@@ -56,6 +59,7 @@ public class UserController {
     }
 
     @PutMapping("/additionalActions")
+    @PreAuthorize("hasAnyAuthority('UPDATE_USER_ADDITIONAL_ACTIONS')")
     @Operation(summary = "Give additional action permission to a user")
     public void addAdditionalAction(
         @RequestBody @Validated UserActionRequest userActionRequest) {
@@ -63,6 +67,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/actions")
+    @PreAuthorize("hasAnyAuthority('VIEW_USER')")
     @Operation(summary = "Retrieve module-wise action list for a user ")
     public List<ModuleResponse> getModuleWiseUserActions(@PathVariable Long userId) {
         return userService.getModuleWiseUserActions(userId);
@@ -81,6 +86,7 @@ public class UserController {
     }
 
     @PutMapping("/groups")
+    @PreAuthorize("hasAnyAuthority('UPDATE_USER_GROUP')")
     @Operation(summary = "Update group of a user")
     public void updateUserGroup(
         @RequestBody UserGroupRequest userGroupRequest
@@ -89,6 +95,7 @@ public class UserController {
     }
 
     @PatchMapping("/updateUserActiveStatus")
+    @PreAuthorize("hasAnyAuthority('UPDATE_USER_ACTIVE_STATUS')")
     @Operation(summary = "Update user activation status")
     public void updateUserActiveStatus(@Validated @RequestBody UserStatusRequest userStatusRequest) {
         userService.updateUserStatusInfo(userStatusRequest);

@@ -302,8 +302,20 @@ insert into adm_action(id, name, description, menu_id, sort_order, version)
             (33, 'CREATE_FLIGHT_SCHEDULE', 'Add a Flight Schedule', 10, 33, 0),
             (34, 'VIEW_CONNECTING_FLIGHT', 'View Connecting Flights', 11, 34, 0),
             (35, 'PUBLISH_CONNECTING_FLIGHT', 'Publish Connecting Flights', 11, 35, 0),
-            (36, 'UNPUBLISH_CONNECTING_FLIGHT', 'Un publish Connecting Flights', 11, 36, 0))
-on conflict do nothing;
+            (36, 'UNPUBLISH_CONNECTING_FLIGHT', 'Un publish Connecting Flights', 11, 36, 0),
+            (37, 'VIEW_GROUP', 'View Group Information', 102, 37, 0),
+            (38, 'CREATE_GROUP', 'Create a New Group', 102, 38, 0),
+            (39, 'UPDATE_GROUP', 'Update Group Information', 102, 39, 0),
+            (40, 'UPDATE_GROUP_ACTION_PERMISSION', 'Update Action Permission of a Group', 102, 40, 0),
+            (41, 'VIEW_USER', 'View User Information', 103, 41, 0),
+            (42, 'CREATE_USER', 'Create a New User', 103, 42, 0),
+            (43, 'UPDATE_USER', 'Update User Information', 103, 43, 0),
+            (44, 'UPDATE_USER_GROUP', 'Update Assigned Group of a User', 103, 44, 0),
+            (45, 'UPDATE_USER_ADDITIONAL_ACTIONS', 'Update Additional Actions of a User', 103, 45, 0),
+            (46, 'UPDATE_USER_ACTIVE_STATUS', 'Activate/Deactivate a User', 103, 46, 0),
+            (47, 'VIEW_PASSWORD_POLICY', 'View Password Policies', 108, 47, 0),
+            (48, 'UPDATE_PASSWORD_POLICY', 'Update Password Policies', 108, 48, 0))
+    on conflict do nothing;
 
 -- Give 'ADMIN' group to all action permission
 insert into adm_group_wise_action_mapping as values (select 1, id from adm_action)

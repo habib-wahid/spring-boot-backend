@@ -21,4 +21,5 @@ public class ActionResponse {
     private String name;
     private String description;
     private Integer sortOrder;
+    private boolean permitted;
 }
