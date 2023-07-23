@@ -41,7 +41,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -105,11 +104,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAllUsersWithGroupByIdIsNotNull().stream().filter(Objects::nonNull).map(user -> {
-            UserResponse userResponse = new UserResponse();
-            prepareResponse(user, userResponse);
-            return userResponse;
-        }).toList();
+        return userRepository.findAllUsersWithGroupByIdIsNotNull()
+            .stream()
+            .map(user -> {
+                UserResponse userResponse = new UserResponse();
+                prepareResponse(user, userResponse);
+                return userResponse;
+            })
+            .toList();
     }
 
     private void prepareResponse(User user, UserResponse userResponse) {
@@ -235,8 +237,8 @@ public class UserServiceImpl implements UserService {
             .lastName(personalInfo.getLastName())
             .emailOfficial(personalInfo.getEmailOfficial())
             .emailOther(personalInfo.getEmailOther())
-            .departmentResponse(getDepartmentResponse(personalInfo.getDepartment()))
-            .designationResponse(getDesignationResponse(personalInfo.getDesignation()))
+            .department(getDepartmentResponse(personalInfo.getDepartment()))
+            .designation(getDesignationResponse(personalInfo.getDesignation()))
             .mobileNumber(personalInfo.getMobileNumber())
             .telephoneNumber(personalInfo.getTelephoneNumber())
             .accessLevel(personalInfo.getAccessLevel())

@@ -16,8 +16,8 @@ import java.util.List;
 public class UserPersonalInfoResponse {
     private String firstName;
     private String lastName;
-    private DepartmentResponse departmentResponse;
-    private DesignationResponse designationResponse;
+    private DepartmentResponse department;
+    private DesignationResponse designation;
     private String emailOfficial;
     private String emailOther;
     private String mobileNumber;

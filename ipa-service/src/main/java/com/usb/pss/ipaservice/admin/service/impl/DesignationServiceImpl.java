@@ -55,7 +55,7 @@ public class DesignationServiceImpl implements DesignationService {
     }
 
     private Designation findDesignationWithDepartmentById(Long id) {
-        return designationRepository.findDesignationWithDepartmentById(id)
+        return designationRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.DESIGNATION_NOT_FOUND));
     }
 

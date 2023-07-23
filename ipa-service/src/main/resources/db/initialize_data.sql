@@ -1,21 +1,64 @@
 -- Create Admin Group
 insert into adm_group(id, name, description, version)
 values (1, 'ADMIN', 'Admin', 0)
-    on conflict do nothing;
+on conflict do nothing;
 
--- Create Super Admin => username='admin' password='admin'
-insert into adm_user(id, first_name, last_name, email, username, password, group_id, active, version)
-values (1, 'Admin', 'Admin', 'mdgiashu069@gmail.com', 'admin',
-        '$2a$10$FszQtoGSFc/WDJZvOUQiQeGhGiw7KwwXh7tMRbMBpUtYLE.PGmM/y', 1, true, 0)
-    on conflict do nothing;
+-- Create Department table
+insert into adm_department(id, name, version)
+values (1, 'admin', 0)
+on conflict do nothing;
 
+-- Create Designation Table
+insert into adm_designation(id, name, version)
+values (1, 'manager', 0)
+on conflict do nothing;
+
+-- Create Currency Table
+insert into adm_currency(id, name, code, version)
+values (1, 'US Dollar', 'USD', 0),
+       (2, 'Euro', 'euro', 0),
+       (3, 'Taka', 'BDT', 0),
+       (4, 'India Rupee', 'INR', 0)
+on conflict do nothing;
+
+-- Create Point of Sale Table
+insert into adm_point_of_sale(id, name, version)
+values (1, 'Dhaka', 0),
+       (2, 'Chittagong', 0),
+       (3, 'Delhi', 0),
+       (4, 'Doha', 0),
+       (5, 'NewYork', 0)
+on conflict do nothing;
 
 -- Create Password Policy
 insert into adm_password_policy(id, password_length, contains_digit, contains_lowercase, contains_special_characters,
                                 contains_uppercase, version)
 values (1, 1, false, false, false, false, 0)
-    on conflict do nothing;
+on conflict do nothing;
 
+-- Create Personal Info Table
+insert into adm_personal_info(id, first_name, last_name, email_official, department_id, designation_id, version)
+values (1, 'super', 'admin', 'admin@gmail.com', 1, 1, 0)
+on conflict do nothing;
+
+-- Create Super Admin => username='admin' password='admin'
+insert into adm_user(id, email, username, password, group_id, active, version, personal_info_id)
+values (1, 'admin@gmail.com', 'admin',
+        '$2a$10$FszQtoGSFc/WDJZvOUQiQeGhGiw7KwwXh7tMRbMBpUtYLE.PGmM/y', 1, true, 0, 1)
+on conflict do nothing;
+
+
+-- Set data on personal_info currency mapping table
+insert into adm_personal_info_currency_mapping(personal_info_id, currency_id)
+values (1, 1),
+       (1, 2)
+on conflict do nothing;
+
+-- Set data on personal_info point_of_sale mapping table
+insert into adm_personal_info_point_of_sale_mapping(personal_info_id, point_of_sale_id)
+values (1, 1),
+       (1, 3)
+on conflict do nothing;
 
 -- Insert Modules
 insert into adm_module (id, name, description, sort_order, version)
@@ -29,7 +72,7 @@ insert into adm_module (id, name, description, sort_order, version)
             (8, 'MESSAGE', 'Message', 8, 0),
             (9, 'BOOK_A_FLIGHT', 'Book a Flight', 9, 0),
             (10, 'ACCOUNTING', 'Accounting', 10, 0))
-    on conflict do nothing;
+on conflict do nothing;
 
 insert into adm_sub_module (id, name, description, module_id, sort_order, version)
     (values (1, 'INVENTORY_BASE_PARAMETER', 'Base Parameters', 1, 1, 0),
@@ -53,7 +96,7 @@ insert into adm_sub_module (id, name, description, module_id, sort_order, versio
             (19, 'ADMIN_SECURITY_AND_ACCESS_RIGHT', 'Security & Access Rights', 6, 19, 0),
             (20, 'ADMIN_QUEUE_MANAGEMENT', 'Queue Management', 6, 20, 0),
             (21, 'ADMIN_ONLINE_HELP', 'Online Help', 6, 21, 0))
-    on conflict do nothing;
+on conflict do nothing;
 
 
 -- Insert Menu
@@ -220,7 +263,7 @@ insert into adm_menu(id, name, description, url, icon, screen_id, sub_module_id,
             (110, 'USER_STATUS', 'User Status', 'user status', 'user status', '0242', 21, 110, 0),
             (111, 'PROCESSING_QUEUE', 'Processing Queue', 'processing queue', 'processing queue', '0243', 21, 111, 0),
             (112, 'PNR_GOV', 'PNR Gov', 'pnr gov', 'pnr gov', '0244', 21, 112, 0))
-    on conflict do nothing;
+on conflict do nothing;
 
 -- Insert Action
 insert into adm_action(id, name, description, menu_id, sort_order, version)
@@ -260,7 +303,7 @@ insert into adm_action(id, name, description, menu_id, sort_order, version)
             (34, 'VIEW_CONNECTING_FLIGHT', 'View Connecting Flights', 11, 34, 0),
             (35, 'PUBLISH_CONNECTING_FLIGHT', 'Publish Connecting Flights', 11, 35, 0),
             (36, 'UNPUBLISH_CONNECTING_FLIGHT', 'Un publish Connecting Flights', 11, 36, 0))
-    on conflict do nothing;
+on conflict do nothing;
 
 -- Give 'ADMIN' group to all action permission
 insert into adm_group_wise_action_mapping as values (select 1, id from adm_action)
