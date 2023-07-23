@@ -25,10 +25,10 @@ public record UpdateUserInfoRequest(
     String mobileNumber,
     String telephoneNumber,
     @NotEmpty
-    Set<Long> pointOfSales,
+    Set<Long> pointOfSaleIds,
     String accessLevel,
     String airport,
     @NotEmpty
-    Set<Long> allowedCurrencies
+    Set<Long> allowedCurrencyIds
 ) {
 }

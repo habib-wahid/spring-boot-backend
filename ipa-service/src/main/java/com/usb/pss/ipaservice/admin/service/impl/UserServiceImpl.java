@@ -35,7 +35,6 @@ import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.LoggedUserHelper;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -87,9 +86,9 @@ public class UserServiceImpl implements UserService {
             .active(true)
             .build();
         Department department = findDepartmentById(request.departmentId());
-        Designation designation = findDesignationByIdAndDepartment(request.designationId(), department);
-        Set<PointOfSale> pointOfSales = getPointOfSalesFromIds(request.pointOfSaleIds());
-        Set<Currency> currencies = getCurrenciesFromIds(request.currencyIds());
+        Designation designation = findDesignationById(request.designationId());
+        Set<PointOfSale> pointOfSales = new HashSet<>(getPointOfSalesFromIds(request.pointOfSaleIds()));
+        Set<Currency> currencies = new HashSet<>(getCurrenciesFromIds(request.currencyIds()));
         var userPersonalInfo = PersonalInfo
             .builder()
             .firstName(request.firstName())
@@ -106,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAll().stream().filter(Objects::nonNull).map(user -> {
+        return userRepository.findAllUsersWithGroupByIdIsNotNull().stream().filter(Objects::nonNull).map(user -> {
             UserResponse userResponse = new UserResponse();
             prepareResponse(user, userResponse);
             return userResponse;
@@ -116,6 +115,8 @@ public class UserServiceImpl implements UserService {
     private void prepareResponse(User user, UserResponse userResponse) {
         userResponse.setId(user.getId());
         userResponse.setName(user.getUsername());
+        userResponse.setGroupId(user.getGroup().getId());
+        userResponse.setGroupName(user.getGroup().getName());
 
     }
 
@@ -198,32 +199,30 @@ public class UserServiceImpl implements UserService {
         personalInfo.setFirstName(updateUserInfoRequest.firstName());
         personalInfo.setLastName(updateUserInfoRequest.lastName());
         Department department = findDepartmentById(updateUserInfoRequest.departmentId());
-        Designation designation = findDesignationByIdAndDepartment(updateUserInfoRequest.designationId(), department);
+        Designation designation = findDesignationById(updateUserInfoRequest.designationId());
         personalInfo.setDepartment(department);
         personalInfo.setDesignation(designation);
         personalInfo.setEmailOfficial(updateUserInfoRequest.emailOfficial());
         personalInfo.setEmailOther(updateUserInfoRequest.emailOptional());
         personalInfo.setMobileNumber(updateUserInfoRequest.mobileNumber());
         personalInfo.setTelephoneNumber(updateUserInfoRequest.telephoneNumber());
-        personalInfo.setPointOfSales(getPointOfSalesFromIds(updateUserInfoRequest.pointOfSales()));
         personalInfo.setAccessLevel(updateUserInfoRequest.accessLevel());
         Set<Currency> currencies = personalInfo.getAllowedCurrencies();
-        Set<Currency> updatedCurrencies = getCurrenciesFromIds(updateUserInfoRequest.allowedCurrencies());
+        List<Currency> updatedCurrencies = getCurrenciesFromIds(updateUserInfoRequest.allowedCurrencyIds());
         currencies.retainAll(updatedCurrencies);
         currencies.addAll(updatedCurrencies);
         Set<PointOfSale> pointOfSales = personalInfo.getPointOfSales();
-        Set<PointOfSale> updatedPointOfSales = getPointOfSalesFromIds(updateUserInfoRequest.pointOfSales());
+        List<PointOfSale> updatedPointOfSales = getPointOfSalesFromIds(updateUserInfoRequest.pointOfSaleIds());
         pointOfSales.retainAll(updatedPointOfSales);
         pointOfSales.addAll(updatedPointOfSales);
         userRepository.save(user);
     }
 
-    private Set<PointOfSale> getPointOfSalesFromIds(Set<Long> pointOfSaleIds) {
+    private List<PointOfSale> getPointOfSalesFromIds(Set<Long> pointOfSaleIds) {
         return pointOfSaleRepository.findByIdIn(pointOfSaleIds);
     }
 
-    @NotNull
-    private Set<Currency> getCurrenciesFromIds(Set<Long> currencyIds) {
+    private List<Currency> getCurrenciesFromIds(Set<Long> currencyIds) {
         return currencyRepository.findByIdIn(currencyIds);
     }
 
@@ -236,9 +235,8 @@ public class UserServiceImpl implements UserService {
             .lastName(personalInfo.getLastName())
             .emailOfficial(personalInfo.getEmailOfficial())
             .emailOther(personalInfo.getEmailOther())
-            .designationResponse(
-                getDesignationResponseWithDepartmentResponse(personalInfo.getDesignation(),
-                    personalInfo.getDepartment()))
+            .departmentResponse(getDepartmentResponse(personalInfo.getDepartment()))
+            .designationResponse(getDesignationResponse(personalInfo.getDesignation()))
             .mobileNumber(personalInfo.getMobileNumber())
             .telephoneNumber(personalInfo.getTelephoneNumber())
             .accessLevel(personalInfo.getAccessLevel())
@@ -247,16 +245,15 @@ public class UserServiceImpl implements UserService {
             .build();
     }
 
-    private DesignationResponse getDesignationResponseWithDepartmentResponse(Designation designation,
-                                                                             Department department) {
-        DepartmentResponse departmentResponse = new DepartmentResponse();
-        departmentResponse.setId(department.getId());
-        departmentResponse.setDepartmentName(department.getName());
+    private DesignationResponse getDesignationResponse(Designation designation) {
         DesignationResponse designationResponse = new DesignationResponse();
         designationResponse.setId(designation.getId());
         designationResponse.setDesignationName(designation.getName());
-        designationResponse.setDepartmentResponse(departmentResponse);
         return designationResponse;
+    }
+
+    private DepartmentResponse getDepartmentResponse(Department department) {
+        return new DepartmentResponse(department.getId(), department.getName());
     }
 
     private List<CurrencyResponse> getCurrencyResponsesFromCurrencies(Collection<Currency> currencies) {
@@ -294,8 +291,8 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT_NOT_FOUND));
     }
 
-    private Designation findDesignationByIdAndDepartment(Long designationId, Department department) {
-        return designationRepository.findByIdAndDepartment(designationId, department)
+    private Designation findDesignationById(Long designationId) {
+        return designationRepository.findById(designationId)
             .orElseThrow(() -> new ResourceNotFoundException(DESIGNATION_NOT_FOUND));
     }
 

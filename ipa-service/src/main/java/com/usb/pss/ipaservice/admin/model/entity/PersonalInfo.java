@@ -36,9 +36,9 @@ public class PersonalInfo extends BaseAuditorEntity {
     private String telephoneNumber;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "adm_personal_info_point_of_sales_mapping",
+        name = "adm_personal_info_point_of_sale_mapping",
         joinColumns = @JoinColumn(name = "personal_info_id"),
-        inverseJoinColumns = @JoinColumn(name = "point_of_sales_id"))
+        inverseJoinColumns = @JoinColumn(name = "point_of_sale_id"))
     private Set<PointOfSale> pointOfSales;
     private String accessLevel;
     private String airport;

@@ -39,10 +39,6 @@ public class DesignationController {
         return designationService.getAllDesignations();
     }
 
-    @GetMapping("/{departmentId}")
-    public List<DesignationResponse> getAllDesignationsByDepartmentId(@Validated @PathVariable Long departmentId) {
-        return designationService.getAllDesignationsByDepartmentId(departmentId);
-    }
 
     @PostMapping
     @Operation(summary = "Create a new designation")

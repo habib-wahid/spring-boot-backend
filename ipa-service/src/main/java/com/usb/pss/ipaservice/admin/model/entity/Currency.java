@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.admin.model.entity;
 
 import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -16,5 +17,6 @@ import lombok.Setter;
 @Table(name = "adm_currency")
 public class Currency extends BaseAuditorEntity {
     private String name;
+    @Column(unique = true)
     private String code;
 }

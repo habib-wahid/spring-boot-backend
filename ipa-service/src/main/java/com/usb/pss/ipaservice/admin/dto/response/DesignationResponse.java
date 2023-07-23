@@ -13,5 +13,4 @@ import lombok.Setter;
 public class DesignationResponse {
     private Long id;
     private String designationName;
-    private DepartmentResponse departmentResponse;
 }

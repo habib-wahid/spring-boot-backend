@@ -15,6 +15,4 @@ public interface DesignationService {
 
     List<DesignationResponse> getAllDesignations();
 
-    List<DesignationResponse> getAllDesignationsByDepartmentId(Long departmentId);
-
 }
