@@ -4,6 +4,7 @@ import static com.usb.pss.ipaservice.common.APIEndpointConstants.AUTHENTICATION_
 import static com.usb.pss.ipaservice.common.SecurityConstants.AUTHORIZATION;
 
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
+import com.usb.pss.ipaservice.admin.dto.request.ForgotPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ResetPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
@@ -14,7 +15,6 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
@@ -54,16 +54,18 @@ public class AuthenticationController {
         authenticationService.logout(authHeader, logoutRequest);
     }
 
-    @PostMapping("/forgot-password")
+    @PostMapping("/forgotPassword")
     @Operation(summary = "User forgot password endpoint")
-    public void forgotPassword(HttpServletRequest httpServletRequest) throws MessagingException {
-        authenticationService.updateResetPasswordToken(httpServletRequest);
+    public void forgotPassword(HttpServletRequest httpServletRequest,
+                               @RequestBody @Validated ForgotPasswordRequest forgotPasswordRequest
+    ) {
+        authenticationService.updateResetPasswordToken(httpServletRequest, forgotPasswordRequest);
     }
 
-    @PostMapping("/reset-password")
+    @PostMapping("/resetPassword")
     @Operation(summary = "User reset password endpoint with reset token and password reset request body")
     public void resetPassword(@Param(value = "token") String token,
-                              @RequestBody ResetPasswordRequest resetPasswordRequest) {
-        authenticationService.updatePassword(token, resetPasswordRequest);
+                              @RequestBody @Validated ResetPasswordRequest resetPasswordRequest) {
+        authenticationService.resetPassword(token, resetPasswordRequest);
     }
 }
