@@ -78,7 +78,7 @@ public class GroupController {
         groupService.updateGroupWiseAction(request);
     }
 
-    @GetMapping("/{groupId}/GroupWiseAction")
+    @GetMapping("/{groupId}/groupWiseAction")
     @PreAuthorize("hasAnyAuthority('VIEW_GROUP')")
     @Operation(summary = "Get actions of a Group with it's ID")
     public List<ModuleResponse> getGroupWiseAction(@PathVariable Long groupId) {
