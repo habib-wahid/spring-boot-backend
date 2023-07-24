@@ -110,12 +110,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void sendPasswordResetLink(HttpServletRequest httpServletRequest,
                                       ForgotPasswordRequest forgotPasswordRequest) {
         User user = userRepository
-            .findUserByUsername(forgotPasswordRequest.userName())
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
+                .findUserByUsername(forgotPasswordRequest.userName())
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
         PasswordReset passwordReset = savePasswordReset(user);
         String siteURL = httpServletRequest.getRequestURL().toString();
         String url = siteURL
-            .replace(httpServletRequest.getServletPath(), "") + "/resetPassword?token=" + passwordReset.getTokenId();
+                .replace(httpServletRequest.getServletPath(), "") + "/resetPassword?token="
+                            + passwordReset.getTokenId();
         try {
             emailService.sendEmail(user, url);
         } catch (MessagingException e) {
@@ -126,18 +127,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private PasswordReset savePasswordReset(User user) {
         return passwordResetRepository.save(
-            PasswordReset.builder()
-                .user(user)
-                .expiration(LocalDateTime.now().plusMinutes(resetPasswordValidity))
-                .build()
+                PasswordReset.builder()
+                        .user(user)
+                        .expiration(LocalDateTime.now().plusMinutes(resetPasswordValidity))
+                        .build()
         );
     }
 
     @Override
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
         PasswordReset passwordReset = passwordResetRepository
-            .findPasswordResetByTokenId(UUID.fromString(resetPasswordRequest.token()))
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.RESET_TOKEN_NOT_FOUND));
+                .findPasswordResetByTokenId(UUID.fromString(resetPasswordRequest.token()))
+                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.RESET_TOKEN_NOT_FOUND));
         if (passwordReset.getExpiration().isBefore(LocalDateTime.now())) {
             throw new RuleViolationException(ExceptionConstant.EMAIL_VALIDITY_EXPIRED);
         }
