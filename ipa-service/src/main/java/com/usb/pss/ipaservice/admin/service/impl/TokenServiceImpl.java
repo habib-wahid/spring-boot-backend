@@ -27,7 +27,7 @@ public class TokenServiceImpl implements TokenService {
         return refreshTokenRepository.save(
             RefreshToken.builder()
                 .user(user)
-                .expiration(LocalDateTime.now().plusSeconds(refreshTokenExpiration))
+                .expiration(LocalDateTime.now().plusMinutes(refreshTokenExpiration))
                 .build()
         );
 
