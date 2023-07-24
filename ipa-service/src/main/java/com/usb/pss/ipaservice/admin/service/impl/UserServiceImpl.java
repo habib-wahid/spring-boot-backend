@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAllUsersWithGroupByIdIsNotNull()
+        return userRepository.findAll()
             .stream()
             .map(user -> {
                 UserResponse userResponse = new UserResponse();
