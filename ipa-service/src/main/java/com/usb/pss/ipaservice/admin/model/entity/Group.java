@@ -13,6 +13,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,12 +27,14 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "adm_group")
+@Audited
 public class Group extends BaseAuditorEntity {
 
     @Column(unique = true)
     private String name;
     private String description;
 
+    @NotAudited
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "adm_group_wise_action_mapping",

@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 @Getter
 @Setter
@@ -16,9 +18,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "adm_password_policy")
+@Audited
 public class PasswordPolicy extends BaseAuditorEntity {
 
     private Integer passwordLength;
+    @NotAudited
     private Boolean containsUppercase;
     private Boolean containsLowercase;
     private Boolean containsDigit;

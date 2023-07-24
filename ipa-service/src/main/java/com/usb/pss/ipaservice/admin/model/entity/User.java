@@ -34,8 +34,6 @@ import java.util.stream.Collectors;
 @Table(name = "adm_user")
 public class User extends BaseAuditorEntity implements UserDetails {
 
-    private String firstName;
-    private String lastName;
     @Column(unique = true)
     private String email;
     @Column(unique = true)

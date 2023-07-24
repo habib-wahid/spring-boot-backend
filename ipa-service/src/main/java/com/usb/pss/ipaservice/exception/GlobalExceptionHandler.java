@@ -25,4 +25,10 @@ public class GlobalExceptionHandler {
     public ExceptionResponse handleAuthenticationFailedException(AuthenticationFailedException e) {
         return new ExceptionResponse(e.getCode(), e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ExceptionResponse handleResourceAlreadyExistsException(ResourceAlreadyExistsException e) {
+        return new ExceptionResponse(e.getCode(), e.getMessage());
+    }
 }

@@ -3,11 +3,13 @@ package com.usb.pss.ipaservice.admin.repository;
 import com.usb.pss.ipaservice.admin.model.entity.PasswordPolicy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.history.RevisionRepository;
 
 import java.util.List;
 import java.util.Map;
 
-public interface PasswordPolicyRepository extends JpaRepository<PasswordPolicy, Long> {
+public interface PasswordPolicyRepository extends RevisionRepository<PasswordPolicy, Long, Long>,
+        JpaRepository<PasswordPolicy, Long> {
 
     @Query("SELECT 'passwordLength' AS Policy, p.passwordLength AS Value\n" +
         "FROM PasswordPolicy p \n" +
