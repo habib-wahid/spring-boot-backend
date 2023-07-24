@@ -14,14 +14,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
     private static final String SECURITY_SCHEME_NAME = "JWT Token";
-    private static final String SECURITY_SCHEME_NAME_REFRESH_TOKEN = "Authorization"; //TODO This Line Only For development purpose
+
+    //TODO This Line Only For development purpose
+    private static final String SECURITY_SCHEME_NAME_REFRESH_TOKEN = "Authorization";
+
 
     @Bean
     public OpenAPI openAPI() {
         OpenAPI openAPI = new OpenAPI();
         openAPI.setInfo(apiInfo());
         openAPI.addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME));
-        openAPI.addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME_REFRESH_TOKEN)); //TODO This Line Only For development purpose
+        openAPI.addSecurityItem(new SecurityRequirement().addList(
+            SECURITY_SCHEME_NAME_REFRESH_TOKEN)); //TODO This Line Only For development purpose
         openAPI.components(apiComponents());
         return openAPI;
     }
@@ -73,7 +77,7 @@ public class SwaggerConfig {
                 .scheme("bearer")
                 .bearerFormat(SECURITY_SCHEME_NAME_REFRESH_TOKEN)
         );
-           //TODO END
+        //TODO END
         return components;
     }
 }
