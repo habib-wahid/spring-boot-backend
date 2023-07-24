@@ -1,7 +1,7 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
+import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
-import com.usb.pss.ipaservice.admin.dto.response.MenuResponseWithIdName;
 import com.usb.pss.ipaservice.admin.model.entity.Menu;
 
 import java.util.List;
@@ -14,13 +14,13 @@ import java.util.List;
 public interface MenuService {
     Menu getMenuById(Long menuId);
 
-    MenuResponse getMenuResponseById(Long menuId);
+    MenuActionResponse getMenuResponseById(Long menuId);
 
-    List<MenuResponse> getAllMenuResponse();
+    List<MenuActionResponse> getAllMenuResponse();
 
     void deactivateMenu(Long menuId);
 
-    List<MenuResponseWithIdName> getAllMenuResponseWithIdName();
+    List<MenuResponse> getAllMenuResponseWithIdName();
 
-    void prepareResponse(Menu menu, MenuResponse menuResponse);
+    void prepareResponse(Menu menu, MenuActionResponse menuActionResponse);
 }

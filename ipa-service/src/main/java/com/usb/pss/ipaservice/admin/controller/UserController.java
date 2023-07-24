@@ -6,8 +6,8 @@ import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
-import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
-import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
+import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
@@ -54,7 +54,7 @@ public class UserController {
 
     @GetMapping("/permittedMenus")
     @Operation(summary = "Get all permitted menus by current logged in user")
-    public Set<MenuResponse> getPermittedMenusByUserId() {
+    public Set<MenuActionResponse> getPermittedMenusByUserId() {
         return userService.getUserAllPermittedMenu();
     }
 
@@ -69,7 +69,7 @@ public class UserController {
     @GetMapping("/{userId}/actions")
     @PreAuthorize("hasAnyAuthority('VIEW_USER')")
     @Operation(summary = "Retrieve module-wise action list for a user ")
-    public List<ModuleResponse> getModuleWiseUserActions(@PathVariable Long userId) {
+    public List<ModuleActionResponse> getModuleWiseUserActions(@PathVariable Long userId) {
         return userService.getModuleWiseUserActions(userId);
     }
 

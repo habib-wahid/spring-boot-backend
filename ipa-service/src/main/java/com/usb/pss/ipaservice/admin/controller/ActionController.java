@@ -1,7 +1,7 @@
 package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.response.AdminActionResponse;
-import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.service.impl.ActionServiceImpl;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,7 +33,7 @@ public class ActionController {
 
     @GetMapping("/moduleWiseActions")
     @Operation(summary = "Get module wise menu and actions")
-    public List<ModuleResponse> getModuleWiseActions() {
+    public List<ModuleActionResponse> getModuleWiseActions() {
         return moduleService.getModuleWiseActions();
     }
 

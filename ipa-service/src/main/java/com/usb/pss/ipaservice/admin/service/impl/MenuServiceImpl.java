@@ -1,13 +1,12 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
+import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
-import com.usb.pss.ipaservice.admin.dto.response.MenuResponseWithIdName;
 import com.usb.pss.ipaservice.admin.model.entity.Menu;
 import com.usb.pss.ipaservice.admin.repository.MenuRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,20 +25,20 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public MenuResponse getMenuResponseById(Long menuId) {
+    public MenuActionResponse getMenuResponseById(Long menuId) {
         Menu menu = getMenuById(menuId);
-        MenuResponse menuResponse = new MenuResponse();
-        prepareResponse(menu, menuResponse);
-        return menuResponse;
+        MenuActionResponse menuActionResponse = new MenuActionResponse();
+        prepareResponse(menu, menuActionResponse);
+        return menuActionResponse;
     }
 
     @Override
-    public List<MenuResponse> getAllMenuResponse() {
+    public List<MenuActionResponse> getAllMenuResponse() {
         return menuRepository.findAll().stream()
             .map(menu -> {
-                MenuResponse menuResponse = new MenuResponse();
-                prepareResponse(menu, menuResponse);
-                return menuResponse;
+                MenuActionResponse menuActionResponse = new MenuActionResponse();
+                prepareResponse(menu, menuActionResponse);
+                return menuActionResponse;
             }).toList();
     }
 
@@ -49,26 +48,26 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuResponseWithIdName> getAllMenuResponseWithIdName() {
+    public List<MenuResponse> getAllMenuResponseWithIdName() {
         return menuRepository.findAll().stream()
             .map(menu -> {
-                MenuResponseWithIdName responseWithIdName = new MenuResponseWithIdName();
+                MenuResponse responseWithIdName = new MenuResponse();
                 prepareResponseWithIdName(menu, responseWithIdName);
                 return responseWithIdName;
             }).toList();
     }
 
     @Override
-    public void prepareResponse(Menu menu, MenuResponse menuResponse) {
-        menuResponse.setId(menu.getId());
-        menuResponse.setName(menu.getName());
-        menuResponse.setUrl(menu.getUrl());
-        menuResponse.setIcon(menu.getIcon());
+    public void prepareResponse(Menu menu, MenuActionResponse menuActionResponse) {
+        menuActionResponse.setId(menu.getId());
+        menuActionResponse.setName(menu.getName());
+        menuActionResponse.setUrl(menu.getUrl());
+        menuActionResponse.setIcon(menu.getIcon());
 
     }
 
-    private void prepareResponseWithIdName(Menu menu, MenuResponseWithIdName menuResponseWithIdName) {
-        menuResponseWithIdName.setId(menu.getId());
-        menuResponseWithIdName.setName(menu.getName());
+    private void prepareResponseWithIdName(Menu menu, MenuResponse menuResponse) {
+        menuResponse.setId(menu.getId());
+        menuResponse.setName(menu.getName());
     }
 }

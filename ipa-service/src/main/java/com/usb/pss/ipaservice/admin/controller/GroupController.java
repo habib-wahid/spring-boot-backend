@@ -3,8 +3,8 @@ package com.usb.pss.ipaservice.admin.controller;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
-import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.GroupResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -81,7 +81,7 @@ public class GroupController {
     @GetMapping("/{groupId}/groupWiseAction")
     @PreAuthorize("hasAnyAuthority('VIEW_GROUP')")
     @Operation(summary = "Get actions of a Group with it's ID")
-    public List<ModuleResponse> getGroupWiseAction(@PathVariable Long groupId) {
+    public List<ModuleActionResponse> getGroupWiseAction(@PathVariable Long groupId) {
         return groupService.getGroupWisePermittedActions(groupId);
     }
 }

@@ -24,6 +24,10 @@ public interface ModuleRepository extends JpaRepository<Module, Long> {
     List<Module> findModuleWiseUserActions(@Param("group") Group group, @Param("actions") Collection<Action> actions);
 
     @Query("select md from Module md left join fetch md.subModules smd left join fetch smd.menus mn" +
-        " left join fetch mn.actions ac left join ac.groups gr where gr.id = :groupId")
-    List<Module> getAllModulesForGroup(@Param("groupId") Long groupId);
+        " left join mn.actions ac left join ac.groups gr where ac in :actions or gr = :group"
+    )
+    List<Module> findModuleWiseMenuForGroupAndAdditionalAction(
+        @Param("group") Group group, @Param("actions") Collection<Action> actions
+    );
+
 }
