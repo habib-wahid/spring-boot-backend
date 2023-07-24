@@ -24,8 +24,6 @@ public record RegistrationRequest(
     @NotBlank
     String confirmPassword,
     @NotNull
-    Long groupId,
-    @NotNull
     Long departmentId,
     @NotNull
     Long designationId,
