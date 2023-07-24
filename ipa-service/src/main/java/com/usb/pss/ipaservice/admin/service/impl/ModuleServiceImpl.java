@@ -175,7 +175,7 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     private SubModuleResponseWithMenuIdAndName.SubModuleResponseWithMenuIdAndNameBuilder
-    getSubModuleResponseWithMenuIdAndName(
+        getSubModuleResponseWithMenuIdAndName(
         SubModule subModule) {
         return SubModuleResponseWithMenuIdAndName
             .builder()
@@ -186,7 +186,7 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     private ModuleResponseWithSubModuleAndMenu.ModuleResponseWithSubModuleAndMenuBuilder
-    getModuleResponseWithSubModuleAndName(
+        getModuleResponseWithSubModuleAndName(
         Module module) {
         return ModuleResponseWithSubModuleAndMenu
             .builder()
