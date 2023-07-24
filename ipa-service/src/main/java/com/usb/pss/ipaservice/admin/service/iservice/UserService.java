@@ -6,8 +6,8 @@ import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
-import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
-import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
+import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 
@@ -20,13 +20,13 @@ public interface UserService {
 
     List<UserResponse> getAllUsers();
 
-    Set<MenuResponse> getUserAllPermittedMenu();
+    Set<MenuActionResponse> getUserAllPermittedMenu();
 
     void addAdditionalAction(UserActionRequest userActionRequest);
 
 //    Set<MenuResponse> getAllPermittedMenuByUser(User user);
 
-    List<ModuleResponse> getModuleWiseUserActions(Long userId);
+    List<ModuleActionResponse> getModuleWiseUserActions(Long userId);
 
     void updateUserGroup(UserGroupRequest userGroupRequest);
 

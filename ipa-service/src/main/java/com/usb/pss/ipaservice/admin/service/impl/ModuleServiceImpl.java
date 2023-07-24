@@ -1,12 +1,12 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.response.ActionResponse;
+import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
-import com.usb.pss.ipaservice.admin.dto.response.MenuResponseWithIdName;
-import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
-import com.usb.pss.ipaservice.admin.dto.response.ModuleResponseWithSubModuleAndMenu;
-import com.usb.pss.ipaservice.admin.dto.response.SubModuleResponse;
-import com.usb.pss.ipaservice.admin.dto.response.SubModuleResponseWithMenuIdAndName;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleMenuResponse;
+import com.usb.pss.ipaservice.admin.dto.response.SubModuleActionResponse;
+import com.usb.pss.ipaservice.admin.dto.response.SubModuleMenuResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Menu;
 import com.usb.pss.ipaservice.admin.model.entity.Module;
@@ -36,26 +36,26 @@ public class ModuleServiceImpl implements ModuleService {
     private final ActionRepository actionRepository;
 
     @Override
-    public List<ModuleResponse> getModuleWiseActions() {
+    public List<ModuleActionResponse> getModuleWiseActions() {
         List<Module> modules = moduleRepository.findAllByOrderBySortOrder();
         return getModuleResponsesFromModules(modules);
     }
 
     @Override
-    public List<ModuleResponseWithSubModuleAndMenu> getModuleWithSubModulesAndMenus() {
+    public List<ModuleMenuResponse> getModuleWithSubModulesAndMenus() {
         List<Module> modules = moduleRepository.findAllModulesWithSubModulesAndMenusByIdIsNotNull();
-        return getModuleResponseWithSubModulesAndMenusFromModules(modules);
+        return getModuleResponseWithSubModulesAndMenus(modules);
     }
 
     @Override
-    public List<ModuleResponse> getAllModulesByGroup(Long groupId) {
+    public List<ModuleActionResponse> getAllModulesByGroup(Long groupId) {
         List<Module> modules = moduleRepository.findAllByOrderBySortOrder();
         Set<Action> permittedActions = new HashSet<>(actionRepository.findGroupWiseAction(groupId));
         return getModuleResponsesFromModules(modules, permittedActions);
     }
 
     @Override
-    public List<ModuleResponse> getModuleWiseUserActions(Long userId) {
+    public List<ModuleActionResponse> getModuleWiseUserActions(Long userId) {
         User user = userRepository.findUserFetchAdditionalActionsById(userId)
             .orElseThrow(() -> new ResourceNotFoundException(
                 ExceptionConstant.USER_NOT_FOUND_BY_ID));
@@ -66,29 +66,43 @@ public class ModuleServiceImpl implements ModuleService {
         return getModuleResponsesFromModules(modules);
     }
 
-    private List<ModuleResponseWithSubModuleAndMenu> getModuleResponseWithSubModulesAndMenusFromModules(
-        List<Module> modules) {
+    @Override
+    public List<ModuleMenuResponse> getModuleWiseUserMenu(User user) {
+        List<Module> modules = moduleRepository.findModuleWiseMenuForGroupAndAdditionalAction(
+            user.getGroup(), user.getAdditionalActions()
+        );
+        return getModuleResponseWithSubModulesAndMenus(modules);
+    }
+
+    private List<ModuleMenuResponse> getModuleResponseWithSubModulesAndMenus(
+        List<Module> modules
+    ) {
         return modules
             .stream()
-            .map(module -> getModuleResponseWithSubModuleAndName(module)
+            .map(module -> getModuleMenuResponse(module)
                 .subModules(
                     module.getSubModules()
                         .stream()
-                        .map(subModule -> getSubModuleResponseWithMenuIdAndName(subModule)
+                        .map(subModule -> getSubModuleMenuResponse(subModule)
                             .menus(
                                 subModule.getMenus()
                                     .stream()
-                                    .map(this::getMenuResponseWithIdAndName)
-                                    .toList())
-                            .build())
-                        .sorted(Comparator.comparingInt(SubModuleResponseWithMenuIdAndName::getSortOrder))
-                        .toList())
-                .build())
-            .sorted(Comparator.comparingInt(ModuleResponseWithSubModuleAndMenu::getSortOrder))
+                                    .map(this::getMenuResponse)
+                                    .sorted(Comparator.comparingInt(MenuResponse::getSortOrder))
+                                    .toList()
+                            )
+                            .build()
+                        )
+                        .sorted(Comparator.comparingInt(SubModuleMenuResponse::getSortOrder))
+                        .toList()
+                )
+                .build()
+            )
+            .sorted(Comparator.comparingInt(ModuleMenuResponse::getSortOrder))
             .toList();
     }
 
-    private List<ModuleResponse> getModuleResponsesFromModules(List<Module> modules) {
+    private List<ModuleActionResponse> getModuleResponsesFromModules(List<Module> modules) {
         return modules
             .stream()
             .map(module -> getModuleResponseBuilder(module)
@@ -108,17 +122,20 @@ public class ModuleServiceImpl implements ModuleService {
                                                 .toList()
                                         )
                                         .build())
-                                    .sorted(Comparator.comparingInt(MenuResponse::getSortOrder))
+                                    .sorted(Comparator.comparingInt(MenuActionResponse::getSortOrder))
                                     .toList())
                             .build())
-                        .sorted(Comparator.comparingInt(SubModuleResponse::getSortOrder))
+                        .sorted(Comparator.comparingInt(SubModuleActionResponse::getSortOrder))
                         .toList())
                 .build())
-            .sorted(Comparator.comparingInt(ModuleResponse::getSortOrder))
+            .sorted(Comparator.comparingInt(ModuleActionResponse::getSortOrder))
             .toList();
     }
 
-    private List<ModuleResponse> getModuleResponsesFromModules(List<Module> modules, Set<Action> permittedActions) {
+    private List<ModuleActionResponse> getModuleResponsesFromModules(
+        List<Module> modules,
+        Set<Action> permittedActions
+    ) {
         return modules
             .stream()
             .map(module -> getModuleResponseBuilder(module)
@@ -138,13 +155,13 @@ public class ModuleServiceImpl implements ModuleService {
                                                 .toList()
                                         )
                                         .build())
-                                    .sorted(Comparator.comparingInt(MenuResponse::getSortOrder))
+                                    .sorted(Comparator.comparingInt(MenuActionResponse::getSortOrder))
                                     .toList())
                             .build())
-                        .sorted(Comparator.comparingInt(SubModuleResponse::getSortOrder))
+                        .sorted(Comparator.comparingInt(SubModuleActionResponse::getSortOrder))
                         .toList())
                 .build())
-            .sorted(Comparator.comparingInt(ModuleResponse::getSortOrder))
+            .sorted(Comparator.comparingInt(ModuleActionResponse::getSortOrder))
             .toList();
     }
 
@@ -170,14 +187,21 @@ public class ModuleServiceImpl implements ModuleService {
             .build();
     }
 
-    private MenuResponseWithIdName getMenuResponseWithIdAndName(Menu menu) {
-        return new MenuResponseWithIdName(menu.getId(), menu.getName());
+    private MenuResponse getMenuResponse(Menu menu) {
+        return new MenuResponse(
+            menu.getId(),
+            menu.getName(),
+            menu.getDescription(),
+            menu.getScreenId(),
+            menu.getUrl(),
+            menu.getIcon(),
+            menu.getSortOrder()
+        );
     }
 
-    private SubModuleResponseWithMenuIdAndName.SubModuleResponseWithMenuIdAndNameBuilder
-        getSubModuleResponseWithMenuIdAndName(
+    private SubModuleMenuResponse.SubModuleMenuResponseBuilder getSubModuleMenuResponse(
         SubModule subModule) {
-        return SubModuleResponseWithMenuIdAndName
+        return SubModuleMenuResponse
             .builder()
             .id(subModule.getId())
             .name(String.valueOf(subModule.getName()))
@@ -185,10 +209,10 @@ public class ModuleServiceImpl implements ModuleService {
             .sortOrder(subModule.getSortOrder());
     }
 
-    private ModuleResponseWithSubModuleAndMenu.ModuleResponseWithSubModuleAndMenuBuilder
-        getModuleResponseWithSubModuleAndName(
-        Module module) {
-        return ModuleResponseWithSubModuleAndMenu
+    private ModuleMenuResponse.ModuleMenuResponseBuilder getModuleMenuResponse(
+        Module module
+    ) {
+        return ModuleMenuResponse
             .builder()
             .id(module.getId())
             .name(String.valueOf(module.getName()))
@@ -196,8 +220,8 @@ public class ModuleServiceImpl implements ModuleService {
             .sortOrder(module.getSortOrder());
     }
 
-    private MenuResponse.MenuResponseBuilder getMenuResponseBuilder(Menu menu) {
-        return MenuResponse
+    private MenuActionResponse.MenuActionResponseBuilder getMenuResponseBuilder(Menu menu) {
+        return MenuActionResponse
             .builder()
             .id(menu.getId())
             .name(menu.getName())
@@ -208,8 +232,8 @@ public class ModuleServiceImpl implements ModuleService {
             .sortOrder(menu.getSortOrder());
     }
 
-    private SubModuleResponse.SubModuleResponseBuilder getSubModuleResponseBuilder(SubModule subModule) {
-        return SubModuleResponse
+    private SubModuleActionResponse.SubModuleActionResponseBuilder getSubModuleResponseBuilder(SubModule subModule) {
+        return SubModuleActionResponse
             .builder()
             .id(subModule.getId())
             .name(String.valueOf(subModule.getName()))
@@ -217,8 +241,8 @@ public class ModuleServiceImpl implements ModuleService {
             .sortOrder(subModule.getSortOrder());
     }
 
-    private ModuleResponse.ModuleResponseBuilder getModuleResponseBuilder(Module module) {
-        return ModuleResponse
+    private ModuleActionResponse.ModuleActionResponseBuilder getModuleResponseBuilder(Module module) {
+        return ModuleActionResponse
             .builder()
             .id(module.getId())
             .name(String.valueOf(module.getName()))

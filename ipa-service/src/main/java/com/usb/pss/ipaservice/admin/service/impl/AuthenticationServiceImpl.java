@@ -12,18 +12,15 @@ import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.PasswordResetRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.EmailService;
-import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
 import com.usb.pss.ipaservice.admin.service.JwtService;
+import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
+import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.TokenService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.SecurityUtils;
-
-import java.util.HashSet;
-
-
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +37,8 @@ import java.util.Date;
 import java.util.UUID;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.INVALID_ACCESS_TOKEN;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
 import static com.usb.pss.ipaservice.common.SecurityConstants.TOKEN_TYPE;
 
 @Service
@@ -51,6 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final ModuleService moduleService;
     private final TokenService tokenService;
     private final UserRepository userRepository;
     private final TokenBlackListingService tokenBlackListingService;
@@ -67,24 +65,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.username(),
-                        request.password()
-                )
+            new UsernamePasswordAuthenticationToken(
+                request.username(),
+                request.password()
+            )
         );
 
-        User user = userRepository.findUserByUsername(request.username())
-                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
+        User user = userRepository.findUserFetchAdditionalActionsByUsername(request.username())
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
 
         String accessToken = jwtService.generateAccessToken(user);
         RefreshToken refreshToken = tokenService.createNewRefreshToken(user);
 
-
         return AuthenticationResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getTokenId())
-                .menuResponseSet(new HashSet<>())
-                .build();
+            .accessToken(accessToken)
+            .refreshToken(refreshToken.getTokenId())
+            .modules(moduleService.getModuleWiseUserMenu(user))
+            .build();
     }
 
     public RefreshAccessTokenResponse refreshAccessToken(UUID token) {

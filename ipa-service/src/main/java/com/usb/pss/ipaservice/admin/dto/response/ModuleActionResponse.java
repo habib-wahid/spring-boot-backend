@@ -8,15 +8,19 @@ import lombok.Setter;
 
 import java.util.List;
 
+/*
+ * Module response for to build up the tree structure
+ * with Module -> Sub-module -> Menu -> Action
+ * */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ModuleResponse {
+public class ModuleActionResponse {
     private Long id;
     private String name;
     private String description;
     private Integer sortOrder;
-    private List<SubModuleResponse> subModules;
+    private List<SubModuleActionResponse> subModules;
 }
