@@ -44,7 +44,7 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public List<ModuleMenuResponse> getModuleWithSubModulesAndMenus() {
         List<Module> modules = moduleRepository.findAllModulesWithSubModulesAndMenusByIdIsNotNull();
-        return getModuleResponseWithSubModulesAndMenusFromModules(modules);
+        return getModuleResponseWithSubModulesAndMenus(modules);
     }
 
     @Override
@@ -68,14 +68,15 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public List<ModuleMenuResponse> getModuleWiseUserMenu(User user) {
-        List<Module> modules = moduleRepository.findModuleWiseUserMenu(
+        List<Module> modules = moduleRepository.findModuleWiseMenuForGroupAndAdditionalAction(
             user.getGroup(), user.getAdditionalActions()
         );
-        return getModuleResponseWithSubModulesAndMenusFromModules(modules);
+        return getModuleResponseWithSubModulesAndMenus(modules);
     }
 
-    private List<ModuleMenuResponse> getModuleResponseWithSubModulesAndMenusFromModules(
-        List<Module> modules) {
+    private List<ModuleMenuResponse> getModuleResponseWithSubModulesAndMenus(
+        List<Module> modules
+    ) {
         return modules
             .stream()
             .map(module -> getModuleMenuResponse(module)
@@ -87,6 +88,7 @@ public class ModuleServiceImpl implements ModuleService {
                                 subModule.getMenus()
                                     .stream()
                                     .map(this::getMenuResponse)
+                                    .sorted(Comparator.comparingInt(MenuResponse::getSortOrder))
                                     .toList()
                             )
                             .build()
