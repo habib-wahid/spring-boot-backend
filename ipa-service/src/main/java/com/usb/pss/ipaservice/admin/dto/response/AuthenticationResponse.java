@@ -1,10 +1,10 @@
 package com.usb.pss.ipaservice.admin.dto.response;
 
-import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -13,5 +13,5 @@ import java.util.UUID;
 public class AuthenticationResponse {
     private String accessToken;
     private UUID refreshToken;
-    private Set<MenuResponse> menuResponseSet;
+    private List<ModuleMenuResponse> modules;
 }

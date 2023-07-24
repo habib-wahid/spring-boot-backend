@@ -1,6 +1,6 @@
 package com.usb.pss.ipaservice.admin.controller;
 
-import com.usb.pss.ipaservice.admin.dto.response.ModuleResponseWithSubModuleAndMenu;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleMenuResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +22,7 @@ public class ModuleController {
 
     @GetMapping
     @Operation(summary = "Get all modules with subModules in a list.")
-    public List<ModuleResponseWithSubModuleAndMenu> getAllModulesWithSubModulesAndMenus() {
+    public List<ModuleMenuResponse> getAllModulesWithSubModulesAndMenus() {
         return moduleService.getModuleWithSubModulesAndMenus();
     }
 }

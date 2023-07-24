@@ -3,15 +3,15 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
-import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.GroupResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Group;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
 import com.usb.pss.ipaservice.admin.repository.GroupRepository;
+import com.usb.pss.ipaservice.admin.service.iservice.GroupService;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
-import com.usb.pss.ipaservice.admin.service.iservice.GroupService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
@@ -105,7 +105,7 @@ public class GroupServiceImpl implements GroupService {
 
 
     @Override
-    public List<ModuleResponse> getGroupWisePermittedActions(Long groupId) {
+    public List<ModuleActionResponse> getGroupWisePermittedActions(Long groupId) {
         return moduleService.getAllModulesByGroup(groupId);
     }
 
