@@ -15,7 +15,6 @@ import com.usb.pss.ipaservice.admin.service.EmailService;
 import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
 import com.usb.pss.ipaservice.admin.service.JwtService;
 import com.usb.pss.ipaservice.admin.service.iservice.TokenService;
-import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
@@ -55,7 +54,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final TokenService tokenService;
     private final UserRepository userRepository;
     private final TokenBlackListingService tokenBlackListingService;
-    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetRepository passwordResetRepository;
     private final EmailService emailService;
@@ -80,15 +78,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String accessToken = jwtService.generateAccessToken(user);
         RefreshToken refreshToken = tokenService.createNewRefreshToken(user);
-//        Set<MenuResponse> menuResponseSet = userService.getAllPermittedMenuByUser(user);
+
 
         return AuthenticationResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken.getTokenId())
                 .menuResponseSet(new HashSet<>())
                 .build();
-
-//        return new AuthenticationResponse(accessToken, refreshToken.getTokenId());
     }
 
     public RefreshAccessTokenResponse refreshAccessToken(UUID token) {
@@ -114,14 +110,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void sendPasswordResetLink(HttpServletRequest httpServletRequest, ForgotPasswordRequest forgotPasswordRequest) {
+    public void sendPasswordResetLink(HttpServletRequest httpServletRequest,
+                                      ForgotPasswordRequest forgotPasswordRequest) {
         User user = userRepository
                 .findUserByUsername(forgotPasswordRequest.userName())
                 .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
         PasswordReset passwordReset = savePasswordReset(user);
         String siteURL = httpServletRequest.getRequestURL().toString();
         String url = siteURL
-                .replace(httpServletRequest.getServletPath(), "") + "/resetPassword?token=" + passwordReset.getTokenId();
+                .replace(httpServletRequest.getServletPath(), "") + "/resetPassword?token="
+                            + passwordReset.getTokenId();
         try {
             emailService.sendEmail(user, url);
         } catch (MessagingException e) {
