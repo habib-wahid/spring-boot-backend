@@ -41,6 +41,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -83,7 +84,6 @@ public class UserServiceImpl implements UserService {
             .username(request.username())
             .password(passwordEncoder.encode(request.password()))
             .active(true)
-            .group(findGroupById(request.groupId()))
             .build();
         Department department = findDepartmentById(request.departmentId());
         Designation designation = findDesignationById(request.designationId());
@@ -118,9 +118,10 @@ public class UserServiceImpl implements UserService {
     private void prepareResponse(User user, UserResponse userResponse) {
         userResponse.setId(user.getId());
         userResponse.setName(user.getUsername());
-        userResponse.setGroupId(user.getGroup().getId());
-        userResponse.setGroupName(user.getGroup().getName());
-
+        if (Objects.nonNull(user.getGroup())) {
+            userResponse.setGroupId(user.getGroup().getId());
+            userResponse.setGroupName(user.getGroup().getName());
+        }
     }
 
     @Override
@@ -142,11 +143,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserGroup(UserGroupRequest userGroupRequest) {
-        User user = userRepository.findById(userGroupRequest.userId())
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
-
-        Group group = groupRepository.findById(userGroupRequest.groupId())
-            .orElseThrow(() -> new ResourceNotFoundException(GROUP_NOT_FOUND));
+        User user = findUserById(userGroupRequest.userId());
+        Group group = findGroupById(userGroupRequest.groupId());
 
         user.setGroup(group);
         userRepository.save(user);
@@ -154,8 +152,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserStatusInfo(UserStatusRequest request) {
-        User user = userRepository.findById(request.userId())
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+        User user = findUserById(request.userId());
 
         user.setActive(request.userStatus());
         userRepository.save(user);
@@ -232,6 +229,11 @@ public class UserServiceImpl implements UserService {
     private Group findGroupById(Long groupId) {
         return groupRepository.findById(groupId)
             .orElseThrow(() -> new ResourceNotFoundException(GROUP_NOT_FOUND));
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
     @Override
