@@ -6,6 +6,7 @@ A passenger service system (PSS) is a comprehensive software platform used by ai
 - [Background](#background)
 - [Microservices](#microservices)
 - [Features](#features)
+- [Procedure of 2FA](#procedure-of-2fa)
 - [Technology Stack](#technology-stack)
 - [Getting Started](#getting-started)
 - [Project Setup](#project-setup)
@@ -61,7 +62,17 @@ The main operations of this microservice are:
 - Customer management
 - Passenger management
 - Access control based on user group
+- Two-factor authentication facility for specific users.
 - Token blacklisting to prevent malicious log in.
+
+## Procedure of 2FA 
+The two-factor authentication has been implemented using this logic:
+- Each user of the system will have a flag attribute which will indicate whether the 2FA is enabled for that feature.
+- If a user has not enabled 2FA, he/she can simply log in to the application using his/her credentials; the application will generate access token and refresh token for the user.
+- If a user has enabled 2FA, the system will generate an OTP of 6 digits of an expiration time of 5 minutes. This OTP will be sent to the registered email-address of the user.
+- The concerned-user will have to enter the OTP to verify his/her identity. The user will be granted an access token and a refresh token given that the user enters a valid OTP.
+
+
 
 ## Technology Stack
 This repository is built upon following technologies:
