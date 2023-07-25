@@ -42,7 +42,8 @@ public class AuthenticationController {
 
     //TODO  security = { @SecurityRequirement(name = AUTHORIZATION)  for only development purpose
     @PostMapping("/refreshToken")
-    @Operation(summary = "Refresh the the access token after token expired",security = { @SecurityRequirement(name = AUTHORIZATION) })
+    @Operation(summary = "Refresh the the access token after token expired",
+            security = { @SecurityRequirement(name = AUTHORIZATION) })
     public RefreshAccessTokenResponse refreshAccessToken(@RequestHeader(HttpHeaders.AUTHORIZATION) UUID token) {
         return authenticationService.refreshAccessToken(token);
     }
