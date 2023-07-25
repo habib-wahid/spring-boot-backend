@@ -1,27 +1,50 @@
 spring:
   datasource:
-    url: jdbc:postgresql://###:5432/###
-    username: ###
-    password: ###
+    url: jdbc:postgresql://postgres-sql:5432/pss_ipa
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: noreply.pss.technonext@gmail.com
+    password: kqaldxtcjaorjazm
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  application:
+    name: ipa service
+  cache:
+    type: redis
   data:
     redis:
-      host: ###
+      host: localhost
       port: 7001
-      hashkey: ###
-
-  jpa:
-    show-sql: false
+      hashkey: pss2023Technonext
 
 application:
   security:
     jwt:
-      secret-key: ###
-      expiration: ###
+      signing-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 86400000 # a day
       refresh-token:
-        expiration: ###
+        expiration: 604800000 # 7 days
+  reset-password:
+    validity: 5
+  host-mail: noreply.pss.technonext@gmail.com
 server:
-  port: ###
-  servlet:
-    context-path: /pss/ipa
+  port: 8081
 
 useExpiringMapToBlackListAccessToken: false
