@@ -27,11 +27,15 @@ public class EmailService {
         helper.setTo(user.getEmail());
         String subject = "Here's the link to reset your password";
         String content = "<p>Dear, " + user.getUsername() + "</p>"
-                + "<p>We have received a request to reset your password for your account. To proceed with the following link : </p>"
+                + "<p>We have received a request to reset your password for your account. To proceed with the "
+                + "following link : </p>"
                 + "<p><a href=\"" + link + "\">Change my password</a></p>"
-                + "<p>If you did not initiate this request or no longer wish to reset your password, please disregard this email. Your current password will remain unchanged.</p>"
-                + "<p>Please note that the password reset link is valid for 5 min. After this time, you will need to request a new link if you still wish to reset your password.</p>"
-                + "<p>If you encounter any difficulties or require further assistance, please contact our support team at support@email.com . We are here to help you.</p>"
+                + "<p>If you did not initiate this request or no longer wish to reset your password, please disregard"
+                + "this email. Your current password will remain unchanged.</p>"
+                + "<p>Please note that the password reset link is valid for 5 min. After this time, you will need "
+                + "to request a new link if you still wish to reset your password.</p>"
+                + "<p>If you encounter any difficulties or require further assistance, please contact our "
+                + "support team at support@email.com . We are here to help you.</p>"
                 + "<p>Thank you for using USBA PSS.</p>"
                 + "<p>Best regards,</p>"
                 + "<p>System Administrator.</p>";

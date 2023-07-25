@@ -9,8 +9,8 @@ import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.CurrencyResponse;
 import com.usb.pss.ipaservice.admin.dto.response.DepartmentResponse;
 import com.usb.pss.ipaservice.admin.dto.response.DesignationResponse;
-import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
-import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
+import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.PointOfSaleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<ModuleResponse> getModuleWiseUserActions(Long userId) {
+    public List<ModuleActionResponse> getModuleWiseUserActions(Long userId) {
         return moduleService.getModuleWiseUserActions(userId);
     }
 
@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<MenuResponse> getUserAllPermittedMenu() {
+    public Set<MenuActionResponse> getUserAllPermittedMenu() {
 //        Optional<Long> optionalUserId = LoggedUserHelper.getCurrentUserId();
 //        optionalUserId.ifPresent(userId ->
 //            getUserById(userId).getPermittedMenus().stream()

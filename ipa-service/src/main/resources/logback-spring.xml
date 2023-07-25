@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="LOG_BACK_FILE" value="pss-logger"/>
+    <property name="LOG_BACK_FILE_JSON" value="pss-logger-json"/>
+    <!--    TO-DO: Must need to change file path when deploy to server #### ${user.dir}/logs-->
+    <!--    For linux user make sure to give folder or file creation permission  ####${user.dir}/logs -->
+    <property name="LOG_BACK_PATH"  value="${user.dir}/pss-services-logs"/>
+    <timestamp key="timestamp" datePattern="dd-MM-yyyy"/>
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %logger{36} - %msg%n%ex{5,format=[%class.%method:%line]}%nopex
+            </pattern>
+        </layout>
+    </appender>
+
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_BACK_PATH}/${LOG_BACK_FILE}-${timestamp}.log</file>
+        <!--    TO-DO: Need to formate logs in json format-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %logger{36} - %msg%n%ex{5,format=[%class.%method:%line]}%nopex
+            </pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily and when the file reaches 10 MegaBytes -->
+            <fileNamePattern>
+                ${LOG_BACK_PATH}/archived/${LOG_BACK_FILE}-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="ROLLING_JSON_FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_BACK_PATH}/${LOG_BACK_FILE_JSON}-${timestamp}.log</file>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${LOG_BACK_PATH}/archived/${LOG_BACK_FILE_JSON}-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <!-- LOG everything at INFO level -->
+    <root level="info">
+        <appender-ref ref="RollingFile"/>
+        <appender-ref ref="Console"/>
+        <appender-ref ref="ROLLING_JSON_FILE_APPENDER"/>
+    </root>
+
+</configuration>

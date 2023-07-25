@@ -1,8 +1,5 @@
 package com.usb.pss.ipaservice.admin.controller;
 
-import static com.usb.pss.ipaservice.common.APIEndpointConstants.AUTHENTICATION_ENDPOINT;
-import static com.usb.pss.ipaservice.common.SecurityConstants.AUTHORIZATION;
-
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ForgotPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;
@@ -10,10 +7,8 @@ import com.usb.pss.ipaservice.admin.dto.request.ResetPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
-
-import java.util.UUID;
-
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
+
+import static com.usb.pss.ipaservice.common.APIEndpointConstants.AUTHENTICATION_ENDPOINT;
+import static com.usb.pss.ipaservice.common.SecurityConstants.AUTHORIZATION;
 
 
 @RestController
@@ -40,8 +40,12 @@ public class AuthenticationController {
         return authenticationService.authenticate(request);
     }
 
+    //TODO  security = { @SecurityRequirement(name = AUTHORIZATION)  for only development purpose
     @PostMapping("/refreshToken")
-    @Operation(summary = "Refresh the the access token after token expired")
+    @Operation(
+        summary = "Refresh the the access token after token expired",
+        security = {@SecurityRequirement(name = AUTHORIZATION)}
+    )
     public RefreshAccessTokenResponse refreshAccessToken(@RequestHeader(HttpHeaders.AUTHORIZATION) UUID token) {
         return authenticationService.refreshAccessToken(token);
     }

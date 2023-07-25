@@ -10,20 +10,20 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * @author Junaid Khan Pathan
- * @date Jun 12, 2023
- */
 
 @Configuration
 public class SwaggerConfig {
     private static final String SECURITY_SCHEME_NAME = "JWT Token";
+    private static final String SECURITY_SCHEME_NAME_REFRESH_TOKEN = "Authorization";
+    //TODO This Line Only For development purpose
 
     @Bean
     public OpenAPI openAPI() {
         OpenAPI openAPI = new OpenAPI();
         openAPI.setInfo(apiInfo());
         openAPI.addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME));
+        openAPI.addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME_REFRESH_TOKEN));
+        //TODO This Line Only For development purpose
         openAPI.components(apiComponents());
         return openAPI;
     }
@@ -57,13 +57,23 @@ public class SwaggerConfig {
     private Components apiComponents() {
         Components components = new Components();
         components.addSecuritySchemes(
-                SECURITY_SCHEME_NAME,
-                new SecurityScheme()
-                        .name(SECURITY_SCHEME_NAME)
-                        .type(SecurityScheme.Type.HTTP)
-                        .in(SecurityScheme.In.HEADER)
-                        .scheme("bearer")
-                        .bearerFormat("JWT")
+            SECURITY_SCHEME_NAME,
+            new SecurityScheme()
+                .name(SECURITY_SCHEME_NAME)
+                .type(SecurityScheme.Type.HTTP)
+                .in(SecurityScheme.In.HEADER)
+                .scheme("bearer")
+                .bearerFormat("JWT")
+        );
+        // TODO  Start : Below Part Only For development purpose
+        components.addSecuritySchemes(
+            SECURITY_SCHEME_NAME_REFRESH_TOKEN,
+            new SecurityScheme()
+                .name(SECURITY_SCHEME_NAME_REFRESH_TOKEN)
+                .type(SecurityScheme.Type.APIKEY)
+                .in(SecurityScheme.In.HEADER)
+                .scheme("bearer")
+                .bearerFormat(SECURITY_SCHEME_NAME_REFRESH_TOKEN)
         );
         return components;
     }

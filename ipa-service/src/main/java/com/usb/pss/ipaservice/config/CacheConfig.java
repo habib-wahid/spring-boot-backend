@@ -43,7 +43,7 @@ public class CacheConfig {
         return builder -> {
             Map<String, RedisCacheConfiguration> configurationMap = new HashMap<>();
             configurationMap.put(BLACKLIST_CACHE_NAME, RedisCacheConfiguration.defaultCacheConfig().entryTtl(
-                Duration.ofSeconds(tokenDuration)));
+                Duration.ofMinutes(tokenDuration)));
             builder.withInitialCacheConfigurations(configurationMap);
         };
     }
