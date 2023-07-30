@@ -1,5 +1,22 @@
 -- liquibase formatted sql
+CREATE SCHEMA IF NOT EXISTS "master";
+CREATE SCHEMA IF NOT EXISTS "usba";
+CREATE SCHEMA IF NOT EXISTS "airastra";
 
+CREATE TABLE IF NOT EXISTS master.tenant_config (
+                                                    "id" varchar NOT NULL
+                                                        CONSTRAINT tenant_pk
+                                                            PRIMARY KEY,
+                                                    "name" varchar NOT NULL
+                                                        CONSTRAINT tenant_name_uc
+                                                            UNIQUE,
+                                                    "schema" varchar NOT NULL
+                                                        CONSTRAINT tenant_schema_uc
+                                                            UNIQUE,
+                                                    "issuer" varchar NOT NULL
+                                                        CONSTRAINT tenant_issuer_uc
+                                                            UNIQUE
+);
 -- changeset mdabulbasar:1690266244420-1
 CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START WITH 1 INCREMENT BY 1;
 
