@@ -5,7 +5,7 @@ import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.GroupResponse;
-import com.usb.pss.ipaservice.admin.model.entity.Group;
+
 
 import java.util.List;
 
@@ -17,7 +17,6 @@ import java.util.List;
 public interface GroupService {
     void createNewGroup(GroupCreateRequest groupCreateRequest);
 
-    Group getGroupById(Long groupId);
 
     GroupResponse getGroupResponseById(Long groupId);
 
