@@ -1,7 +1,14 @@
--- Create Super Admin => username='admin' password='admin'
-insert into adm_user(id, email, username, password, group_id, is2fa_enabled, user_type, user_code, active, version,
-                     personal_info_id)
-values (1, 'admin@gmail.com', 'admin',
-        '$2a$10$FszQtoGSFc/WDJZvOUQiQeGhGiw7KwwXh7tMRbMBpUtYLE.PGmM/y', 1, false, 'admin', 'admin001', true, 0, 1)
-on conflict do nothing;
+-- ablonewolf-293-1
+
+ALTER TABLE adm_user ADD COLUMN
+    if not exists is2fa_enabled BOOLEAN;
+
+ALTER TABLE adm_user ADD COLUMN
+    IF NOT EXISTS user_code VARCHAR(255);
+
+update adm_user set is2fa_enabled = false
+where id = 1;
+
+update adm_user set user_code = 'admin11'
+where id = 1;
 

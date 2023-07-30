@@ -33,8 +33,6 @@ public record RegistrationRequest(
     @NotNull
     Long designationId,
     @NotBlank
-    String userType,
-    @NotBlank
     String userCode,
     @NotEmpty
     Set<Long> currencyIds,

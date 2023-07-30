@@ -21,7 +21,6 @@ public class UserPersonalInfoResponse {
     private DepartmentResponse department;
     private DesignationResponse designation;
     private Boolean is2faEnabled;
-    private String userType;
     private String userCode;
     private String emailOfficial;
     private String emailOther;
