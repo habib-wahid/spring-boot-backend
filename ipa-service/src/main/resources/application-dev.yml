@@ -11,6 +11,8 @@ spring:
 
   jpa:
     show-sql: true
+#    hibernate:
+#      ddl-auto: update
 
   mail:
     host: smtp.gmail.com
@@ -49,3 +51,10 @@ server:
 
 
 useExpiringMapToBlackListAccessToken: true
+
+logging:
+  level:
+    net:
+      ttddyy:
+        dsproxy:
+          listener: debug

@@ -37,6 +37,7 @@ import com.usb.pss.ipaservice.utils.LoggedUserHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -54,6 +55,7 @@ import static com.usb.pss.ipaservice.common.ExceptionConstant.GROUP_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.NEW_PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_ID;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
 
 
 @Service
@@ -79,12 +81,13 @@ public class UserServiceImpl implements UserService {
         }
 
         var user = User
-            .builder()
-            .email(request.email())
-            .username(request.username())
-            .password(passwordEncoder.encode(request.password()))
-            .active(true)
-            .build();
+                .builder()
+                .email(request.email())
+                .username(request.username())
+                .password(passwordEncoder.encode(request.password()))
+                .active(true)
+                .is2faEnabled(request.is2faEnabled())
+                .build();
         Department department = findDepartmentById(request.departmentId());
         Designation designation = findDesignationById(request.designationId());
         Set<PointOfSale> pointOfSales = new HashSet<>(getPointOfSalesFromIds(request.pointOfSaleIds()));
@@ -101,6 +104,20 @@ public class UserServiceImpl implements UserService {
             .build();
         user.setPersonalInfo(userPersonalInfo);
         userRepository.save(user);
+    }
+
+    @Override
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID)
+        );
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findUserByUsername(username).orElseThrow(
+                () -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME)
+        );
     }
 
     @Override

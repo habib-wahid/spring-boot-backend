@@ -24,6 +24,8 @@ public record RegistrationRequest(
     @NotBlank
     String confirmPassword,
     @NotNull
+    Boolean is2faEnabled,
+    @NotNull
     Long departmentId,
     @NotNull
     Long designationId,
