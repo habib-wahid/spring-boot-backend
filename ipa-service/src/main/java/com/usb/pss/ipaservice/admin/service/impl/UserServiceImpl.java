@@ -84,11 +84,14 @@ public class UserServiceImpl implements UserService {
             .username(request.username())
             .password(passwordEncoder.encode(request.password()))
             .active(true)
+            .is2faEnabled(request.is2faEnabled())
             .build();
+
         Department department = findDepartmentById(request.departmentId());
         Designation designation = findDesignationById(request.designationId());
         Set<PointOfSale> pointOfSales = new HashSet<>(getPointOfSalesFromIds(request.pointOfSaleIds()));
         Set<Currency> currencies = new HashSet<>(getCurrenciesFromIds(request.currencyIds()));
+
         var userPersonalInfo = PersonalInfo
             .builder()
             .firstName(request.firstName())

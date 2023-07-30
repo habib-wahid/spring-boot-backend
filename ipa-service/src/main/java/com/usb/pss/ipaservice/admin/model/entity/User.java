@@ -41,7 +41,7 @@ public class User extends BaseAuditorEntity implements UserDetails {
     private String password;
     private String companyCode;
     private boolean active;
-
+    private boolean is2faEnabled;
     @ManyToOne(fetch = FetchType.LAZY)
     private Group group;
 
