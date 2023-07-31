@@ -80,7 +80,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (user.is2faEnabled()) {
             Otp otp = otpService.saveAndSend2faOtp(user);
             OtpResponse otpResponse = OtpResponse.builder()
-                .userId(otp.getUser().getId())
                 .username(otp.getUser().getUsername())
                 .expiration(otp.getExpiration())
                 .build();
@@ -101,7 +100,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authenticateWithOtp(OtpVerifyRequest request) {
-        User user = userService.getUserById(request.userId());
+        User user = userService.getUserByUsername(request.username());
         Boolean isValidOtp = otpService.verify2faOtp(user, request.otpCode());
         if (isValidOtp) {
             return generateAuthenticationResponse(user);
@@ -117,7 +116,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (otpService.hasPrevious2faOtp(user, OtpType.TWO_FA)) {
                 Otp otp = otpService.saveAndSend2faOtp(user);
                 OtpResponse otpResponse = OtpResponse.builder()
-                    .userId(otp.getUser().getId())
                     .username(otp.getUser().getUsername())
                     .expiration(otp.getExpiration())
                     .build();

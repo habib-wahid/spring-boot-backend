@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record OtpVerifyRequest(
         @NotNull
-        Long userId,
+        String username,
         @NotNull
         String otpCode
 ) {

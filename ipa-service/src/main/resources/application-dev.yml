@@ -1,4 +1,6 @@
 spring:
+  liquibase:
+    enabled: false
   datasource:
     url: jdbc:postgresql://localhost:5432/pss_ipa
     username: admin
@@ -11,8 +13,8 @@ spring:
 
   jpa:
     show-sql: true
-#    hibernate:
-#      ddl-auto: update
+    hibernate:
+      ddl-auto: update
 
   mail:
     host: smtp.gmail.com
