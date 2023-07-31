@@ -3,6 +3,7 @@ package com.usb.pss.ipaservice.admin.service;
 
 
 import com.usb.pss.ipaservice.multitenancy.context.TenantContext;
+import com.usb.pss.ipaservice.utils.SecurityUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,6 +19,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import static com.usb.pss.ipaservice.common.SecurityConstants.AUTHORIZATION;
 
 @Service
 public class JwtService {
@@ -91,17 +94,14 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public static String getTenant(HttpServletRequest req) {
-        String token = req.getHeader("Authorization");
-        if (token == null) {
-            return null;
-        }
-        return Jwts.parserBuilder()
-            .setSigningKey(createSignKey())
-            .build()
-            .parseClaimsJws(token.replace(PREFIX, ""))
-            .getBody()
-            .getAudience();
+    public String getTenant(HttpServletRequest req) {
+        String token = req.getHeader(AUTHORIZATION);
+
+        return token == null ? null :
+            extractClaim(
+                SecurityUtils.extractTokenFromHeader(token),
+                Claims::getAudience
+            );
 
     }
 }
