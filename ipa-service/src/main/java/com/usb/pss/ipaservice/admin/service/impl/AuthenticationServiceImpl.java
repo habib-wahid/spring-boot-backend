@@ -75,6 +75,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Transactional
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                request.username(),
+                request.password()
+            )
+        );
+
         User user = userService.getUserByUsername(request.username());
 
         if (user.is2faEnabled()) {
@@ -87,13 +94,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .otpResponse(otpResponse)
                 .build();
         } else {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.username(),
-                            request.password()
-                    )
-            );
-
             return generateAuthenticationResponse(user);
         }
     }
