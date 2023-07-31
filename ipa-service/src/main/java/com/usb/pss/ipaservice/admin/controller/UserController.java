@@ -53,6 +53,13 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/user/{filteredText}")
+    @PreAuthorize("hasAnyAuthority('VIEW_USER')")
+    @Operation(summary = "Get all users by the filtered option")
+    public List<UserResponse> getAllUserByFilteredText(@PathVariable String filteredText) {
+        return userService.getAllUsersByFilteredText(filteredText);
+    }
+
     @GetMapping("/groups")
     @PreAuthorize("hasAnyAuthority('VIEW_USER')")
     @Operation(summary = "Get all users with groups in a list")
@@ -70,7 +77,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('UPDATE_USER_ADDITIONAL_ACTIONS')")
     @Operation(summary = "Give additional action permission to a user")
     public void addAdditionalAction(
-        @RequestBody @Validated UserActionRequest userActionRequest) {
+            @RequestBody @Validated UserActionRequest userActionRequest) {
         userService.addAdditionalAction(userActionRequest);
     }
 
@@ -97,7 +104,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('UPDATE_USER_GROUP')")
     @Operation(summary = "Update group of a user")
     public void updateUserGroup(
-        @RequestBody UserGroupRequest userGroupRequest
+            @RequestBody UserGroupRequest userGroupRequest
     ) {
         userService.updateUserGroup(userGroupRequest);
     }
@@ -112,7 +119,7 @@ public class UserController {
     @PutMapping("/changePassword")
     @Operation(summary = "Update user password")
     public void changeUserPassword(
-        @RequestBody ChangePasswordRequest changePasswordRequest
+            @RequestBody ChangePasswordRequest changePasswordRequest
     ) {
         userService.changeUserPassword(changePasswordRequest);
     }
