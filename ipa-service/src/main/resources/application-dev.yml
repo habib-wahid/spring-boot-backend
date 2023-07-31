@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/pss_ipa
-    username: postgres
-    password: postgres
+    username: admin
+    password: admin
     data:
       redis:
         host: localhost

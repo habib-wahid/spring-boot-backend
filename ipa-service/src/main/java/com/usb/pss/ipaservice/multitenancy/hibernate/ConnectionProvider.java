@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.multitenancy.hibernate;
 
 
+import lombok.RequiredArgsConstructor;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
@@ -13,14 +14,10 @@ import java.util.Map;
 
 
 @Component
+@RequiredArgsConstructor
 public class ConnectionProvider implements MultiTenantConnectionProvider, HibernatePropertiesCustomizer {
 
     private final DataSource dataSource;
-
-
-    ConnectionProvider(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 
     @Override
     public Connection getAnyConnection() throws SQLException {

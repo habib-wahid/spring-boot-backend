@@ -9,6 +9,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
@@ -20,26 +21,26 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class TenantFilter extends OncePerRequestFilter {
 
     private final HttpHeaderTenantResolver httpRequestTenantResolver;
-
-    public TenantFilter(HttpHeaderTenantResolver httpHeaderTenantResolver) {
-        this.httpRequestTenantResolver = httpHeaderTenantResolver;
-    }
+    private final JwtService jwtService;
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
-        String tenantId = httpRequestTenantResolver.resolveTenantId(request);
-        Optional.ofNullable(tenantId).ifPresent(tenant -> {
-            TenantContext.setCurrentTenant(tenant);
-            configureLogs(tenant);
-            configureTraces(tenant, request);
-        });
-        if (Objects.isNull(tenantId)) {
-            tenantId = JwtService.getTenant(request);
+                                    @NotNull FilterChain filterChain) throws ServletException, IOException {
+
+        String tenantId = jwtService.getTenant(request);
+        if (!Objects.isNull(tenantId)) {
             TenantContext.setCurrentTenant(tenantId);
+        } else {
+            tenantId = httpRequestTenantResolver.resolveTenantId(request);
+            Optional.ofNullable(tenantId).ifPresent(tenant -> {
+                TenantContext.setCurrentTenant(tenant);
+                configureLogs(tenant);
+                configureTraces(tenant, request);
+            });
         }
 
         filterChain.doFilter(request, response);
