@@ -8,6 +8,8 @@ public enum ExceptionConstant {
     USER_NOT_FOUND_BY_EMAIL("No user exists with this email"),
     USER_NOT_FOUND_BY_ID("No user exists with this id."),
     USER_NOT_FOUND_BY_RESET_PASSWORD_TOKEN("No user exists with this reset token."),
+
+    USER_NOT_FOUND_BY_USERNAME_OR_EMAIL("No user exists with this username or email."),
     INVALID_ACCESS_TOKEN("Access token is not valid or expired."),
     GROUP_NOT_FOUND("Group not found."),
     DUPLICATE_GROUP_NAME("Group name already exists."),
