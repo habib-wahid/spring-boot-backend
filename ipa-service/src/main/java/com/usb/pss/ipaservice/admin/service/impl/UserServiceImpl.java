@@ -13,6 +13,7 @@ import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.PointOfSaleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
+import com.usb.pss.ipaservice.admin.dto.response.UserGroupResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Currency;
@@ -53,6 +54,7 @@ import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME
 import static com.usb.pss.ipaservice.common.ExceptionConstant.GROUP_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.NEW_PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.POINT_OF_SALES_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_ID;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME_OR_EMAIL;
 
@@ -91,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
         Department department = findDepartmentById(request.departmentId());
         Designation designation = findDesignationById(request.designationId());
-        Set<PointOfSale> pointOfSales = new HashSet<>(getPointOfSalesFromIds(request.pointOfSaleIds()));
+        PointOfSale pointOfSale = getPointOfSale(request.pointOfSaleId());
         Set<Currency> currencies = new HashSet<>(getCurrenciesFromIds(request.currencyIds()));
 
         var userPersonalInfo = PersonalInfo
@@ -104,7 +106,7 @@ public class UserServiceImpl implements UserService {
             .department(department)
             .designation(designation)
             .allowedCurrencies(currencies)
-            .pointOfSales(pointOfSales)
+            .pointOfSale(pointOfSale)
             .accessLevel(request.accessLevel())
             .airport(request.airport())
             .build();
@@ -113,24 +115,47 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUsers() {
+    public List<UserGroupResponse> getAllUserWithGroupInfo() {
         return userRepository.findAll()
             .stream()
             .map(user -> {
-                UserResponse userResponse = new UserResponse();
-                prepareResponse(user, userResponse);
-                return userResponse;
+                UserGroupResponse userGroupResponse = new UserGroupResponse();
+                prepareUserWithGroupResponse(user, userGroupResponse);
+                return userGroupResponse;
             })
             .toList();
     }
 
-    private void prepareResponse(User user, UserResponse userResponse) {
-        userResponse.setId(user.getId());
-        userResponse.setName(user.getUsername());
+    @Override
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAllWithPersonalInfoByIdIsNotNull()
+            .stream()
+            .map(this::prepareUserResponse)
+            .toList();
+    }
+
+    private void prepareUserWithGroupResponse(User user, UserGroupResponse userGroupResponse) {
+        userGroupResponse.setId(user.getId());
+        userGroupResponse.setName(user.getUsername());
         if (Objects.nonNull(user.getGroup())) {
-            userResponse.setGroupId(user.getGroup().getId());
-            userResponse.setGroupName(user.getGroup().getName());
+            userGroupResponse.setGroupId(user.getGroup().getId());
+            userGroupResponse.setGroupName(user.getGroup().getName());
         }
+    }
+
+    private UserResponse prepareUserResponse(User user) {
+        UserResponse userResponse = new UserResponse();
+        userResponse.setUserName(user.getUsername());
+        if (Objects.nonNull(user.getGroup())) {
+            userResponse.setUserGroup(user.getGroup().getName());
+        } else {
+            userResponse.setUserGroup("Not Assigned yet.");
+        }
+        userResponse.setEmail(user.getEmail());
+        userResponse.setPointOfSale(user.getPersonalInfo().getPointOfSale().getName());
+        userResponse.setAccessLevel(user.getPersonalInfo().getAccessLevel());
+        userResponse.setStatus(user.isActive());
+        return userResponse;
     }
 
     @Override
@@ -213,8 +238,9 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    private List<PointOfSale> getPointOfSalesFromIds(Set<Long> pointOfSaleIds) {
-        return pointOfSaleRepository.findByIdIn(pointOfSaleIds);
+    private PointOfSale getPointOfSale(Long pointOfSaleId) {
+        return pointOfSaleRepository.findById(pointOfSaleId)
+            .orElseThrow(() -> new ResourceNotFoundException(POINT_OF_SALES_NOT_FOUND));
     }
 
     private List<Currency> getCurrenciesFromIds(Set<Long> currencyIds) {
@@ -248,7 +274,7 @@ public class UserServiceImpl implements UserService {
             .mobileNumber(personalInfo.getMobileNumber())
             .telephoneNumber(personalInfo.getTelephoneNumber())
             .accessLevel(personalInfo.getAccessLevel())
-            .pointOfSales(getPointOfSalesResponses(personalInfo.getPointOfSales()))
+            .pointOfSale(getPointOfSaleResponseFromPointOfSale(personalInfo.getPointOfSale()))
             .allowedCurrencies(getCurrencyResponsesFromCurrencies(personalInfo.getAllowedCurrencies()))
             .build();
     }
@@ -279,11 +305,6 @@ public class UserServiceImpl implements UserService {
         return new PointOfSaleResponse(pointOfSale.getId(), pointOfSale.getName());
     }
 
-    private List<PointOfSaleResponse> getPointOfSalesResponses(Collection<PointOfSale> pointOfSales) {
-        return pointOfSales.stream()
-            .map(this::getPointOfSaleResponseFromPointOfSale)
-            .toList();
-    }
 
     private User getUserWithPersonalInfoById(Long userId) {
         return userRepository.findUserWithPersonalInfoById(userId)

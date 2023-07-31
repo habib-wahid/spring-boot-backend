@@ -9,6 +9,9 @@ ALTER TABLE adm_user ADD COLUMN
 update adm_user set is2fa_enabled = false
 where id = 1;
 
-update adm_user set user_code = 'admin11'
+update adm_user set user_code = 'adm11'
+where id = 1;
+
+update adm_personal_info set access_level = 1
 where id = 1;
 

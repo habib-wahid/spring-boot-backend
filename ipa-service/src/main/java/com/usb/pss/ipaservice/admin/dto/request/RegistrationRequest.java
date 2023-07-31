@@ -36,8 +36,8 @@ public record RegistrationRequest(
     String userCode,
     @NotEmpty
     Set<Long> currencyIds,
-    @NotEmpty
-    Set<Long> pointOfSaleIds,
+    @NotNull
+    Long pointOfSaleId,
     @NotNull
     AccessLevel accessLevel,
     @NotBlank

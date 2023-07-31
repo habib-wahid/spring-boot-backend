@@ -26,7 +26,7 @@ public class UserPersonalInfoResponse {
     private String emailOther;
     private String mobileNumber;
     private String telephoneNumber;
-    private List<PointOfSaleResponse> pointOfSales;
+    private PointOfSaleResponse pointOfSale;
     private AccessLevel accessLevel;
     private String airport;
     private List<CurrencyResponse> allowedCurrencies;
