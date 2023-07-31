@@ -83,21 +83,29 @@ public class UserServiceImpl implements UserService {
             .email(request.email())
             .username(request.username())
             .password(passwordEncoder.encode(request.password()))
+            .userCode(request.userCode())
             .active(true)
+            .is2faEnabled(request.is2faEnabled())
             .build();
+
         Department department = findDepartmentById(request.departmentId());
         Designation designation = findDesignationById(request.designationId());
         Set<PointOfSale> pointOfSales = new HashSet<>(getPointOfSalesFromIds(request.pointOfSaleIds()));
         Set<Currency> currencies = new HashSet<>(getCurrenciesFromIds(request.currencyIds()));
+
         var userPersonalInfo = PersonalInfo
             .builder()
             .firstName(request.firstName())
             .lastName(request.lastName())
             .emailOfficial(request.email())
+            .telephoneNumber(request.telephoneNumber())
+            .mobileNumber(request.mobileNumber())
             .department(department)
             .designation(designation)
             .allowedCurrencies(currencies)
             .pointOfSales(pointOfSales)
+            .accessLevel(request.accessLevel())
+            .airport(request.airport())
             .build();
         user.setPersonalInfo(userPersonalInfo);
         userRepository.save(user);
@@ -195,26 +203,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserPersonalInfo(UpdateUserInfoRequest updateUserInfoRequest) {
         User user = getUserWithPersonalInfoById(updateUserInfoRequest.id());
+        user.set2faEnabled(updateUserInfoRequest.is2faEnabled());
         PersonalInfo personalInfo = user.getPersonalInfo();
-        personalInfo.setFirstName(updateUserInfoRequest.firstName());
-        personalInfo.setLastName(updateUserInfoRequest.lastName());
-        Department department = findDepartmentById(updateUserInfoRequest.departmentId());
-        Designation designation = findDesignationById(updateUserInfoRequest.designationId());
-        personalInfo.setDepartment(department);
-        personalInfo.setDesignation(designation);
         personalInfo.setEmailOfficial(updateUserInfoRequest.emailOfficial());
         personalInfo.setEmailOther(updateUserInfoRequest.emailOptional());
         personalInfo.setMobileNumber(updateUserInfoRequest.mobileNumber());
         personalInfo.setTelephoneNumber(updateUserInfoRequest.telephoneNumber());
-        personalInfo.setAccessLevel(updateUserInfoRequest.accessLevel());
-        Set<Currency> currencies = personalInfo.getAllowedCurrencies();
-        List<Currency> updatedCurrencies = getCurrenciesFromIds(updateUserInfoRequest.allowedCurrencyIds());
-        currencies.retainAll(updatedCurrencies);
-        currencies.addAll(updatedCurrencies);
-        Set<PointOfSale> pointOfSales = personalInfo.getPointOfSales();
-        List<PointOfSale> updatedPointOfSales = getPointOfSalesFromIds(updateUserInfoRequest.pointOfSaleIds());
-        pointOfSales.retainAll(updatedPointOfSales);
-        pointOfSales.addAll(updatedPointOfSales);
         userRepository.save(user);
     }
 
@@ -241,8 +235,11 @@ public class UserServiceImpl implements UserService {
         User user = getUserWithPersonalInfoById(userId);
         PersonalInfo personalInfo = user.getPersonalInfo();
         return UserPersonalInfoResponse.builder()
+            .userName(user.getUsername())
             .firstName(personalInfo.getFirstName())
             .lastName(personalInfo.getLastName())
+            .userCode(user.getUserCode())
+            .is2faEnabled(user.is2faEnabled())
             .emailOfficial(personalInfo.getEmailOfficial())
             .emailOther(personalInfo.getEmailOther())
             .department(getDepartmentResponse(personalInfo.getDepartment()))
@@ -256,10 +253,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private DesignationResponse getDesignationResponse(Designation designation) {
-        DesignationResponse designationResponse = new DesignationResponse();
-        designationResponse.setId(designation.getId());
-        designationResponse.setDesignationName(designation.getName());
-        return designationResponse;
+        return new DesignationResponse(designation.getId(), designation.getName());
     }
 
     private DepartmentResponse getDepartmentResponse(Department department) {

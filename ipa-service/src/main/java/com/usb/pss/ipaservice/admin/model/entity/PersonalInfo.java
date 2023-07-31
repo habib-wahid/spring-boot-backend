@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.model.entity;
 
+import com.usb.pss.ipaservice.admin.model.enums.AccessLevel;
 import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -40,7 +41,7 @@ public class PersonalInfo extends BaseAuditorEntity {
         joinColumns = @JoinColumn(name = "personal_info_id"),
         inverseJoinColumns = @JoinColumn(name = "point_of_sale_id"))
     private Set<PointOfSale> pointOfSales;
-    private String accessLevel;
+    private AccessLevel accessLevel;
     private String airport;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
