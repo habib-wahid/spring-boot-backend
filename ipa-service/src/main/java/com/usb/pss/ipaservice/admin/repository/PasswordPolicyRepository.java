@@ -9,22 +9,27 @@ import java.util.List;
 import java.util.Map;
 
 public interface PasswordPolicyRepository extends RevisionRepository<PasswordPolicy, Long, Long>,
-        JpaRepository<PasswordPolicy, Long> {
+    JpaRepository<PasswordPolicy, Long> {
 
-    @Query("SELECT 'passwordLength' AS Policy, p.passwordLength AS Value\n" +
-        "FROM PasswordPolicy p \n" +
-        "UNION \n" +
-        "SELECT 'containsUppercase' AS Policy, CASE WHEN p.containsUppercase THEN 1 ELSE 0 END AS Value\n" +
-        "FROM PasswordPolicy p \n" +
-        "UNION  \n" +
-        "SELECT 'containsLowercase' AS Property,CASE WHEN p.containsLowercase THEN 1 ELSE 0 END AS Value \n" +
-        "FROM PasswordPolicy p \n" +
-        "UNION \n" +
-        "SELECT 'containsDigit' AS Policy, CASE WHEN p.containsDigit THEN 1 ELSE 0 END AS Value\n" +
-        "FROM PasswordPolicy p \n" +
-        "UNION \n" +
-        "SELECT 'containsSpecialCharacters' AS Policy," +
-        "CASE WHEN p.containsSpecialCharacters THEN 1 ELSE 0 END AS Value \n" +
-        "FROM PasswordPolicy p")
+    @Query("""
+        SELECT 'passwordLength' AS Policy,'Minimum password length' AS Description, p.passwordLength AS Value
+        FROM PasswordPolicy p
+        UNION
+        SELECT 'containsUppercase' AS Policy,'Password contains uppercase letter' AS Description,
+        CASE WHEN p.containsUppercase THEN 1 ELSE 0 END AS Value
+        FROM PasswordPolicy p
+        UNION
+        SELECT 'containsLowercase' AS Property,'Password contains lowercase letter' AS Description,
+        CASE WHEN p.containsLowercase THEN 1 ELSE 0 END AS Value
+        FROM PasswordPolicy p
+        UNION
+        SELECT 'containsDigit' AS Policy, 'Password contains digit' AS Description,
+        CASE WHEN p.containsDigit THEN 1 ELSE 0 END AS Value
+        FROM PasswordPolicy p
+        UNION
+        SELECT 'containsSpecialCharacters' AS Policy,'Password contains special character' AS Description,
+        CASE WHEN p.containsSpecialCharacters THEN 1 ELSE 0 END AS Value
+        FROM PasswordPolicy p
+        """)
     List<Map<String, Object>> getPasswordPolicies();
 }
