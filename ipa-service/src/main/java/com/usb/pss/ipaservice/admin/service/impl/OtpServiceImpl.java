@@ -40,7 +40,7 @@ public class OtpServiceImpl implements OtpService {
     @Override
     @Transactional
     public Otp saveAndSend2faOtp(User user) {
-        otpRepository.deleteAllByUser(user);
+        otpRepository.deleteAllByUserAndOtpType(user, OtpType.TWO_FA);
         Otp otp = Otp.builder()
             .user(user)
             .otpCode(generateOtpCode())
