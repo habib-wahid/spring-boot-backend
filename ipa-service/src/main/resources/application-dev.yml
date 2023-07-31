@@ -47,5 +47,8 @@ springdoc:
 server:
   port: 8080
 
+multitenancy:
+  http:
+    header-name: X-TENANT-ID
 
 useExpiringMapToBlackListAccessToken: true

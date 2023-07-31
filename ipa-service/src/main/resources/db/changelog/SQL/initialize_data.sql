@@ -32,7 +32,7 @@ on conflict do nothing;
 
 -- Create Password Policy
 insert into adm_password_policy(id, password_length, contains_digit, contains_lowercase, contains_special_characters,
-                                contains_uppercase, version)
+                                     contains_uppercase, version)
 values (1, 1, false, false, false, false, 0)
 on conflict do nothing;
 
@@ -315,7 +315,7 @@ insert into adm_action(id, name, description, menu_id, sort_order, version)
             (46, 'UPDATE_USER_ACTIVE_STATUS', 'Activate/Deactivate a User', 103, 46, 0),
             (47, 'VIEW_PASSWORD_POLICY', 'View Password Policies', 108, 47, 0),
             (48, 'UPDATE_PASSWORD_POLICY', 'Update Password Policies', 108, 48, 0))
-    on conflict do nothing;
+on conflict do nothing;
 
 -- Give 'ADMIN' group to all action permission
 insert into adm_group_wise_action_mapping(group_id, action_id)

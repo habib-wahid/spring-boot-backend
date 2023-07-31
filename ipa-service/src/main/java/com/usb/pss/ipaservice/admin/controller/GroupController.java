@@ -60,8 +60,8 @@ public class GroupController {
     @PutMapping
     @PreAuthorize("hasAnyAuthority('UPDATE_GROUP')")
     @Operation(summary = "update an existing Group with valid Group data and existing Group's ID.")
-    public void updateGroup(@Validated @RequestBody GroupUpdateRequest groupCreateRequest) {
-        groupService.updateGroup(groupCreateRequest);
+    public void updateGroup(@Validated @RequestBody GroupUpdateRequest groupUpdateRequest) {
+        groupService.updateGroup(groupUpdateRequest);
     }
 
     @PatchMapping("/{groupId}")
