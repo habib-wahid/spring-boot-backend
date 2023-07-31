@@ -29,6 +29,6 @@ public class OtpLogServiceImpl implements OtpLogService {
                 .otpCode(otp.getOtpCode())
                 .otpStatusDate(LocalDateTime.now())
                 .build();
-        otpLogRepository.saveAndFlush(otpLog);
+        otpLogRepository.save(otpLog);
     }
 }

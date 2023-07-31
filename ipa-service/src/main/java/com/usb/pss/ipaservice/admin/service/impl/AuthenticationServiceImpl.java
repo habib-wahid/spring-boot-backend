@@ -13,7 +13,6 @@ import com.usb.pss.ipaservice.admin.model.entity.Otp;
 import com.usb.pss.ipaservice.admin.model.entity.PasswordReset;
 import com.usb.pss.ipaservice.admin.model.entity.RefreshToken;
 import com.usb.pss.ipaservice.admin.model.entity.User;
-import com.usb.pss.ipaservice.admin.model.enums.OtpType;
 import com.usb.pss.ipaservice.admin.repository.PasswordResetRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.JwtService;
@@ -88,6 +87,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             Otp otp = otpService.saveAndSend2faOtp(user);
             OtpResponse otpResponse = OtpResponse.builder()
                 .username(otp.getUser().getUsername())
+                .otpIdentifier(otp.getOtpIdentifier())
                 .expiration(otp.getExpiration())
                 .build();
             return AuthenticationResponse.builder()
@@ -101,7 +101,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationResponse authenticateWithOtp(OtpVerifyRequest request) {
         User user = userService.getUserByUsername(request.username());
-        Boolean isValidOtp = otpService.verify2faOtp(user, request.otpCode());
+        Boolean isValidOtp = otpService.verify2faOtp(user, request);
         if (isValidOtp) {
             return generateAuthenticationResponse(user);
         } else {
@@ -113,16 +113,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponse resend2faOtp(OtpResendRequest request) {
         User user = userService.getUserByUsername(request.username());
         if (user.is2faEnabled()) {
-            if (otpService.hasPrevious2faOtp(user, OtpType.TWO_FA)) {
-                Otp otp = otpService.saveAndSend2faOtp(user);
-                OtpResponse otpResponse = OtpResponse.builder()
-                    .username(otp.getUser().getUsername())
-                    .expiration(otp.getExpiration())
-                    .build();
-                return AuthenticationResponse.builder()
-                    .otpResponse(otpResponse)
-                    .build();
-            }
+            Otp otp = otpService.resend2faOtp(user, request);
+            OtpResponse otpResponse = OtpResponse.builder()
+                .username(otp.getUser().getUsername())
+                .otpIdentifier(otp.getOtpIdentifier())
+                .expiration(otp.getExpiration())
+                .build();
+            return AuthenticationResponse.builder()
+                .otpResponse(otpResponse)
+                .build();
         }
         throw new RuleViolationException(INVALID_AUTH_REQUEST);
     }

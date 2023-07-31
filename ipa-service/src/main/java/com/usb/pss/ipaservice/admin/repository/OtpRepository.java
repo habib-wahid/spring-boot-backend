@@ -13,6 +13,5 @@ import java.util.Optional;
  */
 
 public interface OtpRepository extends JpaRepository<Otp, Long> {
-    Optional<Otp> findByUserAndOtpType(User user, OtpType otpType);
-    void deleteAllByUserAndOtpType(User user, OtpType otpType);
+    Optional<Otp> findByUserAndOtpTypeAndOtpIdentifier(User user, OtpType otpType, String otpIdentifier);
 }

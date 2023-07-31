@@ -20,5 +20,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class OtpResponse {
     private String username;
+    private String otpIdentifier;
     private LocalDateTime expiration;
 }

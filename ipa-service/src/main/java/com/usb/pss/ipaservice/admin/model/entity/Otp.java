@@ -4,7 +4,7 @@ import com.usb.pss.ipaservice.admin.model.enums.OtpStatus;
 import com.usb.pss.ipaservice.admin.model.enums.OtpType;
 import com.usb.pss.ipaservice.common.model.BaseEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,11 +28,13 @@ import java.time.LocalDateTime;
 @Table(name = "adm_otp")
 public class Otp extends BaseEntity {
     private String otpCode;
-    private LocalDateTime expiration;
     private OtpType otpType;
     private OtpStatus otpStatus;
+    private String otpIdentifier;
+    private LocalDateTime expiration;
+    private LocalDateTime resendTimer;
 
-    @OneToOne
+    @ManyToOne
     private User user;
 
     @Override
