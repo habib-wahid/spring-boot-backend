@@ -12,3 +12,6 @@ where id = 1;
 update adm_user set user_code = 'adm11'
 where id = 1;
 
+update adm_personal_info set access_level = 1
+where id = 1;
+

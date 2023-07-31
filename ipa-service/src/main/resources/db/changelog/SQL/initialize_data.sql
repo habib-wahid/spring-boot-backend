@@ -37,8 +37,8 @@ values (1, 1, false, false, false, false, 0)
 on conflict do nothing;
 
 -- Create Personal Info Table
-insert into adm_personal_info(id, first_name, last_name, email_official, department_id, designation_id, version)
-values (1, 'super', 'admin', 'admin@gmail.com', 1, 1, 0)
+insert into adm_personal_info(id, first_name, last_name, email_official, department_id, designation_id, point_of_sale_id, version)
+values (1, 'super', 'admin', 'admin@gmail.com', 1, 1, 1, 0)
 on conflict do nothing;
 
 -- Create Super Admin => username='admin' password='admin'
@@ -54,11 +54,6 @@ values (1, 1),
        (1, 2)
 on conflict do nothing;
 
--- Set data on personal_info point_of_sale mapping table
-insert into adm_personal_info_point_of_sale_mapping(personal_info_id, point_of_sale_id)
-values (1, 1),
-       (1, 3)
-on conflict do nothing;
 
 -- Insert Modules
 insert into adm_module (id, name, description, sort_order, version)

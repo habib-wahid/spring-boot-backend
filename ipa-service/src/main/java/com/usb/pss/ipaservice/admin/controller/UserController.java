@@ -9,6 +9,7 @@ import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
+import com.usb.pss.ipaservice.admin.dto.response.UserGroupResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,6 +51,13 @@ public class UserController {
     @Operation(summary = "Get all users in a list")
     public List<UserResponse> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping("/groups")
+    @PreAuthorize("hasAnyAuthority('VIEW_USER')")
+    @Operation(summary = "Get all users with groups in a list")
+    public List<UserGroupResponse> getAllUserGroups() {
+        return userService.getAllUserGroups();
     }
 
     @GetMapping("/permittedMenus")

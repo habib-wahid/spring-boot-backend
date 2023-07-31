@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,12 +36,8 @@ public class PersonalInfo extends BaseAuditorEntity {
     private String emailOther;
     private String mobileNumber;
     private String telephoneNumber;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "adm_personal_info_point_of_sale_mapping",
-        joinColumns = @JoinColumn(name = "personal_info_id"),
-        inverseJoinColumns = @JoinColumn(name = "point_of_sale_id"))
-    private Set<PointOfSale> pointOfSales;
+    @OneToOne(fetch = FetchType.LAZY)
+    private PointOfSale pointOfSale;
     private AccessLevel accessLevel;
     private String airport;
     @ManyToMany(fetch = FetchType.LAZY)
