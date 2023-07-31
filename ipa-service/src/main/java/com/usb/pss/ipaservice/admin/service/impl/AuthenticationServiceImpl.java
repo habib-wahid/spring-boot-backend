@@ -16,6 +16,7 @@ import com.usb.pss.ipaservice.admin.service.JwtService;
 import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.TokenService;
+import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
@@ -55,6 +56,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetRepository passwordResetRepository;
     private final EmailService emailService;
+    private final UserService userService;
 
 
     @Value("${useExpiringMapToBlackListAccessToken}")
@@ -109,9 +111,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void sendPasswordResetLink(HttpServletRequest httpServletRequest,
                                       ForgotPasswordRequest forgotPasswordRequest) {
-        User user = userRepository
-                .findUserByUsername(forgotPasswordRequest.userName())
-                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
+        User user = userService.findUserByUsernameOrEmail(forgotPasswordRequest.usernameOrEmail());
         PasswordReset passwordReset = savePasswordReset(user);
         String siteURL = httpServletRequest.getRequestURL().toString();
         String url = siteURL

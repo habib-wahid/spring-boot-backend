@@ -10,6 +10,7 @@ import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
+import com.usb.pss.ipaservice.admin.model.entity.User;
 
 import java.util.List;
 import java.util.Set;
@@ -37,4 +38,6 @@ public interface UserService {
     void updateUserPersonalInfo(UpdateUserInfoRequest updateUserInfoRequest);
 
     UserPersonalInfoResponse getUserPersonalInfo(Long id);
+
+    User findUserByUsernameOrEmail(String usernameOrEmail);
 }
