@@ -56,8 +56,8 @@ public class UserController {
     @GetMapping("/groups")
     @PreAuthorize("hasAnyAuthority('VIEW_USER')")
     @Operation(summary = "Get all users with groups in a list")
-    public List<UserGroupResponse> getAllUserGroups() {
-        return userService.getAllUserGroups();
+    public List<UserGroupResponse> getAllUserWithGroupInfo() {
+        return userService.getAllUserWithGroupInfo();
     }
 
     @GetMapping("/permittedMenus")

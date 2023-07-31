@@ -19,7 +19,7 @@ public interface UserService {
 
     void createNewUser(RegistrationRequest request);
 
-    List<UserGroupResponse> getAllUserGroups();
+    List<UserGroupResponse> getAllUserWithGroupInfo();
 
     List<UserResponse> getAllUsers();
 

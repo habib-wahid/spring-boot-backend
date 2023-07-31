@@ -114,12 +114,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserGroupResponse> getAllUserGroups() {
+    public List<UserGroupResponse> getAllUserWithGroupInfo() {
         return userRepository.findAll()
             .stream()
             .map(user -> {
                 UserGroupResponse userGroupResponse = new UserGroupResponse();
-                prepareUserGroupResponse(user, userGroupResponse);
+                prepareUserWithGroupResponse(user, userGroupResponse);
                 return userGroupResponse;
             })
             .toList();
@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
             .toList();
     }
 
-    private void prepareUserGroupResponse(User user, UserGroupResponse userGroupResponse) {
+    private void prepareUserWithGroupResponse(User user, UserGroupResponse userGroupResponse) {
         userGroupResponse.setId(user.getId());
         userGroupResponse.setName(user.getUsername());
         if (Objects.nonNull(user.getGroup())) {
