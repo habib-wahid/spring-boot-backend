@@ -12,7 +12,7 @@ public record UpdateUserInfoRequest(
     @Email
     String emailOfficial,
     @Email
-    String emailOptional,
+    String emailOther,
     @NotNull
     Boolean is2faEnabled,
     String mobileNumber,
