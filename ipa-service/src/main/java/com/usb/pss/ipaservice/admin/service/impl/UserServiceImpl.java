@@ -145,6 +145,7 @@ public class UserServiceImpl implements UserService {
 
     private UserResponse prepareUserResponse(User user) {
         UserResponse userResponse = new UserResponse();
+        userResponse.setId(user.getId());
         userResponse.setUserName(user.getUsername());
         if (Objects.nonNull(user.getGroup())) {
             userResponse.setUserGroup(user.getGroup().getName());
@@ -325,7 +326,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByUsernameOrEmail(String usernameOrEmail) {
         return userRepository
-                .findUserByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME_OR_EMAIL));
+            .findUserByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME_OR_EMAIL));
     }
 }
