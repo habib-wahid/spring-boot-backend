@@ -19,10 +19,13 @@ import java.util.Set;
 public interface UserService {
 
     void createNewUser(RegistrationRequest request);
+    User getUserById(Long userId);
+    User getUserByUsername(String username);
 
     List<UserGroupResponse> getAllUserWithGroupInfo();
 
     List<UserResponse> getAllUsers();
+
 
     Set<MenuActionResponse> getUserAllPermittedMenu();
 

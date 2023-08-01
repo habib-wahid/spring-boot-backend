@@ -4,6 +4,8 @@ import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ForceChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ForgotPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;
+import com.usb.pss.ipaservice.admin.dto.request.OtpResendRequest;
+import com.usb.pss.ipaservice.admin.dto.request.OtpVerifyRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ResetPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
@@ -51,8 +53,8 @@ public class AuthenticationController {
     //TODO  security = { @SecurityRequirement(name = AUTHORIZATION)  for only development purpose
     @PostMapping("/refreshToken")
     @Operation(
-        summary = "Refresh the the access token after token expired",
-        security = {@SecurityRequirement(name = AUTHORIZATION)}
+            summary = "Refresh the the access token after token expired",
+            security = {@SecurityRequirement(name = AUTHORIZATION)}
     )
     public RefreshAccessTokenResponse refreshAccessToken(@RequestHeader(HttpHeaders.AUTHORIZATION) UUID token) {
         return authenticationService.refreshAccessToken(token);
@@ -86,5 +88,17 @@ public class AuthenticationController {
     @Operation(summary = "User reset password endpoint with reset token and password reset request body")
     public void resetPassword(@RequestBody @Validated ResetPasswordRequest resetPasswordRequest) {
         authenticationService.resetPassword(resetPasswordRequest);
+    }
+
+    @PostMapping("/verify2faOtp")
+    @Operation(summary = "Verify 2FA OTP to complete login for a 2FA enabled user")
+    public AuthenticationResponse authenticateWith2faOtp(@RequestBody @Validated OtpVerifyRequest request) {
+        return authenticationService.authenticateWithOtp(request);
+    }
+
+    @PostMapping("/resend2faOtp")
+    @Operation(summary = "Resend a new 2FA OTP to user's email")
+    public AuthenticationResponse resend2faOtp(@RequestBody @Validated OtpResendRequest request) {
+        return authenticationService.resend2faOtp(request);
     }
 }

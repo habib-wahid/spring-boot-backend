@@ -15,5 +15,6 @@ public class AuthenticationResponse {
     private LoginStatus status;
     private String accessToken;
     private UUID refreshToken;
+    private OtpResponse otpResponse;
     private List<ModuleMenuResponse> modules;
 }

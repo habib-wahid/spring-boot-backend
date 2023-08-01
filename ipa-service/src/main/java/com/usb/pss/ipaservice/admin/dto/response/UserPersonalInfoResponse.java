@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserPersonalInfoResponse {
+    private Long id;
     private String userName;
     private String firstName;
     private String lastName;

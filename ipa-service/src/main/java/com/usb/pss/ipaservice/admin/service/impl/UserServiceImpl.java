@@ -55,6 +55,7 @@ import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.GROUP_NO
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.PASSWORD_CONFIRM_PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.POINT_OF_SALES_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_ID;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME_OR_EMAIL;
 
 
@@ -115,7 +116,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+            () -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID)
+        );
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findUserByUsername(username).orElseThrow(
+            () -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME)
+        );
+    }
+
     public List<UserGroupResponse> getAllUserWithGroupInfo() {
+
         return userRepository.findAll()
             .stream()
             .map(user -> {
@@ -134,6 +149,7 @@ public class UserServiceImpl implements UserService {
             .toList();
     }
 
+
     private void prepareUserWithGroupResponse(User user, UserGroupResponse userGroupResponse) {
         userGroupResponse.setId(user.getId());
         userGroupResponse.setName(user.getUsername());
@@ -145,6 +161,7 @@ public class UserServiceImpl implements UserService {
 
     private UserResponse prepareUserResponse(User user) {
         UserResponse userResponse = new UserResponse();
+        userResponse.setId(user.getId());
         userResponse.setUserName(user.getUsername());
         if (Objects.nonNull(user.getGroup())) {
             userResponse.setUserGroup(user.getGroup().getName());
@@ -262,6 +279,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserWithPersonalInfoById(userId);
         PersonalInfo personalInfo = user.getPersonalInfo();
         return UserPersonalInfoResponse.builder()
+            .id(user.getId())
             .userName(user.getUsername())
             .firstName(personalInfo.getFirstName())
             .lastName(personalInfo.getLastName())
