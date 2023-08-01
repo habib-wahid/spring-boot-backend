@@ -23,6 +23,7 @@ public class UserPersonalInfoResponse {
     private DesignationResponse designation;
     private Boolean is2faEnabled;
     private String userCode;
+    private UserTypeResponse userType;
     private String emailOfficial;
     private String emailOther;
     private String mobileNumber;

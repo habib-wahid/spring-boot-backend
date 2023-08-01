@@ -15,6 +15,7 @@ import com.usb.pss.ipaservice.admin.dto.response.PointOfSaleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserGroupResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
+import com.usb.pss.ipaservice.admin.dto.response.UserTypeResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Currency;
 import com.usb.pss.ipaservice.admin.model.entity.Department;
@@ -23,6 +24,7 @@ import com.usb.pss.ipaservice.admin.model.entity.Group;
 import com.usb.pss.ipaservice.admin.model.entity.PersonalInfo;
 import com.usb.pss.ipaservice.admin.model.entity.PointOfSale;
 import com.usb.pss.ipaservice.admin.model.entity.User;
+import com.usb.pss.ipaservice.admin.model.entity.UserType;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
 import com.usb.pss.ipaservice.admin.repository.CurrencyRepository;
 import com.usb.pss.ipaservice.admin.repository.DepartmentRepository;
@@ -30,6 +32,7 @@ import com.usb.pss.ipaservice.admin.repository.DesignationRepository;
 import com.usb.pss.ipaservice.admin.repository.GroupRepository;
 import com.usb.pss.ipaservice.admin.repository.PointOfSaleRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
+import com.usb.pss.ipaservice.admin.repository.UserTypeRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
@@ -57,6 +60,7 @@ import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.POINT_OF
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_ID;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME_OR_EMAIL;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_TYPE_NOT_FOUND;
 
 
 @Service
@@ -71,6 +75,7 @@ public class UserServiceImpl implements UserService {
     private final DesignationRepository designationRepository;
     private final CurrencyRepository currencyRepository;
     private final PointOfSaleRepository pointOfSaleRepository;
+    private final UserTypeRepository userTypeRepository;
 
     public void createNewUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -87,6 +92,7 @@ public class UserServiceImpl implements UserService {
             .username(request.username())
             .password(passwordEncoder.encode(request.password()))
             .userCode(request.userCode())
+            .userType(getUserType(request.userType()))
             .active(true)
             .is2faEnabled(request.is2faEnabled())
             .passwordExpiryDate(LocalDateTime.now())
@@ -284,6 +290,7 @@ public class UserServiceImpl implements UserService {
             .firstName(personalInfo.getFirstName())
             .lastName(personalInfo.getLastName())
             .userCode(user.getUserCode())
+            .userType(getUserTypeResponse(user.getUserType()))
             .is2faEnabled(user.is2faEnabled())
             .emailOfficial(personalInfo.getEmailOfficial())
             .emailOther(personalInfo.getEmailOther())
@@ -295,6 +302,10 @@ public class UserServiceImpl implements UserService {
             .pointOfSale(getPointOfSaleResponseFromPointOfSale(personalInfo.getPointOfSale()))
             .allowedCurrencies(getCurrencyResponsesFromCurrencies(personalInfo.getAllowedCurrencies()))
             .build();
+    }
+
+    private UserTypeResponse getUserTypeResponse(UserType userType) {
+        return new UserTypeResponse(userType.getId(), userType.getName());
     }
 
     private DesignationResponse getDesignationResponse(Designation designation) {
@@ -309,6 +320,11 @@ public class UserServiceImpl implements UserService {
         return currencies.stream()
             .map(this::getCurrencyResponseFromCurrency)
             .toList();
+    }
+
+    private UserType getUserType(Long userTypeId) {
+        return userTypeRepository.findById(userTypeId)
+            .orElseThrow(() -> new ResourceNotFoundException(USER_TYPE_NOT_FOUND));
     }
 
     private CurrencyResponse getCurrencyResponseFromCurrency(Currency currency) {

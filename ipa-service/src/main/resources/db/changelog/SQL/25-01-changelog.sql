@@ -225,7 +225,8 @@ CREATE TABLE adm_user
     company_code     VARCHAR(255),
     active           BOOLEAN                                 NOT NULL,
     group_id         BIGINT,
-    personal_info_id BIGINT,
+    personal_info_id BIGINT                                  NOT NULL,
+    user_type_id     BIGINT                                  NOT NULL,
     CONSTRAINT pk_adm_user PRIMARY KEY (id)
 );
 

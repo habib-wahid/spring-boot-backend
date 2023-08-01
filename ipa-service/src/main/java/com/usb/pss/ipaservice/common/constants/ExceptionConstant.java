@@ -21,6 +21,7 @@ public enum ExceptionConstant {
     EMAIL_VALIDITY_EXPIRED("Email validity expired"),
     RESET_TOKEN_NOT_FOUND("Reset token not found"),
     DEPARTMENT_NOT_FOUND("Department not found by id"),
+    USER_TYPE_NOT_FOUND("User Type not found by id"),
     DUPLICATE_DEPARTMENT_NAME("A department already exists with this name"),
     DESIGNATION_NOT_FOUND("Designation not found by id"),
     DUPLICATE_DESIGNATION("Designation Already exists with this name."),

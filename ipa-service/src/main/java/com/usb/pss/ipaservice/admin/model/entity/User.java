@@ -47,6 +47,8 @@ public class User extends BaseAuditorEntity implements UserDetails {
     private LocalDateTime passwordExpiryDate;
     @ManyToOne(fetch = FetchType.LAZY)
     private Group group;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private UserType userType;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private PersonalInfo personalInfo;
