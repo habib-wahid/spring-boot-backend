@@ -13,8 +13,6 @@ spring:
 
   jpa:
     show-sql: true
-    hibernate:
-      ddl-auto: update
 
   mail:
     host: smtp.gmail.com

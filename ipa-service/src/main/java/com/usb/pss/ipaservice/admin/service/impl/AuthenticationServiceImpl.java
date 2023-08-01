@@ -35,7 +35,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -72,7 +71,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${application.reset-password.validity}")
     private Long resetPasswordValidity;
 
-    @Transactional
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
@@ -87,8 +85,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             Otp otp = otpService.saveAndSend2faOtp(user);
             OtpResponse otpResponse = OtpResponse.builder()
                 .username(otp.getUser().getUsername())
-                .otpIdentifier(otp.getOtpIdentifier())
-                .expiration(otp.getExpiration())
                 .build();
             return AuthenticationResponse.builder()
                 .otpResponse(otpResponse)
@@ -116,8 +112,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             Otp otp = otpService.resend2faOtp(user, request);
             OtpResponse otpResponse = OtpResponse.builder()
                 .username(otp.getUser().getUsername())
-                .otpIdentifier(otp.getOtpIdentifier())
-                .expiration(otp.getExpiration())
                 .build();
             return AuthenticationResponse.builder()
                 .otpResponse(otpResponse)
@@ -131,10 +125,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         RefreshToken refreshToken = tokenService.createNewRefreshToken(user);
 
         return AuthenticationResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getTokenId())
-                .modules(moduleService.getModuleWiseUserMenu(user))
-                .build();
+            .accessToken(accessToken)
+            .refreshToken(refreshToken.getTokenId())
+            .modules(moduleService.getModuleWiseUserMenu(user))
+            .build();
     }
 
     public RefreshAccessTokenResponse refreshAccessToken(UUID token) {
@@ -163,13 +157,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void sendPasswordResetLink(HttpServletRequest httpServletRequest,
                                       ForgotPasswordRequest forgotPasswordRequest) {
         User user = userRepository
-                .findUserByUsername(forgotPasswordRequest.userName())
-                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
+            .findUserByUsername(forgotPasswordRequest.userName())
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
         PasswordReset passwordReset = savePasswordReset(user);
         String siteURL = httpServletRequest.getRequestURL().toString();
         String url = siteURL
-                .replace(httpServletRequest.getServletPath(), "") + "/resetPassword?token="
-                            + passwordReset.getTokenId();
+            .replace(httpServletRequest.getServletPath(), "") + "/resetPassword?token="
+            + passwordReset.getTokenId();
 //        try {
 //            emailService.sendEmail(user, url);
 //        } catch (MessagingException e) {
@@ -180,18 +174,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private PasswordReset savePasswordReset(User user) {
         return passwordResetRepository.save(
-                PasswordReset.builder()
-                        .user(user)
-                        .expiration(LocalDateTime.now().plusMinutes(resetPasswordValidity))
-                        .build()
+            PasswordReset.builder()
+                .user(user)
+                .expiration(LocalDateTime.now().plusMinutes(resetPasswordValidity))
+                .build()
         );
     }
 
     @Override
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
         PasswordReset passwordReset = passwordResetRepository
-                .findPasswordResetByTokenId(UUID.fromString(resetPasswordRequest.token()))
-                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.RESET_TOKEN_NOT_FOUND));
+            .findPasswordResetByTokenId(UUID.fromString(resetPasswordRequest.token()))
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.RESET_TOKEN_NOT_FOUND));
         if (passwordReset.getExpiration().isBefore(LocalDateTime.now())) {
             throw new RuleViolationException(ExceptionConstant.EMAIL_VALIDITY_EXPIRED);
         }

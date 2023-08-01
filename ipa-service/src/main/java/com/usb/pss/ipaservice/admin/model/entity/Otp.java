@@ -1,6 +1,5 @@
 package com.usb.pss.ipaservice.admin.model.entity;
 
-import com.usb.pss.ipaservice.admin.model.enums.OtpStatus;
 import com.usb.pss.ipaservice.admin.model.enums.OtpType;
 import com.usb.pss.ipaservice.common.model.BaseEntity;
 import jakarta.persistence.Entity;
@@ -29,8 +28,6 @@ import java.time.LocalDateTime;
 public class Otp extends BaseEntity {
     private String otpCode;
     private OtpType otpType;
-    private OtpStatus otpStatus;
-    private String otpIdentifier;
     private LocalDateTime expiration;
     private LocalDateTime resendTimer;
 

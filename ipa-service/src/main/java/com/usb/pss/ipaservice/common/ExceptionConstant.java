@@ -35,7 +35,7 @@ public enum ExceptionConstant {
     INVALID_OTP("Invalid OTP."),
     INVALID_OTP_STATUS_CODE("Invalid OTP Status Code."),
     INVALID_OTP_TYPE_CODE("Invalid OTP Type Code."),
-    INVALID_OTP_RESEND_TIMER("Wait a few moments before resending an OTP."),
+    INVALID_OTP_RESEND_TIMER("Please, wait before resending an OTP."),
     INVALID_EMAIL_TYPE_CODE("Invalid Email Type Code."),
     INVALID_AUTH_REQUEST("Invalid Authentication Request.");
 

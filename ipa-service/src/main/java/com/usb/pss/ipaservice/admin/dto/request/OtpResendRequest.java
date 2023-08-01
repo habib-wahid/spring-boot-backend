@@ -9,8 +9,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record OtpResendRequest(
         @NotNull
-        String username,
-        @NotNull
-        String otpIdentifier
+        String username
 ) {
 }

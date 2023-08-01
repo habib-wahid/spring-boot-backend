@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static com.usb.pss.ipaservice.common.ApplicationConstants.OTP_EXPIRATION_MINUTES;
@@ -46,12 +45,11 @@ public class OtpServiceImpl implements OtpService {
     @Override
     @Transactional
     public Otp saveAndSend2faOtp(User user) {
+        otpRepository.deleteAllByUserAndOtpType(user, OtpType.TWO_FA);
         Otp otp = Otp.builder()
             .user(user)
             .otpCode(generateOtpCode())
-            .otpStatus(OtpStatus.GENERATED)
             .otpType(OtpType.TWO_FA)
-            .otpIdentifier(UUID.randomUUID().toString())
             .expiration(LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES))
             .resendTimer(LocalDateTime.now().plusMinutes(OTP_RESEND_TIMER_MINUTES))
             .build();
@@ -70,19 +68,19 @@ public class OtpServiceImpl implements OtpService {
 
     @Override
     public Boolean verify2faOtp(User user, OtpVerifyRequest request) {
-        Otp otp = otpRepository.findByUserAndOtpTypeAndOtpIdentifier(user, OtpType.TWO_FA, request.otpIdentifier())
+        Otp otp = otpRepository.findByUserAndOtpType(user, OtpType.TWO_FA)
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.OTP_NOT_FOUND));
         boolean isSameOtp = otp.getOtpCode().equals(request.otpCode());
-        boolean isSameIdentifier = otp.getOtpIdentifier().equals(request.otpIdentifier());
-        boolean isNotExpired = LocalDateTime.now().isBefore(otp.getExpiration());
-        if (isNotExpired) {
-            if (isSameOtp && isSameIdentifier) {
+        if (LocalDateTime.now().isBefore(otp.getExpiration())) {
+            if (isSameOtp) {
+                otpRepository.delete(otp);
                 otpLogService.saveOtpLog(otp, OtpStatus.USED);
                 return true;
             } else {
                 throw new RuleViolationException(WRONG_OTP);
             }
         } else {
+            otpRepository.delete(otp);
             throw new RuleViolationException(EXPIRED_OTP);
         }
     }
@@ -90,12 +88,11 @@ public class OtpServiceImpl implements OtpService {
     @Override
     public Otp resend2faOtp(User user, OtpResendRequest request) {
         Optional<Otp> existingOtp =
-            otpRepository.findByUserAndOtpTypeAndOtpIdentifier(user, OtpType.TWO_FA, request.otpIdentifier());
+            otpRepository.findByUserAndOtpType(user, OtpType.TWO_FA);
         if (existingOtp.isPresent()) {
             Otp oldOtp = existingOtp.get();
             if (LocalDateTime.now().isAfter(oldOtp.getResendTimer())) {
                 oldOtp.setOtpCode(generateOtpCode());
-                oldOtp.setOtpStatus(OtpStatus.GENERATED);
                 oldOtp.setExpiration(LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES));
                 oldOtp.setResendTimer(LocalDateTime.now().plusMinutes(OTP_RESEND_TIMER_MINUTES));
                 Otp savedOtp = otpRepository.save(oldOtp);

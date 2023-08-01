@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 /**
  * @author Junaid Khan Pathan
  * @date Jul 18, 2023
@@ -20,6 +18,4 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class OtpResponse {
     private String username;
-    private String otpIdentifier;
-    private LocalDateTime expiration;
 }

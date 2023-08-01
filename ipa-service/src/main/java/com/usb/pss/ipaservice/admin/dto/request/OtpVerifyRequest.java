@@ -11,8 +11,6 @@ public record OtpVerifyRequest(
         @NotNull
         String username,
         @NotNull
-        String otpCode,
-        @NotNull
-        String otpIdentifier
+        String otpCode
 ) {
 }
