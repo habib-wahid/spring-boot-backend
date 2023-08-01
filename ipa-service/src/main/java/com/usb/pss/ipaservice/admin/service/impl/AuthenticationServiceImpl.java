@@ -69,7 +69,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private Long resetPasswordValidity;
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        User user = getAuthenticatedUser(request);
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                request.username(),
+                request.password()
+            )
+        );
+
+        User user = userRepository.findUserFetchAdditionalActionsByUsername(request.username())
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
+
         if (
             user.getPasswordExpiryDate() != null &&
                 user.getPasswordExpiryDate().isBefore(LocalDateTime.now())
@@ -93,13 +102,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void forceChangePassword(ForceChangePasswordRequest request) {
-        User user = getAuthenticatedUser(
-            new AuthenticationRequest(request.username(), request.currentPassword())
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                request.username(),
+                request.currentPassword()
+            )
         );
 
         if (!request.newPassword().equals(request.confirmPassword())) {
             throw new RuleViolationException(PASSWORD_CONFIRM_PASSWORD_NOT_MATCH);
         }
+
+        User user = userRepository.findUserByUsername(request.username())
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
 
         // TO-DO: Need to change the password expiry date based on password policy.
         user.setPasswordExpiryDate(null);
@@ -145,18 +160,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.error("Email send failure " + e.getMessage());
             throw new RuleViolationException(ExceptionConstant.EMAIL_NOT_SENT);
         }
-    }
-
-    private User getAuthenticatedUser(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.username(),
-                request.password()
-            )
-        );
-
-        return userRepository.findUserFetchAdditionalActionsByUsername(request.username())
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
     }
 
     private PasswordReset savePasswordReset(User user) {
