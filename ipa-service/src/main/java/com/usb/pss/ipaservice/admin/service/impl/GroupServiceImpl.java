@@ -48,8 +48,7 @@ public class GroupServiceImpl implements GroupService {
         groupRepository.save(groupToSave);
     }
 
-    @Override
-    public Group getGroupById(Long groupId) {
+    private Group getGroupById(Long groupId) {
         return groupRepository.findById(groupId)
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.GROUP_NOT_FOUND));
     }

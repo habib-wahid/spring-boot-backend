@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.dto.request;
 
+import com.usb.pss.ipaservice.admin.model.enums.AccessLevel;
 import com.usb.pss.ipaservice.common.validation.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -23,16 +24,24 @@ public record RegistrationRequest(
     String password,
     @NotBlank
     String confirmPassword,
+    String mobileNumber,
+    String telephoneNumber,
     @NotNull
     Boolean is2faEnabled,
     @NotNull
     Long departmentId,
     @NotNull
     Long designationId,
+    @NotBlank
+    String userCode,
     @NotEmpty
     Set<Long> currencyIds,
-    @NotEmpty
-    Set<Long> pointOfSaleIds
+    @NotNull
+    Long pointOfSaleId,
+    @NotNull
+    AccessLevel accessLevel,
+    @NotBlank
+    String airport
 ) {
 
 }

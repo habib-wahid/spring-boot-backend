@@ -10,6 +10,9 @@ import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,7 +40,10 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    @Operation(summary = "User log-in")
+    @Operation(summary = "User log-in", parameters = {
+        @Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
+            in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
+    })
     public AuthenticationResponse authenticate(@RequestBody @Validated AuthenticationRequest request) {
         return authenticationService.authenticate(request);
     }

@@ -64,7 +64,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final EmailService emailService;
     private final OtpService otpService;
 
-
     @Value("${useExpiringMapToBlackListAccessToken}")
     private boolean useExpiringMapToBlackListAccessToken;
 
@@ -158,9 +157,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void sendPasswordResetLink(HttpServletRequest httpServletRequest,
                                       ForgotPasswordRequest forgotPasswordRequest) {
-        User user = userRepository
-            .findUserByUsername(forgotPasswordRequest.userName())
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
+
+        User user = userService.findUserByUsernameOrEmail(forgotPasswordRequest.usernameOrEmail());
+
         PasswordReset passwordReset = savePasswordReset(user);
         String siteURL = httpServletRequest.getRequestURL().toString();
         String url = siteURL

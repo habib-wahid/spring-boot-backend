@@ -8,6 +8,7 @@ public enum ExceptionConstant {
     USER_NOT_FOUND_BY_EMAIL("No user exists with this email"),
     USER_NOT_FOUND_BY_ID("No user exists with this id."),
     USER_NOT_FOUND_BY_RESET_PASSWORD_TOKEN("No user exists with this reset token."),
+    USER_NOT_FOUND_BY_USERNAME_OR_EMAIL("No user exists with this username or email."),
     INVALID_ACCESS_TOKEN("Access token is not valid or expired."),
     GROUP_NOT_FOUND("Group not found."),
     DUPLICATE_GROUP_NAME("Group name already exists."),
@@ -24,7 +25,7 @@ public enum ExceptionConstant {
     DUPLICATE_DEPARTMENT_NAME("A department already exists with this name"),
     DESIGNATION_NOT_FOUND("Designation not found by id"),
     DUPLICATE_DESIGNATION("Designation Already exists with this name."),
-    POINT_OF_SALES_NOT_FOUND("Point of Sales not found by ID"),
+    POINT_OF_SALES_NOT_FOUND("Point of Sale not found by ID"),
     DUPLICATE_POINT_OF_SALES("Point of Sales already exists by this name"),
 
     CURRENCY_NOT_FOUND_BY_ID("No currency exists with this id."),

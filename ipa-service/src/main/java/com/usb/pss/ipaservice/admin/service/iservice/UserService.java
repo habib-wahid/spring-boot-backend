@@ -9,6 +9,7 @@ import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
+import com.usb.pss.ipaservice.admin.dto.response.UserGroupResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 
@@ -20,6 +21,8 @@ public interface UserService {
     void createNewUser(RegistrationRequest request);
     User getUserById(Long userId);
     User getUserByUsername(String username);
+
+    List<UserGroupResponse> getAllUserWithGroupInfo();
 
     List<UserResponse> getAllUsers();
 
@@ -40,4 +43,6 @@ public interface UserService {
     void updateUserPersonalInfo(UpdateUserInfoRequest updateUserInfoRequest);
 
     UserPersonalInfoResponse getUserPersonalInfo(Long id);
+
+    User findUserByUsernameOrEmail(String usernameOrEmail);
 }
