@@ -108,7 +108,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse resend2faOtp(OtpResendRequest request) {
-        User user = userService.getUserByUsername(request.username());
+        User user = userRepository.findUserAndFetchActionAndPersonalInfoByUsername(request.username())
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
         if (user.is2faEnabled()) {
             Otp otp = otpService.resend2faOtp(user, request);
             OtpResponse otpResponse = OtpResponse.builder()
