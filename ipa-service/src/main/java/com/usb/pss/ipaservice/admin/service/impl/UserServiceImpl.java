@@ -232,7 +232,7 @@ public class UserServiceImpl implements UserService {
         user.set2faEnabled(updateUserInfoRequest.is2faEnabled());
         PersonalInfo personalInfo = user.getPersonalInfo();
         personalInfo.setEmailOfficial(updateUserInfoRequest.emailOfficial());
-        personalInfo.setEmailOther(updateUserInfoRequest.emailOptional());
+        personalInfo.setEmailOther(updateUserInfoRequest.emailOther());
         personalInfo.setMobileNumber(updateUserInfoRequest.mobileNumber());
         personalInfo.setTelephoneNumber(updateUserInfoRequest.telephoneNumber());
         userRepository.save(user);
