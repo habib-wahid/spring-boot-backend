@@ -1,20 +1,20 @@
 -- Create Admin Group
-insert into usba.adm_group(id, name, description, version)
+insert into adm_group(id, name, description, version)
 values (1, 'ADMIN', 'Admin', 0)
 on conflict do nothing;
 
 -- Create Department table
-insert into usba.adm_department(id, name, version)
+insert into adm_department(id, name, version)
 values (1, 'admin', 0)
 on conflict do nothing;
 
 -- Create Designation Table
-insert into usba.adm_designation(id, name, version)
+insert into adm_designation(id, name, version)
 values (1, 'manager', 0)
 on conflict do nothing;
 
 -- Create Currency Table
-insert into usba.adm_currency(id, name, code, version)
+insert into adm_currency(id, name, code, version)
 values (1, 'US Dollar', 'USD', 0),
        (2, 'Euro', 'euro', 0),
        (3, 'Taka', 'BDT', 0),
@@ -22,7 +22,7 @@ values (1, 'US Dollar', 'USD', 0),
 on conflict do nothing;
 
 -- Create Point of Sale Table
-insert into usba.adm_point_of_sale(id, name, version)
+insert into adm_point_of_sale(id, name, version)
 values (1, 'Dhaka', 0),
        (2, 'Chittagong', 0),
        (3, 'Delhi', 0),
@@ -31,32 +31,32 @@ values (1, 'Dhaka', 0),
 on conflict do nothing;
 
 -- Create Password Policy
-insert into usba.adm_password_policy(id, password_length, contains_digit, contains_lowercase, contains_special_characters,
+insert into adm_password_policy(id, password_length, contains_digit, contains_lowercase, contains_special_characters,
                                      contains_uppercase, version)
 values (1, 1, false, false, false, false, 0)
 on conflict do nothing;
 
 -- Create Personal Info Table
-insert into usba.adm_personal_info(id, first_name, last_name, email_official, department_id, designation_id, point_of_sale_id, version)
+insert into adm_personal_info(id, first_name, last_name, email_official, department_id, designation_id, point_of_sale_id, version)
 values (1, 'super', 'admin', 'admin@gmail.com', 1, 1, 1, 0)
 on conflict do nothing;
 
 -- Create Super Admin => username='admin' password='admin'
-insert into usba.adm_user(id, email, username, password, group_id, active, version, personal_info_id)
+insert into adm_user(id, email, username, password, group_id, active, version, personal_info_id)
 values (1, 'admin@gmail.com', 'admin',
         '$2a$10$FszQtoGSFc/WDJZvOUQiQeGhGiw7KwwXh7tMRbMBpUtYLE.PGmM/y', 1, true, 0, 1)
 on conflict do nothing;
 
 
 -- Set data on personal_info currency mapping table
-insert into usba.adm_personal_info_currency_mapping(personal_info_id, currency_id)
+insert into adm_personal_info_currency_mapping(personal_info_id, currency_id)
 values (1, 1),
        (1, 2)
 on conflict do nothing;
 
 
 -- Insert Modules
-insert into usba.adm_module (id, name, description, sort_order, version)
+insert into adm_module (id, name, description, sort_order, version)
     (values (1, 'INVENTORY', 'Inventory', 1, 0),
             (2, 'PRICING', 'Pricing', 2, 0),
             (3, 'SALES', 'Sales', 3, 0),
@@ -69,7 +69,7 @@ insert into usba.adm_module (id, name, description, sort_order, version)
             (10, 'ACCOUNTING', 'Accounting', 10, 0))
 on conflict do nothing;
 
-insert into usba.adm_sub_module (id, name, description, module_id, sort_order, version)
+insert into adm_sub_module (id, name, description, module_id, sort_order, version)
     (values (1, 'INVENTORY_BASE_PARAMETER', 'Base Parameters', 1, 1, 0),
             (2, 'INVENTORY_FLIGHT_MANAGEMENT', 'Flights Management', 1, 2, 0),
             (3, 'INVENTORY_GDS', 'GDS/Partners Parameters', 1, 3, 0),
@@ -95,7 +95,7 @@ on conflict do nothing;
 
 
 -- Insert Menu
-insert into usba.adm_menu(id, name, description, url, icon, screen_id, sub_module_id, sort_order, version)
+insert into adm_menu(id, name, description, url, icon, screen_id, sub_module_id, sort_order, version)
     (values (1, 'CABIN', 'Cabin', 'cabin', 'cabin', '0001', 1, 1, 0),
             (2, 'AIRCRAFT_TYPE', 'Aircraft Types', 'aircraft types', 'aircraft types', '0002', 1, 2, 0),
             (3, 'AIRCRAFT', 'Aircraft', 'aircraft', 'aircraft', '0003', 1, 3, 0),
@@ -261,7 +261,7 @@ insert into usba.adm_menu(id, name, description, url, icon, screen_id, sub_modul
 on conflict do nothing;
 
 -- Insert Action
-insert into usba.adm_action(id, name, description, menu_id, sort_order, version)
+insert into adm_action(id, name, description, menu_id, sort_order, version)
     (values (1, 'VIEW_CABIN', 'View Cabins', 1, 1, 0),
             (2, 'CREATE_CABIN', 'Create a Cabin', 1, 2, 0),
             (3, 'ACTIVATE_CABIN', 'Activate a Cabin', 1, 3, 0),
@@ -313,7 +313,7 @@ insert into usba.adm_action(id, name, description, menu_id, sort_order, version)
 on conflict do nothing;
 
 -- Give 'ADMIN' group to all action permission
-insert into usba.adm_group_wise_action_mapping(group_id, action_id)
-select 1, id from usba.adm_action on conflict do nothing ;
+insert into adm_group_wise_action_mapping(group_id, action_id)
+select 1, id from adm_action on conflict do nothing ;
 
 commit;

@@ -1,2 +1,2 @@
-alter table if exists usba.adm_user
+alter table if exists adm_user
     add column password_expiry_date timestamp (6);
