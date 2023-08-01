@@ -16,7 +16,7 @@ import com.usb.pss.ipaservice.admin.repository.ActionRepository;
 import com.usb.pss.ipaservice.admin.repository.ModuleRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
-import com.usb.pss.ipaservice.common.ExceptionConstant;
+import com.usb.pss.ipaservice.common.constants.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -67,11 +67,11 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public List<ModuleMenuResponse> getModuleWiseUserMenu(User user) {
-        List<Module> modules = moduleRepository.findModuleWiseMenuForGroupAndAdditionalAction(
+    public List<ModuleActionResponse> getModuleWiseUserActions(User user) {
+        List<Module> modules = moduleRepository.findModuleWiseUserActions(
             user.getGroup(), user.getAdditionalActions()
         );
-        return getModuleResponseWithSubModulesAndMenus(modules);
+        return getModuleResponsesFromModules(modules);
     }
 
     private List<ModuleMenuResponse> getModuleResponseWithSubModulesAndMenus(

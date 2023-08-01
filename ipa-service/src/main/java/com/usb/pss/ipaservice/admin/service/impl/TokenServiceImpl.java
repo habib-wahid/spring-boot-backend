@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.usb.pss.ipaservice.common.ExceptionConstant.INVALID_ACCESS_TOKEN;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.INVALID_ACCESS_TOKEN;
 
 @Service
 @RequiredArgsConstructor

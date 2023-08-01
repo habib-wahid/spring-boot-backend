@@ -1,15 +1,14 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
+import com.usb.pss.ipaservice.admin.dto.request.ForceChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ForgotPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;
 import com.usb.pss.ipaservice.admin.dto.request.OtpResendRequest;
 import com.usb.pss.ipaservice.admin.dto.request.OtpVerifyRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ResetPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
-import com.usb.pss.ipaservice.admin.dto.response.OtpResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
-import com.usb.pss.ipaservice.admin.model.entity.Otp;
 import com.usb.pss.ipaservice.admin.model.entity.PasswordReset;
 import com.usb.pss.ipaservice.admin.model.entity.RefreshToken;
 import com.usb.pss.ipaservice.admin.model.entity.User;
@@ -22,7 +21,6 @@ import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.OtpService;
 import com.usb.pss.ipaservice.admin.service.iservice.TokenService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
-import com.usb.pss.ipaservice.common.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
@@ -40,11 +38,18 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
-import static com.usb.pss.ipaservice.common.ExceptionConstant.INVALID_ACCESS_TOKEN;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.INVALID_AUTH_REQUEST;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
-import static com.usb.pss.ipaservice.common.SecurityConstants.TOKEN_TYPE;
+import static com.usb.pss.ipaservice.admin.model.enums.LoginStatus.CHANGE_PASSWORD;
+import static com.usb.pss.ipaservice.admin.model.enums.LoginStatus.LOGGED_IN;
+import static com.usb.pss.ipaservice.admin.model.enums.LoginStatus.VERIFY_OTP;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.EMAIL_VALIDITY_EXPIRED;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.INVALID_ACCESS_TOKEN;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.INVALID_AUTH_REQUEST;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.INVALID_OTP;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.PASSWORD_CONFIRM_PASSWORD_NOT_MATCH;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.RESET_TOKEN_NOT_FOUND;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
+import static com.usb.pss.ipaservice.common.constants.SecurityConstants.OTP_VALIDITY;
+import static com.usb.pss.ipaservice.common.constants.SecurityConstants.TOKEN_TYPE;
 
 @Service
 @RequiredArgsConstructor
@@ -80,13 +85,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userRepository.findUserAndFetchActionAndPersonalInfoByUsername(request.username())
             .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
 
-        if (user.is2faEnabled()) {
-            Otp otp = otpService.saveAndSend2faOtp(user);
-            OtpResponse otpResponse = OtpResponse.builder()
-                .username(otp.getUser().getUsername())
+        if (
+            user.getPasswordExpiryDate() != null &&
+                user.getPasswordExpiryDate().isBefore(LocalDateTime.now())
+        ) {
+            return AuthenticationResponse
+                .builder()
+                .username(user.getUsername())
+                .status(CHANGE_PASSWORD)
                 .build();
+        }
+
+        if (user.is2faEnabled()) {
+            otpService.saveAndSend2faOtp(user);
             return AuthenticationResponse.builder()
-                .otpResponse(otpResponse)
+                .username(user.getUsername())
+                .status(VERIFY_OTP)
+                .otpValidity(OTP_VALIDITY)
                 .build();
         } else {
             return generateAuthenticationResponse(user);
@@ -100,7 +115,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (isValidOtp) {
             return generateAuthenticationResponse(user);
         } else {
-            throw new RuleViolationException(ExceptionConstant.INVALID_OTP);
+            throw new RuleViolationException(INVALID_OTP);
         }
     }
 
@@ -109,12 +124,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userRepository.findUserAndFetchActionAndPersonalInfoByUsername(request.username())
             .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
         if (user.is2faEnabled()) {
-            Otp otp = otpService.resend2faOtp(user, request);
-            OtpResponse otpResponse = OtpResponse.builder()
-                .username(otp.getUser().getUsername())
-                .build();
+            otpService.resend2faOtp(user, request);
+
             return AuthenticationResponse.builder()
-                .otpResponse(otpResponse)
+                .username(user.getUsername())
+                .status(VERIFY_OTP)
+                .otpValidity(OTP_VALIDITY)
                 .build();
         }
         throw new RuleViolationException(INVALID_AUTH_REQUEST);
@@ -125,10 +140,36 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         RefreshToken refreshToken = tokenService.createNewRefreshToken(user);
 
         return AuthenticationResponse.builder()
+            .userId(user.getId())
+            .username(user.getUsername())
+            .status(LOGGED_IN)
             .accessToken(accessToken)
             .refreshToken(refreshToken.getTokenId())
-            .modules(moduleService.getModuleWiseUserMenu(user))
+            .modules(moduleService.getModuleWiseUserActions(user))
             .build();
+    }
+
+    @Override
+    public void forceChangePassword(ForceChangePasswordRequest request) {
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                request.username(),
+                request.currentPassword()
+            )
+        );
+
+        if (!request.newPassword().equals(request.confirmPassword())) {
+            throw new RuleViolationException(PASSWORD_CONFIRM_PASSWORD_NOT_MATCH);
+        }
+
+        User user = userRepository.findUserByUsername(request.username())
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
+
+        // TO-DO: Need to change the password expiry date based on password policy.
+        user.setPasswordExpiryDate(null);
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+
+        userRepository.save(user);
     }
 
     public RefreshAccessTokenResponse refreshAccessToken(UUID token) {
@@ -176,13 +217,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
         PasswordReset passwordReset = passwordResetRepository
             .findPasswordResetByTokenId(UUID.fromString(resetPasswordRequest.token()))
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.RESET_TOKEN_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(RESET_TOKEN_NOT_FOUND));
         if (passwordReset.getExpiration().isBefore(LocalDateTime.now())) {
-            throw new RuleViolationException(ExceptionConstant.EMAIL_VALIDITY_EXPIRED);
+            throw new RuleViolationException(EMAIL_VALIDITY_EXPIRED);
         }
         User user = passwordReset.getUser();
         if (!resetPasswordRequest.password().equals(resetPasswordRequest.confirmPassword())) {
-            throw new ResourceNotFoundException(PASSWORD_NOT_MATCH);
+            throw new ResourceNotFoundException(PASSWORD_CONFIRM_PASSWORD_NOT_MATCH);
         }
         user.setPassword(passwordEncoder.encode(resetPasswordRequest.password()));
         userRepository.save(user);

@@ -5,7 +5,7 @@ import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Menu;
 import com.usb.pss.ipaservice.admin.repository.MenuRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
-import com.usb.pss.ipaservice.common.ExceptionConstant;
+import com.usb.pss.ipaservice.common.constants.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

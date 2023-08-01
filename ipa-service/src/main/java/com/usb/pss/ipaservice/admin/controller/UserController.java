@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Set;
 
-import static com.usb.pss.ipaservice.common.APIEndpointConstants.USER_ENDPOINT;
+import static com.usb.pss.ipaservice.common.constants.APIEndpointConstants.USER_ENDPOINT;
 
 @RestController
 @RequestMapping(USER_ENDPOINT)
@@ -40,7 +40,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('CREATE_GROUP')")
+    @PreAuthorize("hasAnyAuthority('CREATE_USER')")
     @Operation(summary = "Create a new user.")
     public void createNewUser(@Validated @RequestBody RegistrationRequest request) {
         userService.createNewUser(request);

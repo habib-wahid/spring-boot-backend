@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.usb.pss.ipaservice.common.SecurityConstants.AUTHORIZATION;
+import static com.usb.pss.ipaservice.common.constants.SecurityConstants.AUTHORIZATION;
 
 @Service
 public class JwtService {

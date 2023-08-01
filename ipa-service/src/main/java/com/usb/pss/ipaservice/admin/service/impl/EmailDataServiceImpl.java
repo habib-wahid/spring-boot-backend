@@ -4,7 +4,7 @@ import com.usb.pss.ipaservice.admin.model.entity.EmailData;
 import com.usb.pss.ipaservice.admin.model.enums.EmailType;
 import com.usb.pss.ipaservice.admin.repository.EmailDataRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.EmailDataService;
-import com.usb.pss.ipaservice.common.ExceptionConstant;
+import com.usb.pss.ipaservice.common.constants.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

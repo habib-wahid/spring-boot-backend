@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.usb.pss.ipaservice.common.APIEndpointConstants.ACTION_ENDPOINT;
+import static com.usb.pss.ipaservice.common.constants.APIEndpointConstants.ACTION_ENDPOINT;
 
 @RestController
 @RequiredArgsConstructor

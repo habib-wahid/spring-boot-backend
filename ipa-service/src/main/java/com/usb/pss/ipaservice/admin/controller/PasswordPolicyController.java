@@ -1,7 +1,5 @@
 package com.usb.pss.ipaservice.admin.controller;
 
-import static com.usb.pss.ipaservice.common.APIEndpointConstants.PASSWORD_POLICY_ENDPOINT;
-
 import com.usb.pss.ipaservice.admin.dto.request.PasswordPolicyRequest;
 import com.usb.pss.ipaservice.admin.service.iservice.PasswordPolicyService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+import static com.usb.pss.ipaservice.common.constants.APIEndpointConstants.PASSWORD_POLICY_ENDPOINT;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(PASSWORD_POLICY_ENDPOINT)
@@ -32,6 +32,7 @@ public class PasswordPolicyController {
     public void updatePasswordPolicy(@RequestBody @Validated PasswordPolicyRequest request) {
         passwordPolicyService.updatePassPolicy(request);
     }
+
     @GetMapping
     @PreAuthorize("hasAnyAuthority('VIEW_PASSWORD_POLICY')")
     @Operation(summary = "Get All Password Policies")

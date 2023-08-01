@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.usb.pss.ipaservice.common.ExceptionConstant.DEPARTMENT_NOT_FOUND;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_DEPARTMENT_NAME;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DEPARTMENT_NOT_FOUND;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DUPLICATE_DEPARTMENT_NAME;
 
 @Service
 @RequiredArgsConstructor

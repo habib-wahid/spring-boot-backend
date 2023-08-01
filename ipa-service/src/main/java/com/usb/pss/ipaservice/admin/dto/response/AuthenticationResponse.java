@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.dto.response;
 
+import com.usb.pss.ipaservice.admin.model.enums.LoginStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +12,11 @@ import java.util.UUID;
 @Getter
 @Builder
 public class AuthenticationResponse {
+    private Long userId;
+    private String username;
+    private LoginStatus status;
     private String accessToken;
     private UUID refreshToken;
-    private OtpResponse otpResponse;
-    private List<ModuleMenuResponse> modules;
+    private Integer otpValidity;
+    private List<ModuleActionResponse> modules;
 }
