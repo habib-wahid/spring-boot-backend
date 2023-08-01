@@ -28,8 +28,6 @@ public interface UserService {
 
     void addAdditionalAction(UserActionRequest userActionRequest);
 
-//    Set<MenuResponse> getAllPermittedMenuByUser(User user);
-
     List<ModuleActionResponse> getModuleWiseUserActions(Long userId);
 
     void updateUserGroup(UserGroupRequest userGroupRequest);

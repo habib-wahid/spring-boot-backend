@@ -1,4 +1,4 @@
-package com.usb.pss.ipaservice.common;
+package com.usb.pss.ipaservice.common.constants;
 
 public class APIEndpointConstants {
 

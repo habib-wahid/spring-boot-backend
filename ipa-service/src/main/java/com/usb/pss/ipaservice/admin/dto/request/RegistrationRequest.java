@@ -20,7 +20,7 @@ public record RegistrationRequest(
     @NotBlank
     String username,
     @NotBlank
-    @ValidPassword
+//    @ValidPassword
     String password,
     @NotBlank
     String confirmPassword,

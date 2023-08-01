@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.usb.pss.ipaservice.common.APIEndpointConstants.POINT_OF_SALE_ENDPOINT;
+import static com.usb.pss.ipaservice.common.constants.APIEndpointConstants.POINT_OF_SALE_ENDPOINT;
 
 @RestController
 @RequiredArgsConstructor

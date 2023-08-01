@@ -1,4 +1,6 @@
-package com.usb.pss.ipaservice.common;
+package com.usb.pss.ipaservice.common.constants;
+
+import java.time.LocalDateTime;
 
 public class SecurityConstants {
 

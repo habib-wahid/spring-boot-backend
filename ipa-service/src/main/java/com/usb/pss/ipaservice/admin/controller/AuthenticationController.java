@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
+import com.usb.pss.ipaservice.admin.dto.request.ForceChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ForgotPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ResetPasswordRequest;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
-import static com.usb.pss.ipaservice.common.APIEndpointConstants.AUTHENTICATION_ENDPOINT;
-import static com.usb.pss.ipaservice.common.SecurityConstants.AUTHORIZATION;
+import static com.usb.pss.ipaservice.common.constants.APIEndpointConstants.AUTHENTICATION_ENDPOINT;
+import static com.usb.pss.ipaservice.common.constants.SecurityConstants.AUTHORIZATION;
 
 
 @RestController
@@ -61,6 +63,15 @@ public class AuthenticationController {
     public void logout(@RequestHeader(AUTHORIZATION) String authHeader,
                        @RequestBody @Validated LogoutRequest logoutRequest) {
         authenticationService.logout(authHeader, logoutRequest);
+    }
+
+    @PutMapping("/forceChangePassword")
+    @Operation(summary = "Forcefully change expired password.", parameters = {
+        @Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
+            in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
+    })
+    public void forceChangePassword(@RequestBody @Validated ForceChangePasswordRequest request) {
+        authenticationService.forceChangePassword(request);
     }
 
     @PostMapping("/forgotPassword")

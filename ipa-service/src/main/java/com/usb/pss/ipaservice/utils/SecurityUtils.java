@@ -1,6 +1,6 @@
 package com.usb.pss.ipaservice.utils;
 
-import static com.usb.pss.ipaservice.common.SecurityConstants.TOKEN_TYPE;
+import static com.usb.pss.ipaservice.common.constants.SecurityConstants.TOKEN_TYPE;
 
 public class SecurityUtils {
 
