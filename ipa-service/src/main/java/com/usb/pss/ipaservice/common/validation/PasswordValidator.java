@@ -18,23 +18,22 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext constraintValidatorContext) {
-        return true;
-//        PasswordPolicy passwordPolicy = passwordPolicyService.getPasswordPolicy();
-//
-//        Predicate<String> containsSpaceCharacter = p -> p.contains(" ");
-//        Predicate<String> containsDigitCharacter = p -> p.chars().anyMatch(Character::isDigit);
-//        Predicate<String> containsUppercaseCharacter = p -> p.chars().anyMatch(Character::isUpperCase);
-//        Predicate<String> containsLowercaseCharacter = p -> p.chars().anyMatch(Character::isLowerCase);
-//        Predicate<String> containsSpecialCharacter = p -> !p.matches("[A-Za-z0-9]*");
-//
-//        return Stream.of(
-//            containsSpaceCharacter.negate(),
-//            pass -> password.length() >= passwordPolicy.getPasswordLength(),
-//            pass -> !passwordPolicy.getContainsDigit() || containsDigitCharacter.test(password),
-//            pass -> !passwordPolicy.getContainsUppercase() || containsUppercaseCharacter.test(password),
-//            pass -> !passwordPolicy.getContainsLowercase() || containsLowercaseCharacter.test(password),
-//            pass -> !passwordPolicy.getContainsSpecialCharacters() || containsSpecialCharacter.test(password)
-//        ).allMatch(validation -> validation.test(password));
+        PasswordPolicy passwordPolicy = passwordPolicyService.getPasswordPolicy();
+
+        Predicate<String> containsSpaceCharacter = p -> p.contains(" ");
+        Predicate<String> containsDigitCharacter = p -> p.chars().anyMatch(Character::isDigit);
+        Predicate<String> containsUppercaseCharacter = p -> p.chars().anyMatch(Character::isUpperCase);
+        Predicate<String> containsLowercaseCharacter = p -> p.chars().anyMatch(Character::isLowerCase);
+        Predicate<String> containsSpecialCharacter = p -> !p.matches("[A-Za-z0-9]*");
+
+        return Stream.of(
+            containsSpaceCharacter.negate(),
+            pass -> password.length() >= passwordPolicy.getPasswordLength(),
+            pass -> !passwordPolicy.getContainsDigit() || containsDigitCharacter.test(password),
+            pass -> !passwordPolicy.getContainsUppercase() || containsUppercaseCharacter.test(password),
+            pass -> !passwordPolicy.getContainsLowercase() || containsLowercaseCharacter.test(password),
+            pass -> !passwordPolicy.getContainsSpecialCharacters() || containsSpecialCharacter.test(password)
+        ).allMatch(validation -> validation.test(password));
 
     }
 
