@@ -8,9 +8,7 @@ import com.usb.pss.ipaservice.admin.dto.request.OtpResendRequest;
 import com.usb.pss.ipaservice.admin.dto.request.OtpVerifyRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ResetPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
-import com.usb.pss.ipaservice.admin.dto.response.OtpResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
-import com.usb.pss.ipaservice.admin.model.entity.Otp;
 import com.usb.pss.ipaservice.admin.model.entity.PasswordReset;
 import com.usb.pss.ipaservice.admin.model.entity.RefreshToken;
 import com.usb.pss.ipaservice.admin.model.entity.User;
@@ -42,6 +40,8 @@ import java.util.Date;
 import java.util.UUID;
 
 import static com.usb.pss.ipaservice.admin.model.enums.LoginStatus.CHANGE_PASSWORD;
+import static com.usb.pss.ipaservice.admin.model.enums.LoginStatus.LOGGED_IN;
+import static com.usb.pss.ipaservice.admin.model.enums.LoginStatus.VERIFY_OTP;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.EMAIL_VALIDITY_EXPIRED;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.INVALID_ACCESS_TOKEN;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.INVALID_AUTH_REQUEST;
@@ -49,6 +49,7 @@ import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.INVALID_
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.PASSWORD_CONFIRM_PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.RESET_TOKEN_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
+import static com.usb.pss.ipaservice.common.constants.SecurityConstants.OTP_VALIDITY;
 import static com.usb.pss.ipaservice.common.constants.SecurityConstants.TOKEN_TYPE;
 
 @Service
@@ -91,17 +92,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         ) {
             return AuthenticationResponse
                 .builder()
+                .username(user.getUsername())
                 .status(CHANGE_PASSWORD)
                 .build();
         }
 
         if (user.is2faEnabled()) {
-            Otp otp = otpService.saveAndSend2faOtp(user);
-            OtpResponse otpResponse = OtpResponse.builder()
-                .username(otp.getUser().getUsername())
-                .build();
+            otpService.saveAndSend2faOtp(user);
             return AuthenticationResponse.builder()
-                .otpResponse(otpResponse)
+                .username(user.getUsername())
+                .status(VERIFY_OTP)
+                .otpValidity(OTP_VALIDITY)
                 .build();
         } else {
             return generateAuthenticationResponse(user);
@@ -124,12 +125,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userRepository.findUserAndFetchActionAndPersonalInfoByUsername(request.username())
             .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
         if (user.is2faEnabled()) {
-            Otp otp = otpService.resend2faOtp(user, request);
-            OtpResponse otpResponse = OtpResponse.builder()
-                .username(otp.getUser().getUsername())
-                .build();
+            otpService.resend2faOtp(user, request);
+
             return AuthenticationResponse.builder()
-                .otpResponse(otpResponse)
+                .username(user.getUsername())
+                .status(VERIFY_OTP)
+                .otpValidity(OTP_VALIDITY)
                 .build();
         }
         throw new RuleViolationException(INVALID_AUTH_REQUEST);
@@ -140,9 +141,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         RefreshToken refreshToken = tokenService.createNewRefreshToken(user);
 
         return AuthenticationResponse.builder()
+            .userId(user.getId())
+            .username(user.getUsername())
+            .status(LOGGED_IN)
             .accessToken(accessToken)
             .refreshToken(refreshToken.getTokenId())
-            .modules(moduleService.getModuleWiseUserMenu(user))
+            .modules(moduleService.getModuleWiseUserActions(user))
             .build();
     }
 

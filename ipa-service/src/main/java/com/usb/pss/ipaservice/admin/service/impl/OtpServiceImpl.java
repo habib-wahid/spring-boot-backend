@@ -88,7 +88,7 @@ public class OtpServiceImpl implements OtpService {
 
     @Override
     @Transactional
-    public Otp resend2faOtp(User user, OtpResendRequest request) {
+    public void resend2faOtp(User user, OtpResendRequest request) {
         Optional<Otp> existingOtp = otpRepository.findByUserAndOtpType(user, OtpType.TWO_FA);
         if (existingOtp.isPresent()) {
             Otp oldOtp = existingOtp.get();
@@ -99,7 +99,6 @@ public class OtpServiceImpl implements OtpService {
                 Otp savedOtp = otpRepository.save(oldOtp);
                 otpLogService.saveOtpLog(savedOtp, OtpStatus.GENERATED);
                 sendAsync2faOtpMail(user, savedOtp);
-                return savedOtp;
             }
             throw new RuleViolationException(INVALID_OTP_RESEND_TIMER);
         }

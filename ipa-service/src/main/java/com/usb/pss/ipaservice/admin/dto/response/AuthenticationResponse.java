@@ -12,9 +12,11 @@ import java.util.UUID;
 @Getter
 @Builder
 public class AuthenticationResponse {
+    private Long userId;
+    private String username;
     private LoginStatus status;
     private String accessToken;
     private UUID refreshToken;
-    private OtpResponse otpResponse;
-    private List<ModuleMenuResponse> modules;
+    private Integer otpValidity;
+    private List<ModuleActionResponse> modules;
 }

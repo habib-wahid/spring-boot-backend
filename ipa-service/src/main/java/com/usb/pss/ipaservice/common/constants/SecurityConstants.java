@@ -1,7 +1,5 @@
 package com.usb.pss.ipaservice.common.constants;
 
-import java.time.LocalDateTime;
-
 public class SecurityConstants {
 
     private SecurityConstants() {
@@ -9,4 +7,5 @@ public class SecurityConstants {
 
     public static final String TOKEN_TYPE = "Bearer ";
     public static final String AUTHORIZATION = "Authorization";
+    public static final Integer OTP_VALIDITY = 5;
 }

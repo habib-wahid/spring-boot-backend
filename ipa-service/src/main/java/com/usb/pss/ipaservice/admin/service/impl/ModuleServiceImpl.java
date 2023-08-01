@@ -67,11 +67,11 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public List<ModuleMenuResponse> getModuleWiseUserMenu(User user) {
-        List<Module> modules = moduleRepository.findModuleWiseMenuForGroupAndAdditionalAction(
+    public List<ModuleActionResponse> getModuleWiseUserActions(User user) {
+        List<Module> modules = moduleRepository.findModuleWiseUserActions(
             user.getGroup(), user.getAdditionalActions()
         );
-        return getModuleResponseWithSubModulesAndMenus(modules);
+        return getModuleResponsesFromModules(modules);
     }
 
     private List<ModuleMenuResponse> getModuleResponseWithSubModulesAndMenus(
