@@ -3,18 +3,23 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ForgotPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.LogoutRequest;
+import com.usb.pss.ipaservice.admin.dto.request.OtpResendRequest;
+import com.usb.pss.ipaservice.admin.dto.request.OtpVerifyRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ResetPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
+import com.usb.pss.ipaservice.admin.dto.response.OtpResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
+import com.usb.pss.ipaservice.admin.model.entity.Otp;
 import com.usb.pss.ipaservice.admin.model.entity.PasswordReset;
 import com.usb.pss.ipaservice.admin.model.entity.RefreshToken;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.repository.PasswordResetRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
-import com.usb.pss.ipaservice.admin.service.EmailService;
 import com.usb.pss.ipaservice.admin.service.JwtService;
 import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
+import com.usb.pss.ipaservice.admin.service.iservice.EmailService;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
+import com.usb.pss.ipaservice.admin.service.iservice.OtpService;
 import com.usb.pss.ipaservice.admin.service.iservice.TokenService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.common.ExceptionConstant;
@@ -22,7 +27,6 @@ import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.SecurityUtils;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +42,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.INVALID_ACCESS_TOKEN;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.INVALID_AUTH_REQUEST;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
 import static com.usb.pss.ipaservice.common.SecurityConstants.TOKEN_TYPE;
@@ -51,13 +56,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final ModuleService moduleService;
     private final TokenService tokenService;
+    private final UserService userService;
     private final UserRepository userRepository;
     private final TokenBlackListingService tokenBlackListingService;
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetRepository passwordResetRepository;
     private final EmailService emailService;
-    private final UserService userService;
-
+    private final OtpService otpService;
 
     @Value("${useExpiringMapToBlackListAccessToken}")
     private boolean useExpiringMapToBlackListAccessToken;
@@ -73,9 +78,50 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             )
         );
 
-        User user = userRepository.findUserFetchAdditionalActionsByUsername(request.username())
+        User user = userRepository.findUserAndFetchActionAndPersonalInfoByUsername(request.username())
             .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
 
+        if (user.is2faEnabled()) {
+            Otp otp = otpService.saveAndSend2faOtp(user);
+            OtpResponse otpResponse = OtpResponse.builder()
+                .username(otp.getUser().getUsername())
+                .build();
+            return AuthenticationResponse.builder()
+                .otpResponse(otpResponse)
+                .build();
+        } else {
+            return generateAuthenticationResponse(user);
+        }
+    }
+
+    @Override
+    public AuthenticationResponse authenticateWithOtp(OtpVerifyRequest request) {
+        User user = userService.getUserByUsername(request.username());
+        Boolean isValidOtp = otpService.verify2faOtp(user, request);
+        if (isValidOtp) {
+            return generateAuthenticationResponse(user);
+        } else {
+            throw new RuleViolationException(ExceptionConstant.INVALID_OTP);
+        }
+    }
+
+    @Override
+    public AuthenticationResponse resend2faOtp(OtpResendRequest request) {
+        User user = userRepository.findUserAndFetchActionAndPersonalInfoByUsername(request.username())
+            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
+        if (user.is2faEnabled()) {
+            Otp otp = otpService.resend2faOtp(user, request);
+            OtpResponse otpResponse = OtpResponse.builder()
+                .username(otp.getUser().getUsername())
+                .build();
+            return AuthenticationResponse.builder()
+                .otpResponse(otpResponse)
+                .build();
+        }
+        throw new RuleViolationException(INVALID_AUTH_REQUEST);
+    }
+
+    private AuthenticationResponse generateAuthenticationResponse(User user) {
         String accessToken = jwtService.generateAccessToken(user);
         RefreshToken refreshToken = tokenService.createNewRefreshToken(user);
 
@@ -111,34 +157,36 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void sendPasswordResetLink(HttpServletRequest httpServletRequest,
                                       ForgotPasswordRequest forgotPasswordRequest) {
+
         User user = userService.findUserByUsernameOrEmail(forgotPasswordRequest.usernameOrEmail());
+
         PasswordReset passwordReset = savePasswordReset(user);
         String siteURL = httpServletRequest.getRequestURL().toString();
         String url = siteURL
-                .replace(httpServletRequest.getServletPath(), "") + "/resetPassword?token="
-                            + passwordReset.getTokenId();
-        try {
-            emailService.sendEmail(user, url);
-        } catch (MessagingException e) {
-            log.error("Email send failure " + e.getMessage());
-            throw new RuleViolationException(ExceptionConstant.EMAIL_NOT_SENT);
-        }
+            .replace(httpServletRequest.getServletPath(), "") + "/resetPassword?token="
+            + passwordReset.getTokenId();
+//        try {
+//            emailService.sendEmail(user, url);
+//        } catch (MessagingException e) {
+//            log.error("Email send failure " + e.getMessage());
+//            throw new RuleViolationException(ExceptionConstant.EMAIL_NOT_SENT);
+//        }
     }
 
     private PasswordReset savePasswordReset(User user) {
         return passwordResetRepository.save(
-                PasswordReset.builder()
-                        .user(user)
-                        .expiration(LocalDateTime.now().plusMinutes(resetPasswordValidity))
-                        .build()
+            PasswordReset.builder()
+                .user(user)
+                .expiration(LocalDateTime.now().plusMinutes(resetPasswordValidity))
+                .build()
         );
     }
 
     @Override
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
         PasswordReset passwordReset = passwordResetRepository
-                .findPasswordResetByTokenId(UUID.fromString(resetPasswordRequest.token()))
-                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.RESET_TOKEN_NOT_FOUND));
+            .findPasswordResetByTokenId(UUID.fromString(resetPasswordRequest.token()))
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.RESET_TOKEN_NOT_FOUND));
         if (passwordReset.getExpiration().isBefore(LocalDateTime.now())) {
             throw new RuleViolationException(ExceptionConstant.EMAIL_VALIDITY_EXPIRED);
         }

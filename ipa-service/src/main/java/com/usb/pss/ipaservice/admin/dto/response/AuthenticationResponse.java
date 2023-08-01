@@ -13,5 +13,6 @@ import java.util.UUID;
 public class AuthenticationResponse {
     private String accessToken;
     private UUID refreshToken;
+    private OtpResponse otpResponse;
     private List<ModuleMenuResponse> modules;
 }

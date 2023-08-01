@@ -28,7 +28,17 @@ public enum ExceptionConstant {
     POINT_OF_SALES_NOT_FOUND("Point of Sale not found by ID"),
     DUPLICATE_POINT_OF_SALES("Point of Sales already exists by this name"),
 
-    CURRENCY_NOT_FOUND_BY_ID("No currency exists with this id.");
+    CURRENCY_NOT_FOUND_BY_ID("No currency exists with this id."),
+    EMAIL_DATA_NOT_FOUND("No email data found."),
+    OTP_NOT_FOUND("Not OTP found."),
+    WRONG_OTP("Incorrect OTP."),
+    EXPIRED_OTP("OTP has been expired."),
+    INVALID_OTP("Invalid OTP."),
+    INVALID_OTP_STATUS_CODE("Invalid OTP Status Code."),
+    INVALID_OTP_TYPE_CODE("Invalid OTP Type Code."),
+    INVALID_OTP_RESEND_TIMER("Please, wait before resending an OTP."),
+    INVALID_EMAIL_TYPE_CODE("Invalid Email Type Code."),
+    INVALID_AUTH_REQUEST("Invalid Authentication Request.");
 
     private final String message;
 

@@ -39,13 +39,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
 
 import static com.usb.pss.ipaservice.common.ExceptionConstant.CURRENT_PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.DEPARTMENT_NOT_FOUND;
@@ -56,6 +56,7 @@ import static com.usb.pss.ipaservice.common.ExceptionConstant.NEW_PASSWORD_NOT_M
 import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.POINT_OF_SALES_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_ID;
+import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
 import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME_OR_EMAIL;
 
 
@@ -115,7 +116,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+            () -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID)
+        );
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findUserByUsername(username).orElseThrow(
+            () -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME)
+        );
+    }
+
     public List<UserGroupResponse> getAllUserWithGroupInfo() {
+
         return userRepository.findAll()
             .stream()
             .map(user -> {

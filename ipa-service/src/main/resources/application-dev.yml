@@ -1,4 +1,6 @@
 spring:
+  liquibase:
+    enabled: false
   datasource:
     url: jdbc:postgresql://localhost:5432/pss_ipa
     username: admin
@@ -52,3 +54,10 @@ multitenancy:
     header-name: X-TENANT-ID
 
 useExpiringMapToBlackListAccessToken: true
+
+logging:
+  level:
+    net:
+      ttddyy:
+        dsproxy:
+          listener: debug
