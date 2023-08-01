@@ -24,6 +24,8 @@ public interface UserService {
 
     List<UserResponse> getAllUsers();
 
+    List<UserResponse> getAllUsersByFilteredText(String filteredText);
+
     Set<MenuActionResponse> getUserAllPermittedMenu();
 
     void addAdditionalAction(UserActionRequest userActionRequest);

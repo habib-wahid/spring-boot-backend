@@ -82,14 +82,14 @@ public class UserServiceImpl implements UserService {
         }
 
         var user = User
-            .builder()
-            .email(request.email())
-            .username(request.username())
-            .password(passwordEncoder.encode(request.password()))
-            .userCode(request.userCode())
-            .active(true)
-            .is2faEnabled(request.is2faEnabled())
-            .build();
+                .builder()
+                .email(request.email())
+                .username(request.username())
+                .password(passwordEncoder.encode(request.password()))
+                .userCode(request.userCode())
+                .active(true)
+                .is2faEnabled(request.is2faEnabled())
+                .build();
 
         Department department = findDepartmentById(request.departmentId());
         Designation designation = findDesignationById(request.designationId());
@@ -97,19 +97,19 @@ public class UserServiceImpl implements UserService {
         Set<Currency> currencies = new HashSet<>(getCurrenciesFromIds(request.currencyIds()));
 
         var userPersonalInfo = PersonalInfo
-            .builder()
-            .firstName(request.firstName())
-            .lastName(request.lastName())
-            .emailOfficial(request.email())
-            .telephoneNumber(request.telephoneNumber())
-            .mobileNumber(request.mobileNumber())
-            .department(department)
-            .designation(designation)
-            .allowedCurrencies(currencies)
-            .pointOfSale(pointOfSale)
-            .accessLevel(request.accessLevel())
-            .airport(request.airport())
-            .build();
+                .builder()
+                .firstName(request.firstName())
+                .lastName(request.lastName())
+                .emailOfficial(request.email())
+                .telephoneNumber(request.telephoneNumber())
+                .mobileNumber(request.mobileNumber())
+                .department(department)
+                .designation(designation)
+                .allowedCurrencies(currencies)
+                .pointOfSale(pointOfSale)
+                .accessLevel(request.accessLevel())
+                .airport(request.airport())
+                .build();
         user.setPersonalInfo(userPersonalInfo);
         userRepository.save(user);
     }
@@ -117,21 +117,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserGroupResponse> getAllUserWithGroupInfo() {
         return userRepository.findAll()
-            .stream()
-            .map(user -> {
-                UserGroupResponse userGroupResponse = new UserGroupResponse();
-                prepareUserWithGroupResponse(user, userGroupResponse);
-                return userGroupResponse;
-            })
-            .toList();
+                .stream()
+                .map(user -> {
+                    UserGroupResponse userGroupResponse = new UserGroupResponse();
+                    prepareUserWithGroupResponse(user, userGroupResponse);
+                    return userGroupResponse;
+                })
+                .toList();
     }
 
     @Override
     public List<UserResponse> getAllUsers() {
         return userRepository.findAllWithPersonalInfoByIdIsNotNull()
-            .stream()
-            .map(this::prepareUserResponse)
-            .toList();
+                .stream()
+                .map(this::prepareUserResponse)
+                .toList();
+    }
+
+    @Override
+    public List<UserResponse> getAllUsersByFilteredText(String filteredText) {
+        return userRepository.findAllUsersByFilteredText(filteredText)
+                .stream()
+                .map(this::prepareUserResponse)
+                .toList();
     }
 
     private void prepareUserWithGroupResponse(User user, UserGroupResponse userGroupResponse) {
@@ -161,7 +169,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addAdditionalAction(UserActionRequest userActionRequest) {
         User user = userRepository.findUserFetchAdditionalActionsById(userActionRequest.userId())
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
 
         List<Action> actions = actionRepository.findByIdIn(userActionRequest.actionIds());
 
@@ -240,7 +248,7 @@ public class UserServiceImpl implements UserService {
 
     private PointOfSale getPointOfSale(Long pointOfSaleId) {
         return pointOfSaleRepository.findById(pointOfSaleId)
-            .orElseThrow(() -> new ResourceNotFoundException(POINT_OF_SALES_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(POINT_OF_SALES_NOT_FOUND));
     }
 
     private List<Currency> getCurrenciesFromIds(Set<Long> currencyIds) {
@@ -249,12 +257,12 @@ public class UserServiceImpl implements UserService {
 
     private Group findGroupById(Long groupId) {
         return groupRepository.findById(groupId)
-            .orElseThrow(() -> new ResourceNotFoundException(GROUP_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(GROUP_NOT_FOUND));
     }
 
     private User findUserById(Long userId) {
         return userRepository.findById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
     @Override
@@ -262,21 +270,21 @@ public class UserServiceImpl implements UserService {
         User user = getUserWithPersonalInfoById(userId);
         PersonalInfo personalInfo = user.getPersonalInfo();
         return UserPersonalInfoResponse.builder()
-            .userName(user.getUsername())
-            .firstName(personalInfo.getFirstName())
-            .lastName(personalInfo.getLastName())
-            .userCode(user.getUserCode())
-            .is2faEnabled(user.is2faEnabled())
-            .emailOfficial(personalInfo.getEmailOfficial())
-            .emailOther(personalInfo.getEmailOther())
-            .department(getDepartmentResponse(personalInfo.getDepartment()))
-            .designation(getDesignationResponse(personalInfo.getDesignation()))
-            .mobileNumber(personalInfo.getMobileNumber())
-            .telephoneNumber(personalInfo.getTelephoneNumber())
-            .accessLevel(personalInfo.getAccessLevel())
-            .pointOfSale(getPointOfSaleResponseFromPointOfSale(personalInfo.getPointOfSale()))
-            .allowedCurrencies(getCurrencyResponsesFromCurrencies(personalInfo.getAllowedCurrencies()))
-            .build();
+                .userName(user.getUsername())
+                .firstName(personalInfo.getFirstName())
+                .lastName(personalInfo.getLastName())
+                .userCode(user.getUserCode())
+                .is2faEnabled(user.is2faEnabled())
+                .emailOfficial(personalInfo.getEmailOfficial())
+                .emailOther(personalInfo.getEmailOther())
+                .department(getDepartmentResponse(personalInfo.getDepartment()))
+                .designation(getDesignationResponse(personalInfo.getDesignation()))
+                .mobileNumber(personalInfo.getMobileNumber())
+                .telephoneNumber(personalInfo.getTelephoneNumber())
+                .accessLevel(personalInfo.getAccessLevel())
+                .pointOfSale(getPointOfSaleResponseFromPointOfSale(personalInfo.getPointOfSale()))
+                .allowedCurrencies(getCurrencyResponsesFromCurrencies(personalInfo.getAllowedCurrencies()))
+                .build();
     }
 
     private DesignationResponse getDesignationResponse(Designation designation) {
@@ -289,8 +297,8 @@ public class UserServiceImpl implements UserService {
 
     private List<CurrencyResponse> getCurrencyResponsesFromCurrencies(Collection<Currency> currencies) {
         return currencies.stream()
-            .map(this::getCurrencyResponseFromCurrency)
-            .toList();
+                .map(this::getCurrencyResponseFromCurrency)
+                .toList();
     }
 
     private CurrencyResponse getCurrencyResponseFromCurrency(Currency currency) {
@@ -308,18 +316,18 @@ public class UserServiceImpl implements UserService {
 
     private User getUserWithPersonalInfoById(Long userId) {
         return userRepository.findUserWithPersonalInfoById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
 
     private Department findDepartmentById(Long departmentId) {
         return departmentRepository.findById(departmentId)
-            .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT_NOT_FOUND));
     }
 
     private Designation findDesignationById(Long designationId) {
         return designationRepository.findById(designationId)
-            .orElseThrow(() -> new ResourceNotFoundException(DESIGNATION_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(DESIGNATION_NOT_FOUND));
     }
 
     @Override
