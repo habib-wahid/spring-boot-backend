@@ -67,6 +67,7 @@ public class OtpServiceImpl implements OtpService {
     }
 
     @Override
+    @Transactional
     public Boolean verify2faOtp(User user, OtpVerifyRequest request) {
         Otp otp = otpRepository.findByUserAndOtpType(user, OtpType.TWO_FA)
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.OTP_NOT_FOUND));
@@ -86,9 +87,9 @@ public class OtpServiceImpl implements OtpService {
     }
 
     @Override
+    @Transactional
     public Otp resend2faOtp(User user, OtpResendRequest request) {
-        Optional<Otp> existingOtp =
-            otpRepository.findByUserAndOtpType(user, OtpType.TWO_FA);
+        Optional<Otp> existingOtp = otpRepository.findByUserAndOtpType(user, OtpType.TWO_FA);
         if (existingOtp.isPresent()) {
             Otp oldOtp = existingOtp.get();
             if (LocalDateTime.now().isAfter(oldOtp.getResendTimer())) {
