@@ -134,13 +134,6 @@ public class UserServiceImpl implements UserService {
             .toList();
     }
 
-    @Override
-    public List<UserResponse> getAllUsersByFilteredText(String filteredText) {
-        return userRepository.findAllUsersByFilteredText(filteredText)
-            .stream()
-            .map(this::prepareUserResponse)
-            .toList();
-    }
 
     private void prepareUserWithGroupResponse(User user, UserGroupResponse userGroupResponse) {
         userGroupResponse.setId(user.getId());
