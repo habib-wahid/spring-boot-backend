@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
@@ -67,10 +66,9 @@ public class AuthenticationController {
 
     @PostMapping("/forgotPassword")
     @Operation(summary = "User forgot password endpoint")
-    public void forgotPassword(HttpServletRequest httpServletRequest,
-                               @RequestBody @Validated ForgotPasswordRequest forgotPasswordRequest
+    public void forgotPassword(@RequestBody @Validated ForgotPasswordRequest forgotPasswordRequest
     ) {
-        authenticationService.sendPasswordResetLink(httpServletRequest, forgotPasswordRequest);
+        authenticationService.sendPasswordResetLink(forgotPasswordRequest);
     }
 
     @PostMapping("/resetPassword")

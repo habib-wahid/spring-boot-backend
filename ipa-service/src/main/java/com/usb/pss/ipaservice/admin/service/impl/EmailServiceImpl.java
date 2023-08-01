@@ -48,9 +48,33 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
+    @Async
+    @Override
+    public void sendPasswordResetEmail(User user, String passwordResetUrl) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            EmailData emailData = emailDataService.getEmailDataByEmailType(EmailType.PASSWORD_RESET);
+            String emailBody = preparePasswordResetMailBody(emailData, user, passwordResetUrl);
+            helper.setTo(user.getEmail());
+            helper.setSubject(emailData.getSubject());
+            helper.setText(emailBody, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Failed to send OTP");
+        }
+    }
+
     private String prepare2faOtpMailBody(EmailData emailData, User receiver, Otp otp) {
         String receiverName = receiver.getPersonalInfo().getFirstName() + " " +
-            receiver.getPersonalInfo().getLastName();
+                receiver.getPersonalInfo().getLastName();
         return String.format(emailData.getBody(), receiverName, otp.getOtpCode());
     }
+
+    private String preparePasswordResetMailBody(EmailData emailData, User receiver, String passwordResetUrl) {
+        String receiverName = receiver.getPersonalInfo().getFirstName() + " " +
+                receiver.getPersonalInfo().getLastName();
+        return String.format(emailData.getBody(), receiverName, passwordResetUrl);
+    }
+
 }

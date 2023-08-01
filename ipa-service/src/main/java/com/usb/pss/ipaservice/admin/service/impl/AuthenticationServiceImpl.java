@@ -27,7 +27,6 @@ import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.SecurityUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -155,22 +154,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void sendPasswordResetLink(HttpServletRequest httpServletRequest,
-                                      ForgotPasswordRequest forgotPasswordRequest) {
+    public void sendPasswordResetLink(ForgotPasswordRequest forgotPasswordRequest) {
 
         User user = userService.findUserByUsernameOrEmail(forgotPasswordRequest.usernameOrEmail());
-
         PasswordReset passwordReset = savePasswordReset(user);
-        String siteURL = httpServletRequest.getRequestURL().toString();
-        String url = siteURL
-            .replace(httpServletRequest.getServletPath(), "") + "/resetPassword?token="
+        String url = "http://localhost:3000/auth/password" + "/reset?token="
             + passwordReset.getTokenId();
-//        try {
-//            emailService.sendEmail(user, url);
-//        } catch (MessagingException e) {
-//            log.error("Email send failure " + e.getMessage());
-//            throw new RuleViolationException(ExceptionConstant.EMAIL_NOT_SENT);
-//        }
+        emailService.sendPasswordResetEmail(user, url);
     }
 
     private PasswordReset savePasswordReset(User user) {
