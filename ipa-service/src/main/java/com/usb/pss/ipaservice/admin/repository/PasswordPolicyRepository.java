@@ -12,23 +12,24 @@ public interface PasswordPolicyRepository extends RevisionRepository<PasswordPol
     JpaRepository<PasswordPolicy, Long> {
 
     @Query("""
-        SELECT 'passwordLength' AS Policy,'Minimum password length' AS Description, p.passwordLength AS Value
+        SELECT 1 AS serial,'passwordLength' AS policy,'Minimum password length' AS description,
+        p.passwordLength AS value
         FROM PasswordPolicy p
         UNION
-        SELECT 'containsUppercase' AS Policy,'Password contains uppercase letter' AS Description,
-        CASE WHEN p.containsUppercase THEN 1 ELSE 0 END AS Value
+        SELECT 2 AS serial,'containsUppercase' AS policy,'Password contains uppercase letter' AS description,
+        CASE WHEN p.containsUppercase THEN 1 ELSE 0 END AS value
         FROM PasswordPolicy p
         UNION
-        SELECT 'containsLowercase' AS Property,'Password contains lowercase letter' AS Description,
-        CASE WHEN p.containsLowercase THEN 1 ELSE 0 END AS Value
+        SELECT 3 AS serial,'containsLowercase' AS policy,'Password contains lowercase letter' AS description,
+        CASE WHEN p.containsLowercase THEN 1 ELSE 0 END AS value
         FROM PasswordPolicy p
         UNION
-        SELECT 'containsDigit' AS Policy, 'Password contains digit' AS Description,
-        CASE WHEN p.containsDigit THEN 1 ELSE 0 END AS Value
+        SELECT 4 AS serial,'containsDigit' AS policy, 'Password contains digit' AS description,
+        CASE WHEN p.containsDigit THEN 1 ELSE 0 END AS value
         FROM PasswordPolicy p
         UNION
-        SELECT 'containsSpecialCharacters' AS Policy,'Password contains special character' AS Description,
-        CASE WHEN p.containsSpecialCharacters THEN 1 ELSE 0 END AS Value
+        SELECT 5 AS serial,'containsSpecialCharacters' AS policy,'Password contains special character' AS description,
+        CASE WHEN p.containsSpecialCharacters THEN 1 ELSE 0 END AS value
         FROM PasswordPolicy p
         """)
     List<Map<String, Object>> getPasswordPolicies();
