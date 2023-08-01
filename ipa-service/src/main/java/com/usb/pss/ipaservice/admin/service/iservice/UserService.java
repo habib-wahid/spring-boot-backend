@@ -24,6 +24,7 @@ public interface UserService {
 
     List<UserResponse> getAllUsers();
 
+
     Set<MenuActionResponse> getUserAllPermittedMenu();
 
     void addAdditionalAction(UserActionRequest userActionRequest);

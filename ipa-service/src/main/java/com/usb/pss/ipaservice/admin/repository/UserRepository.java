@@ -5,6 +5,7 @@ import com.usb.pss.ipaservice.admin.model.entity.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByUsername(String username);
 
     Optional<User> findUserByUsernameOrEmail(String username, String email);
+
     @EntityGraph(attributePaths = {"group.permittedActions", "additionalActions"})
     Optional<User> findUserAndFetchActionByUsername(String username);
 
@@ -30,5 +32,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = {"additionalActions"})
     Optional<User> findUserFetchAdditionalActionsByUsername(String username);
+
 
 }

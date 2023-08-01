@@ -134,6 +134,7 @@ public class UserServiceImpl implements UserService {
             .toList();
     }
 
+
     private void prepareUserWithGroupResponse(User user, UserGroupResponse userGroupResponse) {
         userGroupResponse.setId(user.getId());
         userGroupResponse.setName(user.getUsername());
@@ -263,6 +264,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserWithPersonalInfoById(userId);
         PersonalInfo personalInfo = user.getPersonalInfo();
         return UserPersonalInfoResponse.builder()
+            .id(user.getId())
             .userName(user.getUsername())
             .firstName(personalInfo.getFirstName())
             .lastName(personalInfo.getLastName())
