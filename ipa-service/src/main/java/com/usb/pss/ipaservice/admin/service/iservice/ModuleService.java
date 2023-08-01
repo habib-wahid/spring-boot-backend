@@ -15,5 +15,5 @@ public interface ModuleService {
 
     List<ModuleActionResponse> getModuleWiseUserActions(Long userId);
 
-    List<ModuleMenuResponse> getModuleWiseUserMenu(User user);
+    List<ModuleActionResponse> getModuleWiseUserActions(User user);
 }

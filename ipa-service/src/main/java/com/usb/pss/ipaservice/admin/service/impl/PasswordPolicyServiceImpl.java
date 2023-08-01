@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_POLICY_NOT_FOUND;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.PASSWORD_POLICY_NOT_FOUND;
 
 
 @Service

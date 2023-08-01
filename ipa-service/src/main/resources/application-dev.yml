@@ -55,9 +55,9 @@ multitenancy:
 
 useExpiringMapToBlackListAccessToken: true
 
-logging:
-  level:
-    net:
-      ttddyy:
-        dsproxy:
-          listener: debug
+#logging:
+#  level:
+#    net:
+#      ttddyy:
+#        dsproxy:
+#          listener: debug

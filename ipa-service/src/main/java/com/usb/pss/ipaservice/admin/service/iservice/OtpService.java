@@ -15,5 +15,5 @@ public interface OtpService {
 
     Boolean verify2faOtp(User user, OtpVerifyRequest request);
 
-    Otp resend2faOtp(User user, OtpResendRequest request);
+    void resend2faOtp(User user, OtpResendRequest request);
 }

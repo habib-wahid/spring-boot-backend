@@ -3,7 +3,7 @@ create table revinfo (
         revtstmp bigint,
         primary key (rev)
     );
-    
+
 create sequence revinfo_seq start with 1 increment by 50;
 
 create table adm_group_aud (
@@ -14,7 +14,7 @@ create table adm_group_aud (
         name varchar(255),
         primary key (rev, id)
     );
-    
+
 create table adm_password_policy_aud (
        id bigint not null,
         rev integer not null,
@@ -25,13 +25,13 @@ create table adm_password_policy_aud (
         password_length integer,
         primary key (rev, id)
     );
-    
-alter table if exists adm_group_aud 
-       add constraint FKbag08wxf9cy3ox8s42pv1fuk1 
-       foreign key (rev) 
+
+alter table if exists adm_group_aud
+       add constraint FKbag08wxf9cy3ox8s42pv1fuk1
+       foreign key (rev)
        references revinfo;
-       
- alter table if exists adm_password_policy_aud 
-       add constraint FKtqrrcymjpxielru43go2vqwbr 
-       foreign key (rev) 
+
+ alter table if exists adm_password_policy_aud
+       add constraint FKtqrrcymjpxielru43go2vqwbr
+       foreign key (rev)
        references revinfo;

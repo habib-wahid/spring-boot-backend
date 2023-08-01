@@ -20,6 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -43,6 +44,7 @@ public class User extends BaseAuditorEntity implements UserDetails {
     private String userCode;
     private boolean active;
     private boolean is2faEnabled;
+    private LocalDateTime passwordExpiryDate;
     @ManyToOne(fetch = FetchType.LAZY)
     private Group group;
 

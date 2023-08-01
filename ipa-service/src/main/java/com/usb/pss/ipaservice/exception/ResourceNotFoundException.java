@@ -1,6 +1,6 @@
 package com.usb.pss.ipaservice.exception;
 
-import com.usb.pss.ipaservice.common.ExceptionConstant;
+import com.usb.pss.ipaservice.common.constants.ExceptionConstant;
 
 public class ResourceNotFoundException extends ApplicationException {
 

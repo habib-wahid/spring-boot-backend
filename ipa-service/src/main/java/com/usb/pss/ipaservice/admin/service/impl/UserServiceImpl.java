@@ -12,8 +12,8 @@ import com.usb.pss.ipaservice.admin.dto.response.DesignationResponse;
 import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.PointOfSaleResponse;
-import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserGroupResponse;
+import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.admin.model.entity.Currency;
@@ -39,7 +39,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -47,17 +47,16 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.usb.pss.ipaservice.common.ExceptionConstant.CURRENT_PASSWORD_NOT_MATCH;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.DEPARTMENT_NOT_FOUND;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.DESIGNATION_NOT_FOUND;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_USERNAME;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.GROUP_NOT_FOUND;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.NEW_PASSWORD_NOT_MATCH;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.PASSWORD_NOT_MATCH;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.POINT_OF_SALES_NOT_FOUND;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_ID;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
-import static com.usb.pss.ipaservice.common.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME_OR_EMAIL;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.CURRENT_PASSWORD_NOT_MATCH;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DEPARTMENT_NOT_FOUND;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DESIGNATION_NOT_FOUND;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DUPLICATE_USERNAME;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.GROUP_NOT_FOUND;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.PASSWORD_CONFIRM_PASSWORD_NOT_MATCH;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.POINT_OF_SALES_NOT_FOUND;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_ID;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME_OR_EMAIL;
 
 
 @Service
@@ -75,14 +74,14 @@ public class UserServiceImpl implements UserService {
 
     public void createNewUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
-            throw new RuleViolationException(PASSWORD_NOT_MATCH);
+            throw new RuleViolationException(PASSWORD_CONFIRM_PASSWORD_NOT_MATCH);
         }
 
         if (userRepository.existsByUsername(request.username())) {
             throw new RuleViolationException(DUPLICATE_USERNAME);
         }
 
-        var user = User
+        User user = User
             .builder()
             .email(request.email())
             .username(request.username())
@@ -90,6 +89,7 @@ public class UserServiceImpl implements UserService {
             .userCode(request.userCode())
             .active(true)
             .is2faEnabled(request.is2faEnabled())
+            .passwordExpiryDate(LocalDateTime.now())
             .build();
 
         Department department = findDepartmentById(request.departmentId());
@@ -233,7 +233,7 @@ public class UserServiceImpl implements UserService {
                     user.setPassword(passwordEncoder.encode(request.newPassword()));
                     userRepository.save(user);
                 } else {
-                    throw new RuleViolationException(NEW_PASSWORD_NOT_MATCH);
+                    throw new RuleViolationException(PASSWORD_CONFIRM_PASSWORD_NOT_MATCH);
                 }
 
             } else {

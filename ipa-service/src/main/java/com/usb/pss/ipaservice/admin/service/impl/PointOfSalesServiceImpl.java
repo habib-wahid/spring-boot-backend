@@ -6,7 +6,7 @@ import com.usb.pss.ipaservice.admin.dto.response.PointOfSaleResponse;
 import com.usb.pss.ipaservice.admin.model.entity.PointOfSale;
 import com.usb.pss.ipaservice.admin.repository.PointOfSaleRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.PointOfSalesService;
-import com.usb.pss.ipaservice.common.ExceptionConstant;
+import com.usb.pss.ipaservice.common.constants.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceAlreadyExistsException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.usb.pss.ipaservice.common.ExceptionConstant.DUPLICATE_POINT_OF_SALES;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DUPLICATE_POINT_OF_SALES;
 
 @Service
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package com.usb.pss.ipaservice.common;
+package com.usb.pss.ipaservice.common.constants;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

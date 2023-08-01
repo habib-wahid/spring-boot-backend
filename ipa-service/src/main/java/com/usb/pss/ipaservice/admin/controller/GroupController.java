@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.usb.pss.ipaservice.common.APIEndpointConstants.GROUP_ENDPOINT;
+import static com.usb.pss.ipaservice.common.constants.APIEndpointConstants.GROUP_ENDPOINT;
 
 /**
  * @author Junaid Khan Pathan

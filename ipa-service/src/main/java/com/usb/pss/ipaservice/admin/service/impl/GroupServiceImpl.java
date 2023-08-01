@@ -12,7 +12,7 @@ import com.usb.pss.ipaservice.admin.repository.GroupRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.GroupService;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
-import com.usb.pss.ipaservice.common.ExceptionConstant;
+import com.usb.pss.ipaservice.common.constants.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import lombok.RequiredArgsConstructor;
