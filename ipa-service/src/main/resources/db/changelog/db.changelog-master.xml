@@ -12,7 +12,7 @@
 <!--    </changeSet>-->
 
     <changeSet author="techno-next" id="T000001">
-        <sqlFile path="update/000001-PSS_258.sql" relativeToChangelogFile="false" splitStatements="false"/>
+        <sqlFile path="db/changelog/updates/000001-PSS_258.sql" relativeToChangelogFile="false" splitStatements="false"/>
     </changeSet>
 
 </databaseChangeLog>
