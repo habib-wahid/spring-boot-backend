@@ -2,6 +2,8 @@ package com.usb.pss.ipaservice.admin.dto.response;
 
 import com.usb.pss.ipaservice.admin.model.enums.AccessLevel;
 import com.usb.pss.ipaservice.inventory.dto.response.AirportResponse;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,18 +20,12 @@ import java.util.List;
 public class UserPersonalInfoResponse {
     private Long id;
     private String userName;
-    private String firstName;
-    private String lastName;
-    private DepartmentResponse department;
-    private DesignationResponse designation;
+    private PersonalInfoResponse personalInfoResponse;
     private Boolean is2faEnabled;
     private String userCode;
     private UserTypeResponse userType;
-    private String emailOfficial;
-    private String emailOther;
-    private String mobileNumber;
-    private String telephoneNumber;
     private PointOfSaleResponse pointOfSale;
+    @Enumerated(EnumType.STRING)
     private AccessLevel accessLevel;
     private List<AirportResponse> airports;
     private List<CurrencyResponse> allowedCurrencies;

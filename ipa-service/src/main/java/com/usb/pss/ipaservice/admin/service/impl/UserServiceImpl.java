@@ -6,6 +6,7 @@ import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
+import com.usb.pss.ipaservice.admin.dto.response.PersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.admin.service.iservice.AirportService;
 import com.usb.pss.ipaservice.admin.service.iservice.CurrencyService;
@@ -87,7 +88,7 @@ public class UserServiceImpl implements UserService {
             .username(request.username())
             .password(passwordEncoder.encode(request.password()))
             .userCode(request.userCode())
-            .userType(userTypeService.findUserTypeById(request.userType()))
+            .userType(userTypeService.findUserTypeById(request.userTypeId()))
             .allowedCurrencies(currencies)
             .pointOfSale(pointOfSale)
             .accessLevel(request.accessLevel())
@@ -276,20 +277,23 @@ public class UserServiceImpl implements UserService {
     public UserPersonalInfoResponse getUserPersonalInfo(Long userId) {
         User user = getUserWithPersonalInfoById(userId);
         PersonalInfo personalInfo = user.getPersonalInfo();
-        return UserPersonalInfoResponse.builder()
-            .id(user.getId())
-            .userName(user.getUsername())
+        PersonalInfoResponse personalInfoResponse = PersonalInfoResponse.builder()
             .firstName(personalInfo.getFirstName())
             .lastName(personalInfo.getLastName())
-            .userCode(user.getUserCode())
-            .userType(userTypeService.getUserType(user.getUserType().getId()))
-            .is2faEnabled(user.is2faEnabled())
             .emailOfficial(personalInfo.getEmailOfficial())
             .emailOther(personalInfo.getEmailOther())
             .department(departmentService.findDepartmentById(personalInfo.getDepartment().getId()))
             .designation(designationService.getDesignationById(personalInfo.getDesignation().getId()))
             .mobileNumber(personalInfo.getMobileNumber())
             .telephoneNumber(personalInfo.getTelephoneNumber())
+            .build();
+        return UserPersonalInfoResponse.builder()
+            .id(user.getId())
+            .userName(user.getUsername())
+            .personalInfoResponse(personalInfoResponse)
+            .userCode(user.getUserCode())
+            .userType(userTypeService.getUserType(user.getUserType().getId()))
+            .is2faEnabled(user.is2faEnabled())
             .accessLevel(user.getAccessLevel())
             .pointOfSale(pointOfSalesService.getPointOfSales(user.getPointOfSale().getId()))
             .airports(airportService.getAirportResponsesFromAirports(user.getAirports()))

@@ -11,7 +11,7 @@
 <!--        <sqlFile path="db/changelog/update/001T-TS01681.sql" relativeToChangelogFile="false" splitStatements="false"/>-->
 <!--    </changeSet>-->
     <changeSet author="techno-next" id="TS334">
-        <sqlFile path="db/changelog/update/001-TASK334.sql" relativeToChangelogFile="false" splitStatements="false"/>
+        <sqlFile path="db/changelog/update/000001-TASK334.sql" relativeToChangelogFile="false" splitStatements="false"/>
     </changeSet>
 
 </databaseChangeLog>

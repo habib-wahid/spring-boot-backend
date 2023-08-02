@@ -60,13 +60,13 @@ public class User extends BaseAuditorEntity implements UserDetails {
         name = "adm_user_airport_mapping",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "airport_id"))
-    private Set<Airport> airports;
+    private Set<Airport> airports = new HashSet<>();
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "adm_user_currency_mapping",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "currency_id"))
-    private Set<Currency> allowedCurrencies;
+    private Set<Currency> allowedCurrencies = new HashSet<>();
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UserType userType;
 

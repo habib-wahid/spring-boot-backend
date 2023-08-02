@@ -23,7 +23,7 @@ public record RegistrationRequest(
     @NotBlank
     String userCode,
     @NotNull
-    Long userType,
+    Long userTypeId,
     @NotEmpty
     Set<Long> currencyIds,
     Set<Long> airportIds,
