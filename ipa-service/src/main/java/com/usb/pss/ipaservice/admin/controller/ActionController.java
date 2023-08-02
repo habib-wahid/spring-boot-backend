@@ -2,7 +2,7 @@ package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.response.AdminActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
-import com.usb.pss.ipaservice.admin.service.impl.ActionServiceImpl;
+import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +22,7 @@ import static com.usb.pss.ipaservice.common.constants.APIEndpointConstants.ACTIO
 @Tag(name = "User Action Controller", description = "API Endpoints for user action related operations.")
 public class ActionController {
 
-    private final ActionServiceImpl actionService;
+    private final ActionService actionService;
     private final ModuleService moduleService;
 
     @GetMapping("/{actionId}")
