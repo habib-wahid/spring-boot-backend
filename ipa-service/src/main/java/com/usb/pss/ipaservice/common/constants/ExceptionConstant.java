@@ -2,6 +2,7 @@ package com.usb.pss.ipaservice.common.constants;
 
 public enum ExceptionConstant {
     ACTION_NOT_FOUND("Action not found"),
+    AIRPORT_NOT_FOUND("Airport not found"),
     PASSWORD_CONFIRM_PASSWORD_NOT_MATCH("Passwords & confirm password are not same."),
     DUPLICATE_USERNAME("User already exists with this username."),
     USER_NOT_FOUND_BY_USERNAME("No user exists with this username."),

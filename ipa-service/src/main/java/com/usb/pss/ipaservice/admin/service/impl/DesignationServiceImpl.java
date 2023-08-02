@@ -34,7 +34,7 @@ public class DesignationServiceImpl implements DesignationService {
 
     @Override
     public void updateDesignation(UpdateDesignationRequest updateDesignationRequest) {
-        Designation designation = findDesignationWithDepartmentById(updateDesignationRequest.id());
+        Designation designation = getDesignation(updateDesignationRequest.id());
         if (!checkDesignationExistsByName(updateDesignationRequest.name())) {
             designation.setName(updateDesignationRequest.name());
             designationRepository.save(designation);
@@ -45,7 +45,12 @@ public class DesignationServiceImpl implements DesignationService {
 
     @Override
     public DesignationResponse getDesignationById(Long id) {
-        return getDesignationResponseFromDesignation(findDesignationWithDepartmentById(id));
+        return getDesignationResponseFromDesignation(getDesignation(id));
+    }
+
+    @Override
+    public Designation findDesignationById(Long designationId) {
+        return getDesignation(designationId);
     }
 
     @Override
@@ -53,7 +58,7 @@ public class DesignationServiceImpl implements DesignationService {
         return getDesignationResponses(designationRepository.findAll());
     }
 
-    private Designation findDesignationWithDepartmentById(Long id) {
+    private Designation getDesignation(Long id) {
         return designationRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.DESIGNATION_NOT_FOUND));
     }

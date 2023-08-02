@@ -39,7 +39,7 @@ public class PointOfSalesServiceImpl implements PointOfSalesService {
 
     @Override
     public void updatePointOfSales(UpdatePointOfSalesRequest updatePointOfSalesRequest) {
-        PointOfSale pointOfSale = findPointOfSalesById(updatePointOfSalesRequest.id());
+        PointOfSale pointOfSale = getPointOfSale(updatePointOfSalesRequest.id());
         if (!pointOfSaleRepository.existsByName(updatePointOfSalesRequest.name())) {
             pointOfSale.setName(updatePointOfSalesRequest.name());
             pointOfSaleRepository.save(pointOfSale);
@@ -50,10 +50,15 @@ public class PointOfSalesServiceImpl implements PointOfSalesService {
 
     @Override
     public PointOfSaleResponse getPointOfSales(Long pointOfSalesId) {
-        return getPointOfSaleResponseFromPointOfSale(findPointOfSalesById(pointOfSalesId));
+        return getPointOfSaleResponseFromPointOfSale(getPointOfSale(pointOfSalesId));
     }
 
-    private PointOfSale findPointOfSalesById(Long pointOfSalesId) {
+    @Override
+    public PointOfSale findPointOfSaleById(Long pointOfSaleId) {
+        return getPointOfSale(pointOfSaleId);
+    }
+
+    private PointOfSale getPointOfSale(Long pointOfSalesId) {
         return pointOfSaleRepository.findById(pointOfSalesId)
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.POINT_OF_SALES_NOT_FOUND));
     }

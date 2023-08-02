@@ -10,9 +10,8 @@ import java.util.Set;
 
 
 public record RegistrationRequest(
-    @NotBlank
-    String firstName,
-    String lastName,
+    @NotNull
+    PersonalInfoRequest personalInfoRequest,
     @NotBlank
     @Email
     String email,
@@ -23,14 +22,8 @@ public record RegistrationRequest(
     String password,
     @NotBlank
     String confirmPassword,
-    String mobileNumber,
-    String telephoneNumber,
     @NotNull
     Boolean is2faEnabled,
-    @NotNull
-    Long departmentId,
-    @NotNull
-    Long designationId,
     @NotBlank
     String userCode,
     @NotNull

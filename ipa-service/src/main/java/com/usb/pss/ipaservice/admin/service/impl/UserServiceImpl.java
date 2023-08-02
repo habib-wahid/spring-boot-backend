@@ -6,17 +6,18 @@ import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
-import com.usb.pss.ipaservice.inventory.dto.response.AirportResponse;
-import com.usb.pss.ipaservice.admin.dto.response.CurrencyResponse;
-import com.usb.pss.ipaservice.admin.dto.response.DepartmentResponse;
-import com.usb.pss.ipaservice.admin.dto.response.DesignationResponse;
+import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
+import com.usb.pss.ipaservice.admin.service.iservice.AirportService;
+import com.usb.pss.ipaservice.admin.service.iservice.CurrencyService;
+import com.usb.pss.ipaservice.admin.service.iservice.DepartmentService;
+import com.usb.pss.ipaservice.admin.service.iservice.DesignationService;
+import com.usb.pss.ipaservice.admin.service.iservice.PointOfSalesService;
+import com.usb.pss.ipaservice.admin.service.iservice.UserTypeService;
 import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
-import com.usb.pss.ipaservice.admin.dto.response.PointOfSaleResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserGroupResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
-import com.usb.pss.ipaservice.admin.dto.response.UserTypeResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
 import com.usb.pss.ipaservice.inventory.model.entity.Airport;
 import com.usb.pss.ipaservice.admin.model.entity.Currency;
@@ -26,16 +27,8 @@ import com.usb.pss.ipaservice.admin.model.entity.Group;
 import com.usb.pss.ipaservice.admin.model.entity.PersonalInfo;
 import com.usb.pss.ipaservice.admin.model.entity.PointOfSale;
 import com.usb.pss.ipaservice.admin.model.entity.User;
-import com.usb.pss.ipaservice.admin.model.entity.UserType;
-import com.usb.pss.ipaservice.admin.repository.ActionRepository;
-import com.usb.pss.ipaservice.inventory.repository.AirportRepository;
-import com.usb.pss.ipaservice.admin.repository.CurrencyRepository;
-import com.usb.pss.ipaservice.admin.repository.DepartmentRepository;
-import com.usb.pss.ipaservice.admin.repository.DesignationRepository;
 import com.usb.pss.ipaservice.admin.repository.GroupRepository;
-import com.usb.pss.ipaservice.admin.repository.PointOfSaleRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
-import com.usb.pss.ipaservice.admin.repository.UserTypeRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
@@ -46,7 +39,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -54,16 +46,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.CURRENT_PASSWORD_NOT_MATCH;
-import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DEPARTMENT_NOT_FOUND;
-import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DESIGNATION_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DUPLICATE_USERNAME;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.GROUP_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.PASSWORD_CONFIRM_PASSWORD_NOT_MATCH;
-import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.POINT_OF_SALES_NOT_FOUND;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_ID;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT_FOUND_BY_USERNAME_OR_EMAIL;
-import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_TYPE_NOT_FOUND;
 
 
 @Service
@@ -73,13 +61,13 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final ModuleService moduleService;
     private final GroupRepository groupRepository;
-    private final ActionRepository actionRepository;
-    private final DepartmentRepository departmentRepository;
-    private final DesignationRepository designationRepository;
-    private final CurrencyRepository currencyRepository;
-    private final PointOfSaleRepository pointOfSaleRepository;
-    private final UserTypeRepository userTypeRepository;
-    private final AirportRepository airportRepository;
+    private final ActionService actionService;
+    private final DepartmentService departmentService;
+    private final DesignationService designationService;
+    private final CurrencyService currencyService;
+    private final PointOfSalesService pointOfSalesService;
+    private final UserTypeService userTypeService;
+    private final AirportService airportService;
 
     public void createNewUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -89,8 +77,8 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsername(request.username())) {
             throw new RuleViolationException(DUPLICATE_USERNAME);
         }
-        PointOfSale pointOfSale = getPointOfSale(request.pointOfSaleId());
-        Set<Currency> currencies = new HashSet<>(getCurrenciesFromIds(request.currencyIds()));
+        PointOfSale pointOfSale = pointOfSalesService.findPointOfSaleById(request.pointOfSaleId());
+        Set<Currency> currencies = new HashSet<>(currencyService.findAllCurrenciesByIds(request.currencyIds()));
         Set<Airport> airports = new HashSet<>(getAirportsFromIds(request.airportIds()));
 
         User user = User
@@ -99,7 +87,7 @@ public class UserServiceImpl implements UserService {
             .username(request.username())
             .password(passwordEncoder.encode(request.password()))
             .userCode(request.userCode())
-            .userType(getUserType(request.userType()))
+            .userType(userTypeService.findUserTypeById(request.userType()))
             .allowedCurrencies(currencies)
             .pointOfSale(pointOfSale)
             .accessLevel(request.accessLevel())
@@ -109,17 +97,17 @@ public class UserServiceImpl implements UserService {
             .passwordExpiryDate(LocalDateTime.now())
             .build();
 
-        Department department = findDepartmentById(request.departmentId());
-        Designation designation = findDesignationById(request.designationId());
+        Department department = departmentService.findById(request.personalInfoRequest().departmentId());
+        Designation designation = designationService.findDesignationById(request.personalInfoRequest().designationId());
 
 
         var userPersonalInfo = PersonalInfo
             .builder()
-            .firstName(request.firstName())
-            .lastName(request.lastName())
+            .firstName(request.personalInfoRequest().firstName())
+            .lastName(request.personalInfoRequest().lastName())
             .emailOfficial(request.email())
-            .telephoneNumber(request.telephoneNumber())
-            .mobileNumber(request.mobileNumber())
+            .telephoneNumber(request.personalInfoRequest().telephoneNumber())
+            .mobileNumber(request.personalInfoRequest().mobileNumber())
             .department(department)
             .designation(designation)
             .build();
@@ -193,7 +181,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserFetchAdditionalActionsById(userActionRequest.userId())
             .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
 
-        List<Action> actions = actionRepository.findByIdIn(userActionRequest.actionIds());
+        List<Action> actions = actionService.getActionsByIds(userActionRequest.actionIds());
 
         user.getAdditionalActions().addAll(actions);
         userRepository.save(user);
@@ -268,17 +256,9 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    private PointOfSale getPointOfSale(Long pointOfSaleId) {
-        return pointOfSaleRepository.findById(pointOfSaleId)
-            .orElseThrow(() -> new ResourceNotFoundException(POINT_OF_SALES_NOT_FOUND));
-    }
-
-    private List<Currency> getCurrenciesFromIds(Set<Long> currencyIds) {
-        return currencyRepository.findByIdIn(currencyIds);
-    }
 
     private List<Airport> getAirportsFromIds(Set<Long> airportIds) {
-        return airportRepository.findByIdIn(airportIds);
+        return airportService.findAllAirportsByIds(airportIds);
     }
 
     private Group findGroupById(Long groupId) {
@@ -301,65 +281,19 @@ public class UserServiceImpl implements UserService {
             .firstName(personalInfo.getFirstName())
             .lastName(personalInfo.getLastName())
             .userCode(user.getUserCode())
-            .userType(getUserTypeResponse(user.getUserType()))
+            .userType(userTypeService.getUserType(user.getUserType().getId()))
             .is2faEnabled(user.is2faEnabled())
             .emailOfficial(personalInfo.getEmailOfficial())
             .emailOther(personalInfo.getEmailOther())
-            .department(getDepartmentResponse(personalInfo.getDepartment()))
-            .designation(getDesignationResponse(personalInfo.getDesignation()))
+            .department(departmentService.findDepartmentById(personalInfo.getDepartment().getId()))
+            .designation(designationService.getDesignationById(personalInfo.getDesignation().getId()))
             .mobileNumber(personalInfo.getMobileNumber())
             .telephoneNumber(personalInfo.getTelephoneNumber())
             .accessLevel(user.getAccessLevel())
-            .pointOfSale(getPointOfSaleResponseFromPointOfSale(user.getPointOfSale()))
-            .airports(getAirportResponsesFromAirports(user.getAirports()))
-            .allowedCurrencies(getCurrencyResponsesFromCurrencies(user.getAllowedCurrencies()))
+            .pointOfSale(pointOfSalesService.getPointOfSales(user.getPointOfSale().getId()))
+            .airports(airportService.getAirportResponsesFromAirports(user.getAirports()))
+            .allowedCurrencies(currencyService.getAllCurrencyResponsesFromCurrencies(user.getAllowedCurrencies()))
             .build();
-    }
-
-    private List<AirportResponse> getAirportResponsesFromAirports(Set<Airport> airports) {
-        return airports
-            .stream()
-            .map(this::getAirportResponse)
-            .toList();
-    }
-
-    private AirportResponse getAirportResponse(Airport airport) {
-        return new AirportResponse(airport.getId(), airport.getName());
-    }
-
-    private UserTypeResponse getUserTypeResponse(UserType userType) {
-        return new UserTypeResponse(userType.getId(), userType.getName());
-    }
-
-    private DesignationResponse getDesignationResponse(Designation designation) {
-        return new DesignationResponse(designation.getId(), designation.getName());
-    }
-
-    private DepartmentResponse getDepartmentResponse(Department department) {
-        return new DepartmentResponse(department.getId(), department.getName());
-    }
-
-    private List<CurrencyResponse> getCurrencyResponsesFromCurrencies(Collection<Currency> currencies) {
-        return currencies.stream()
-            .map(this::getCurrencyResponseFromCurrency)
-            .toList();
-    }
-
-    private UserType getUserType(Long userTypeId) {
-        return userTypeRepository.findById(userTypeId)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_TYPE_NOT_FOUND));
-    }
-
-    private CurrencyResponse getCurrencyResponseFromCurrency(Currency currency) {
-        CurrencyResponse currencyResponse = new CurrencyResponse();
-        currencyResponse.setCode(currency.getCode());
-        currencyResponse.setId(currency.getId());
-        currencyResponse.setName(currency.getName());
-        return currencyResponse;
-    }
-
-    private PointOfSaleResponse getPointOfSaleResponseFromPointOfSale(PointOfSale pointOfSale) {
-        return new PointOfSaleResponse(pointOfSale.getId(), pointOfSale.getName());
     }
 
 
@@ -368,16 +302,6 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
-
-    private Department findDepartmentById(Long departmentId) {
-        return departmentRepository.findById(departmentId)
-            .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT_NOT_FOUND));
-    }
-
-    private Designation findDesignationById(Long designationId) {
-        return designationRepository.findById(designationId)
-            .orElseThrow(() -> new ResourceNotFoundException(DESIGNATION_NOT_FOUND));
-    }
 
     @Override
     public User findUserByUsernameOrEmail(String usernameOrEmail) {

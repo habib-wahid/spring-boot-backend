@@ -44,8 +44,17 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public DepartmentResponse getDepartment(Long id) {
-        return getDepartmentResponseFromDepartment(getDepartmentById(id));
+    public DepartmentResponse findDepartmentById(Long id) {
+        return getDepartmentResponse(getDepartmentById(id));
+    }
+
+    @Override
+    public Department findById(Long departmentId) {
+        return getDepartmentById(departmentId);
+    }
+
+    private DepartmentResponse getDepartmentResponse(Department department) {
+        return new DepartmentResponse(department.getId(), department.getName());
     }
 
     @Override
@@ -62,16 +71,10 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentRepository.existsByName(departmentName);
     }
 
-    private DepartmentResponse getDepartmentResponseFromDepartment(Department department) {
-        DepartmentResponse departmentResponse = new DepartmentResponse();
-        departmentResponse.setId(department.getId());
-        departmentResponse.setDepartmentName(department.getName());
-        return departmentResponse;
-    }
 
     private List<DepartmentResponse> getDepartmentResponses(List<Department> departments) {
         return departments.stream()
-            .map(this::getDepartmentResponseFromDepartment)
+            .map(this::getDepartmentResponse)
             .toList();
     }
 }
