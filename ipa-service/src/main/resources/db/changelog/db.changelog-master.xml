@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <include file="initial/changelog-1.0.xml" relativeToChangelogFile="true"/>
+
+<!--    <changeSet author="techno-next" id="TS01681">-->
+<!--        <sqlFile path="updates/001T-TS01681.sql" relativeToChangelogFile="false" splitStatements="false"/>-->
+<!--    </changeSet>-->
+
+</databaseChangeLog>
