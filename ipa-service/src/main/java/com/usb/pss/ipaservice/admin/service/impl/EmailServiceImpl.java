@@ -3,8 +3,6 @@ package com.usb.pss.ipaservice.admin.service.impl;
 import com.usb.pss.ipaservice.admin.model.entity.EmailData;
 import com.usb.pss.ipaservice.admin.model.entity.Otp;
 import com.usb.pss.ipaservice.admin.model.entity.User;
-import com.usb.pss.ipaservice.admin.model.enums.EmailType;
-import com.usb.pss.ipaservice.admin.service.iservice.EmailDataService;
 import com.usb.pss.ipaservice.admin.service.iservice.EmailService;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
-    private final EmailDataService emailDataService;
 
     @Async
     @Override
@@ -44,11 +41,10 @@ public class EmailServiceImpl implements EmailService {
 
     @Async
     @Override
-    public void sendPasswordResetEmail(User user, String passwordResetUrl) {
+    public void sendPasswordResetEmail(User user, String passwordResetUrl, EmailData emailData) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            EmailData emailData = emailDataService.getEmailDataByEmailType(EmailType.PASSWORD_RESET);
             String emailBody = preparePasswordResetMailBody(emailData, user, passwordResetUrl);
             helper.setTo(user.getEmail());
             helper.setSubject(emailData.getSubject());
@@ -56,6 +52,7 @@ public class EmailServiceImpl implements EmailService {
             mailSender.send(message);
         } catch (Exception e) {
             log.error("Failed to send OTP");
+            e.printStackTrace();
         }
     }
 
