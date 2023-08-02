@@ -2,8 +2,10 @@ package com.usb.pss.ipaservice.admin.model.entity;
 
 import com.usb.pss.ipaservice.admin.model.enums.EmailType;
 import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +27,7 @@ import lombok.Setter;
 @Table(name = "adm_email_data")
 public class EmailData extends BaseAuditorEntity {
     private String subject;
+    @Enumerated(EnumType.STRING)
     private EmailType emailType;
     private String attachmentPath;
 

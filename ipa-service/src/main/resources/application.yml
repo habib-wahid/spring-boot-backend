@@ -1,7 +1,4 @@
 spring:
-  liquibase:
-    enabled: false
-    default-schema: usba
   application:
     name: pss-ipa
   profiles:
@@ -9,8 +6,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
   jpa:
-    hibernate:
-      ddl-auto: update
+#    hibernate:
+#      ddl-auto: update
     show-sql: ${jpa.show-sql}
     properties:
       hibernate:

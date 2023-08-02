@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet author="techno-next" id="001-initDB">
+        <sqlFile path="db/changelog/initial/init_db.sql" relativeToChangelogFile="false" splitStatements="false"/>
+    </changeSet>
+    <changeSet author="techno-next" id="002-fillData">
+        <sqlFile path="db/changelog/initial/initialize_data.sql" relativeToChangelogFile="false" splitStatements="false"/>
+<!--        <sqlFile path="008-classifiers.sql" relativeToChangelogFile="true"/>-->
+<!--        <sqlFile path="006-translations.sql" relativeToChangelogFile="true"/>-->
+<!--        <sqlFile path="007-permissions.sql" relativeToChangelogFile="true"/>-->
+<!--        <sqlFile path="010-updateSequence.sql" relativeToChangelogFile="true"/>-->
+    </changeSet>
+
+
+</databaseChangeLog>

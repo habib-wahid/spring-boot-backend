@@ -5,6 +5,7 @@ import com.usb.pss.ipaservice.admin.model.entity.PasswordPolicy;
 import com.usb.pss.ipaservice.admin.repository.PasswordPolicyRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.PasswordPolicyService;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
+import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,10 @@ public class PasswordPolicyServiceImpl implements PasswordPolicyService {
 
     @Override
     public List<Map<String, Object>> getPasswordPolicies() {
-        return passwordPolicyRepository.getPasswordPolicies();
+        List<Map<String, Object>> passwordPolicies = passwordPolicyRepository.getPasswordPolicies();
+        passwordPolicies.sort(
+            Comparator.comparingInt(policy -> (Integer) policy.get("serial"))
+        );
+        return passwordPolicies;
     }
 }

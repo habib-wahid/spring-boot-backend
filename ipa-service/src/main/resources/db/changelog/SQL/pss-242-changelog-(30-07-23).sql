@@ -9,7 +9,7 @@ CREATE TABLE adm_email_data
     updated_date    TIMESTAMP WITHOUT TIME ZONE,
     version         INTEGER                                 NOT NULL,
     subject         VARCHAR(255),
-    email_type      INTEGER,
+    email_type      VARCHAR(15),
     attachment_path VARCHAR(255),
     body            VARCHAR(5000),
     CONSTRAINT pk_adm_email_data PRIMARY KEY (id)

@@ -1,10 +1,12 @@
 spring:
   liquibase:
-    enabled: false
+    enabled: true
+    default-schema: ${tenant.default.schema}
+    change-log: classpath:db/changelog/db.changelog-master.xml
   datasource:
     url: jdbc:postgresql://localhost:5432/pss_ipa
-    username: admin
-    password: admin
+    username: postgres
+    password: postgres
     data:
       redis:
         host: localhost
@@ -55,6 +57,9 @@ multitenancy:
 
 useExpiringMapToBlackListAccessToken: true
 
+tenant:
+  default:
+    schema: usba
 #logging:
 #  level:
 #    net:

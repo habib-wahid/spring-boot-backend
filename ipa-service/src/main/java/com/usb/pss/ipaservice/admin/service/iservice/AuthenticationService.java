@@ -9,8 +9,6 @@ import com.usb.pss.ipaservice.admin.dto.request.OtpVerifyRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ResetPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
-import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.UUID;
 
 public interface AuthenticationService {
@@ -25,7 +23,7 @@ public interface AuthenticationService {
 
     void logout(String authHeader, LogoutRequest request);
 
-    void sendPasswordResetLink(HttpServletRequest httpServletRequest, ForgotPasswordRequest forgotPasswordRequest);
+    void sendPasswordResetLink(ForgotPasswordRequest forgotPasswordRequest);
 
     void resetPassword(ResetPasswordRequest resetPasswordRequest);
 
