@@ -89,13 +89,19 @@ public class AuthenticationController {
     }
 
     @PostMapping("/verify2faOtp")
-    @Operation(summary = "Verify 2FA OTP to complete login for a 2FA enabled user")
+    @Operation(summary = "Verify 2FA OTP to complete login for a 2FA enabled user", parameters = {
+        @Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
+                in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
+    })
     public AuthenticationResponse authenticateWith2faOtp(@RequestBody @Validated OtpVerifyRequest request) {
         return authenticationService.authenticateWithOtp(request);
     }
 
     @PostMapping("/resend2faOtp")
-    @Operation(summary = "Resend a new 2FA OTP to user's email")
+    @Operation(summary = "Resend a new 2FA OTP to user's email", parameters = {
+        @Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
+                in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
+    })
     public AuthenticationResponse resend2faOtp(@RequestBody @Validated OtpResendRequest request) {
         return authenticationService.resend2faOtp(request);
     }
