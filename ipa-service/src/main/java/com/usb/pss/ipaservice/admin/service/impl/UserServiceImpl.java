@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
 
         User user = User
             .builder()
-            .email(request.email())
+            .email(request.personalInfoRequest().email())
             .username(request.username())
             .password(passwordEncoder.encode(request.password()))
             .userCode(request.userCode())
@@ -105,7 +105,8 @@ public class UserServiceImpl implements UserService {
             .builder()
             .firstName(request.personalInfoRequest().firstName())
             .lastName(request.personalInfoRequest().lastName())
-            .emailOfficial(request.email())
+            .emailOfficial(request.personalInfoRequest().email())
+            .emailOther(request.personalInfoRequest().emailOther())
             .telephoneNumber(request.personalInfoRequest().telephoneNumber())
             .mobileNumber(request.personalInfoRequest().mobileNumber())
             .department(department)

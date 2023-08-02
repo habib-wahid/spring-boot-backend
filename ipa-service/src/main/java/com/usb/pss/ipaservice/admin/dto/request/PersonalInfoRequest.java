@@ -12,8 +12,8 @@ public record PersonalInfoRequest(
     @NotEmpty
     @Email
     String email,
-    @NotNull
-    Boolean is2faEnabled,
+    @Email
+    String emailOther,
     String mobileNumber,
     String telephoneNumber,
     @NotNull

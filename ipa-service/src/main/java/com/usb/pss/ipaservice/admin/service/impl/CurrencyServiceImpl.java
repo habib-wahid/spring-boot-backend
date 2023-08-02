@@ -39,6 +39,7 @@ public class CurrencyServiceImpl implements CurrencyService {
         CurrencyResponse currencyResponse = new CurrencyResponse();
         currencyResponse.setId(currency.getId());
         currencyResponse.setCode(currency.getCode());
+        currencyResponse.setName(currency.getName());
         return currencyResponse;
     }
 }

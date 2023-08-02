@@ -8,7 +8,10 @@
     <include file="initial/changelog-1.0.xml" relativeToChangelogFile="true"/>
 
 <!--    <changeSet author="techno-next" id="TS01681">-->
-<!--        <sqlFile path="updates/001T-TS01681.sql" relativeToChangelogFile="false" splitStatements="false"/>-->
+<!--        <sqlFile path="db/changelog/update/001T-TS01681.sql" relativeToChangelogFile="false" splitStatements="false"/>-->
 <!--    </changeSet>-->
+    <changeSet author="techno-next" id="TS334">
+        <sqlFile path="db/changelog/update/001-TASK334.sql" relativeToChangelogFile="false" splitStatements="false"/>
+    </changeSet>
 
 </databaseChangeLog>
