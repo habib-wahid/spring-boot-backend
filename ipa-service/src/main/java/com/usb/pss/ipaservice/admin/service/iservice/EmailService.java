@@ -12,5 +12,5 @@ import com.usb.pss.ipaservice.admin.model.entity.User;
 public interface EmailService {
     void send2faOtpMail(User receiver, Otp otp, EmailData emailData);
 
-    void sendPasswordResetEmail(User user, String passwordResetUrl);
+    void sendPasswordResetEmail(User user, String passwordResetUrl, EmailData emailData);
 }
