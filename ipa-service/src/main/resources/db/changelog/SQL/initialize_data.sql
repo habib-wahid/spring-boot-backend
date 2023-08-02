@@ -30,26 +30,42 @@ values (1, 'Dhaka', 0),
        (5, 'NewYork', 0)
 on conflict do nothing;
 
+-- initialize airport tablle
+
+insert into inv_airport(id, name, version)
+values (1, 'Dhaka', 0),
+       (2, 'Chittagong', 0),
+       (3, 'Qatar', 0),
+       (4, 'Kolkata', 0)
+on conflict do nothing;
+
 -- Create Password Policy
 insert into adm_password_policy(id, password_length, contains_digit, contains_lowercase, contains_special_characters,
-                                     contains_uppercase, version)
+                                contains_uppercase, version)
 values (1, 1, false, false, false, false, 0)
 on conflict do nothing;
 
 -- Create Personal Info Table
-insert into adm_personal_info(id, first_name, last_name, email_official, department_id, designation_id, point_of_sale_id, version)
-values (1, 'super', 'admin', 'admin@gmail.com', 1, 1, 1, 0)
+insert into adm_personal_info(id, first_name, last_name, email_official, department_id, designation_id, version)
+values (1, 'super', 'admin', 'admin@gmail.com', 1, 1, 0)
 on conflict do nothing;
 
 -- Create Super Admin => username='admin' password='admin'
-insert into adm_user(id, email, username, password, is2fa_enabled, user_type_id, group_id, active, version, personal_info_id)
+insert into adm_user(id, email, username, password, is2fa_enabled, user_type_id, group_id, point_of_sale_id, active,
+                     version, personal_info_id, access_level)
 values (1, 'admin@gmail.com', 'admin',
-        '$2a$10$FszQtoGSFc/WDJZvOUQiQeGhGiw7KwwXh7tMRbMBpUtYLE.PGmM/y', true, 1, 1, true, 0, 1)
+        '$2a$10$FszQtoGSFc/WDJZvOUQiQeGhGiw7KwwXh7tMRbMBpUtYLE.PGmM/y', true, 1, 1, 1, true, 0, 1, 'REVIEWER')
 on conflict do nothing;
 
 
--- Set data on personal_info currency mapping table
-insert into adm_personal_info_currency_mapping(personal_info_id, currency_id)
+-- Set data on user currency mapping table
+insert into adm_user_currency_mapping(user_id, currency_id)
+values (1, 1),
+       (1, 2)
+on conflict do nothing;
+
+-- Set data on user airport mapping table
+insert into adm_user_airport_mapping(user_id, airport_id)
 values (1, 1),
        (1, 2)
 on conflict do nothing;
@@ -314,6 +330,8 @@ on conflict do nothing;
 
 -- Give 'ADMIN' group to all action permission
 insert into adm_group_wise_action_mapping(group_id, action_id)
-select 1, id from adm_action on conflict do nothing ;
+select 1, id
+from adm_action
+on conflict do nothing;
 
 commit;

@@ -170,18 +170,7 @@ CREATE TABLE adm_personal_info
     email_other      VARCHAR(255),
     mobile_number    VARCHAR(255),
     telephone_number VARCHAR(255),
-    point_of_sale_id BIGINT                                  NOT NULL,
-    access_level     VARCHAR(255),
-    airport          VARCHAR(255),
     CONSTRAINT pk_adm_personal_info PRIMARY KEY (id)
-);
-
--- changeset mdabulbasar:1690266244420-13
-CREATE TABLE adm_personal_info_currency_mapping
-(
-    currency_id      BIGINT NOT NULL,
-    personal_info_id BIGINT NOT NULL,
-    CONSTRAINT pk_adm_personal_info_currency_mapping PRIMARY KEY (currency_id, personal_info_id)
 );
 
 
@@ -224,6 +213,7 @@ CREATE TABLE adm_user
     password         VARCHAR(255),
     company_code     VARCHAR(255),
     active           BOOLEAN                                 NOT NULL,
+    access_level     varchar(8)                              NOT NULL,
     group_id         BIGINT,
     personal_info_id BIGINT                                  NOT NULL,
     user_type_id     BIGINT                                  NOT NULL,
@@ -329,14 +319,6 @@ ALTER TABLE adm_group_wise_action_mapping
 -- changeset mdabulbasar:1690266244420-42
 ALTER TABLE adm_group_wise_action_mapping
     ADD CONSTRAINT fk_admgrowisactmap_on_group FOREIGN KEY (group_id) REFERENCES adm_group (id);
-
--- changeset mdabulbasar:1690266244420-43
-ALTER TABLE adm_personal_info_currency_mapping
-    ADD CONSTRAINT fk_admperinfcurmap_on_currency FOREIGN KEY (currency_id) REFERENCES adm_currency (id);
-
--- changeset mdabulbasar:1690266244420-44
-ALTER TABLE adm_personal_info_currency_mapping
-    ADD CONSTRAINT fk_admperinfcurmap_on_personal_info FOREIGN KEY (personal_info_id) REFERENCES adm_personal_info (id);
 
 
 -- changeset mdabulbasar:1690266244420-47

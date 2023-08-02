@@ -24,11 +24,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserAndFetchActionAndPersonalInfoByUsername(String username);
 
     @EntityGraph(attributePaths = {"personalInfo", "personalInfo.department", "personalInfo.designation",
-        "personalInfo.allowedCurrencies"})
-    Optional<User> findUserWithPersonalInfoById(Long userId);
+        "airports", "pointOfSale", "allowedCurrencies"})
+    Optional<User> findUserWithAllInfoById(Long userId);
 
-    @EntityGraph(attributePaths = {"personalInfo"})
-    List<User> findAllWithPersonalInfoByIdIsNotNull();
+    @EntityGraph(attributePaths = {"pointOfSale"})
+    List<User> findAllWithPointOfSaleByIdIsNotNull();
 
     @EntityGraph(attributePaths = {"additionalActions"})
     Optional<User> findUserFetchAdditionalActionsById(Long userId);

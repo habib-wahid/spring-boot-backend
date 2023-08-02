@@ -37,12 +37,11 @@ public record RegistrationRequest(
     Long userType,
     @NotEmpty
     Set<Long> currencyIds,
+    Set<Long> airportIds,
     @NotNull
     Long pointOfSaleId,
     @NotNull
-    AccessLevel accessLevel,
-    @NotBlank
-    String airport
+    AccessLevel accessLevel
 ) {
 
 }

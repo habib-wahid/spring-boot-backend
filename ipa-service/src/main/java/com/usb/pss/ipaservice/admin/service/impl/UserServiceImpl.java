@@ -6,6 +6,7 @@ import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
+import com.usb.pss.ipaservice.inventory.dto.response.AirportResponse;
 import com.usb.pss.ipaservice.admin.dto.response.CurrencyResponse;
 import com.usb.pss.ipaservice.admin.dto.response.DepartmentResponse;
 import com.usb.pss.ipaservice.admin.dto.response.DesignationResponse;
@@ -17,6 +18,7 @@ import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserTypeResponse;
 import com.usb.pss.ipaservice.admin.model.entity.Action;
+import com.usb.pss.ipaservice.inventory.model.entity.Airport;
 import com.usb.pss.ipaservice.admin.model.entity.Currency;
 import com.usb.pss.ipaservice.admin.model.entity.Department;
 import com.usb.pss.ipaservice.admin.model.entity.Designation;
@@ -26,6 +28,7 @@ import com.usb.pss.ipaservice.admin.model.entity.PointOfSale;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 import com.usb.pss.ipaservice.admin.model.entity.UserType;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
+import com.usb.pss.ipaservice.inventory.repository.AirportRepository;
 import com.usb.pss.ipaservice.admin.repository.CurrencyRepository;
 import com.usb.pss.ipaservice.admin.repository.DepartmentRepository;
 import com.usb.pss.ipaservice.admin.repository.DesignationRepository;
@@ -76,6 +79,7 @@ public class UserServiceImpl implements UserService {
     private final CurrencyRepository currencyRepository;
     private final PointOfSaleRepository pointOfSaleRepository;
     private final UserTypeRepository userTypeRepository;
+    private final AirportRepository airportRepository;
 
     public void createNewUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -85,6 +89,9 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsername(request.username())) {
             throw new RuleViolationException(DUPLICATE_USERNAME);
         }
+        PointOfSale pointOfSale = getPointOfSale(request.pointOfSaleId());
+        Set<Currency> currencies = new HashSet<>(getCurrenciesFromIds(request.currencyIds()));
+        Set<Airport> airports = new HashSet<>(getAirportsFromIds(request.airportIds()));
 
         User user = User
             .builder()
@@ -93,6 +100,10 @@ public class UserServiceImpl implements UserService {
             .password(passwordEncoder.encode(request.password()))
             .userCode(request.userCode())
             .userType(getUserType(request.userType()))
+            .allowedCurrencies(currencies)
+            .pointOfSale(pointOfSale)
+            .accessLevel(request.accessLevel())
+            .airports(airports)
             .active(true)
             .is2faEnabled(request.is2faEnabled())
             .passwordExpiryDate(LocalDateTime.now())
@@ -100,8 +111,7 @@ public class UserServiceImpl implements UserService {
 
         Department department = findDepartmentById(request.departmentId());
         Designation designation = findDesignationById(request.designationId());
-        PointOfSale pointOfSale = getPointOfSale(request.pointOfSaleId());
-        Set<Currency> currencies = new HashSet<>(getCurrenciesFromIds(request.currencyIds()));
+
 
         var userPersonalInfo = PersonalInfo
             .builder()
@@ -112,14 +122,11 @@ public class UserServiceImpl implements UserService {
             .mobileNumber(request.mobileNumber())
             .department(department)
             .designation(designation)
-            .allowedCurrencies(currencies)
-            .pointOfSale(pointOfSale)
-            .accessLevel(request.accessLevel())
-            .airport(request.airport())
             .build();
         user.setPersonalInfo(userPersonalInfo);
         userRepository.save(user);
     }
+
 
     @Override
     public User getUserById(Long userId) {
@@ -149,7 +156,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAllWithPersonalInfoByIdIsNotNull()
+        return userRepository.findAllWithPointOfSaleByIdIsNotNull()
             .stream()
             .map(this::prepareUserResponse)
             .toList();
@@ -175,8 +182,8 @@ public class UserServiceImpl implements UserService {
             userResponse.setUserGroup("Not Assigned yet.");
         }
         userResponse.setEmail(user.getEmail());
-        userResponse.setPointOfSale(user.getPersonalInfo().getPointOfSale().getName());
-        userResponse.setAccessLevel(user.getPersonalInfo().getAccessLevel());
+        userResponse.setPointOfSale(user.getPointOfSale().getName());
+        userResponse.setAccessLevel(user.getAccessLevel().name());
         userResponse.setStatus(user.isActive());
         return userResponse;
     }
@@ -270,6 +277,10 @@ public class UserServiceImpl implements UserService {
         return currencyRepository.findByIdIn(currencyIds);
     }
 
+    private List<Airport> getAirportsFromIds(Set<Long> airportIds) {
+        return airportRepository.findByIdIn(airportIds);
+    }
+
     private Group findGroupById(Long groupId) {
         return groupRepository.findById(groupId)
             .orElseThrow(() -> new ResourceNotFoundException(GROUP_NOT_FOUND));
@@ -298,10 +309,22 @@ public class UserServiceImpl implements UserService {
             .designation(getDesignationResponse(personalInfo.getDesignation()))
             .mobileNumber(personalInfo.getMobileNumber())
             .telephoneNumber(personalInfo.getTelephoneNumber())
-            .accessLevel(personalInfo.getAccessLevel())
-            .pointOfSale(getPointOfSaleResponseFromPointOfSale(personalInfo.getPointOfSale()))
-            .allowedCurrencies(getCurrencyResponsesFromCurrencies(personalInfo.getAllowedCurrencies()))
+            .accessLevel(user.getAccessLevel())
+            .pointOfSale(getPointOfSaleResponseFromPointOfSale(user.getPointOfSale()))
+            .airports(getAirportResponsesFromAirports(user.getAirports()))
+            .allowedCurrencies(getCurrencyResponsesFromCurrencies(user.getAllowedCurrencies()))
             .build();
+    }
+
+    private List<AirportResponse> getAirportResponsesFromAirports(Set<Airport> airports) {
+        return airports
+            .stream()
+            .map(this::getAirportResponse)
+            .toList();
+    }
+
+    private AirportResponse getAirportResponse(Airport airport) {
+        return new AirportResponse(airport.getId(), airport.getName());
     }
 
     private UserTypeResponse getUserTypeResponse(UserType userType) {
@@ -331,7 +354,7 @@ public class UserServiceImpl implements UserService {
         CurrencyResponse currencyResponse = new CurrencyResponse();
         currencyResponse.setCode(currency.getCode());
         currencyResponse.setId(currency.getId());
-        currencyResponse.setName(currencyResponse.getName());
+        currencyResponse.setName(currency.getName());
         return currencyResponse;
     }
 
@@ -341,7 +364,7 @@ public class UserServiceImpl implements UserService {
 
 
     private User getUserWithPersonalInfoById(Long userId) {
-        return userRepository.findUserWithPersonalInfoById(userId)
+        return userRepository.findUserWithAllInfoById(userId)
             .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 

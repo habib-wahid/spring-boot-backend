@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.admin.dto.response;
 
 import com.usb.pss.ipaservice.admin.model.enums.AccessLevel;
+import com.usb.pss.ipaservice.inventory.dto.response.AirportResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +31,6 @@ public class UserPersonalInfoResponse {
     private String telephoneNumber;
     private PointOfSaleResponse pointOfSale;
     private AccessLevel accessLevel;
-    private String airport;
+    private List<AirportResponse> airports;
     private List<CurrencyResponse> allowedCurrencies;
 }

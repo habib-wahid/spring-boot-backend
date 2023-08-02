@@ -1,6 +1,5 @@
 package com.usb.pss.ipaservice.admin.dto.response;
 
-import com.usb.pss.ipaservice.admin.model.enums.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +15,6 @@ public class UserResponse {
     private String userGroup;
     private String email;
     private String pointOfSale;
-    private AccessLevel accessLevel;
+    private String accessLevel;
     private Boolean status;
 }
