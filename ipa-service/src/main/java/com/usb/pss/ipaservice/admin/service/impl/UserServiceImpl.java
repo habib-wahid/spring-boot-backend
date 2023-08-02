@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
         }
         PointOfSale pointOfSale = pointOfSalesService.findPointOfSaleById(request.pointOfSaleId());
         Set<Currency> currencies = new HashSet<>(currencyService.findAllCurrenciesByIds(request.currencyIds()));
-        Set<Airport> airports = new HashSet<>(getAirportsFromIds(request.airportIds()));
+        Set<Airport> airports = new HashSet<>(airportService.findAllAirportsByIds(request.airportIds()));
 
         User user = User
             .builder()
@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
         }
         userResponse.setEmail(user.getEmail());
         userResponse.setPointOfSale(user.getPointOfSale().getName());
-        userResponse.setAccessLevel(user.getAccessLevel().name());
+        userResponse.setAccessLevel(user.getAccessLevel());
         userResponse.setStatus(user.isActive());
         return userResponse;
     }
@@ -258,10 +258,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-
-    private List<Airport> getAirportsFromIds(Set<Long> airportIds) {
-        return airportService.findAllAirportsByIds(airportIds);
-    }
 
     private Group findGroupById(Long groupId) {
         return groupRepository.findById(groupId)

@@ -1,5 +1,8 @@
 package com.usb.pss.ipaservice.admin.dto.response;
 
+import com.usb.pss.ipaservice.admin.model.enums.AccessLevel;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +18,7 @@ public class UserResponse {
     private String userGroup;
     private String email;
     private String pointOfSale;
-    private String accessLevel;
+    @Enumerated(EnumType.STRING)
+    private AccessLevel accessLevel;
     private Boolean status;
 }

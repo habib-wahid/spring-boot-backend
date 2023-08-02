@@ -67,7 +67,7 @@ public class User extends BaseAuditorEntity implements UserDetails {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "currency_id"))
     private Set<Currency> allowedCurrencies = new HashSet<>();
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserType userType;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
