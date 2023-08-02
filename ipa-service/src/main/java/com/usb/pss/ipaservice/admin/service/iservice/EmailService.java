@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
+import com.usb.pss.ipaservice.admin.model.entity.EmailData;
 import com.usb.pss.ipaservice.admin.model.entity.Otp;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 
@@ -9,7 +10,7 @@ import com.usb.pss.ipaservice.admin.model.entity.User;
  */
 
 public interface EmailService {
-    void send2faOtpMail(User receiver, Otp otp);
+    void send2faOtpMail(User receiver, Otp otp, EmailData emailData);
 
     void sendPasswordResetEmail(User user, String passwordResetUrl);
 }

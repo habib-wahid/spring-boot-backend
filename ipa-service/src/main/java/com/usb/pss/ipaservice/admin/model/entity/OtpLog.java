@@ -3,10 +3,7 @@ package com.usb.pss.ipaservice.admin.model.entity;
 import com.usb.pss.ipaservice.admin.model.enums.OtpStatus;
 import com.usb.pss.ipaservice.admin.model.enums.OtpType;
 import com.usb.pss.ipaservice.common.model.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +27,7 @@ import java.time.LocalDateTime;
 public class OtpLog extends BaseEntity {
     @Column(length = 6)
     private String otpCode;
+    @Enumerated(EnumType.STRING)
     private OtpStatus otpStatus;
     private OtpType otpType;
     private LocalDateTime otpStatusDate;
