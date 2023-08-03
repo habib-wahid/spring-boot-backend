@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
+import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
@@ -20,7 +21,7 @@ public interface GroupService {
 
     GroupResponse getGroupResponseById(Long groupId);
 
-    List<GroupResponse> getAllGroupResponse();
+    PaginationResponse<GroupResponse> getAllGroupResponse(int page, int pageSize);
 
     void updateGroup(GroupUpdateRequest groupUpdateRequest);
 

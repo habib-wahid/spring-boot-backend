@@ -1,5 +1,9 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
+import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_DIRECTION;
+import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_SORT_BY;
+
+import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
@@ -16,9 +20,12 @@ import com.usb.pss.ipaservice.common.constants.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,20 +63,28 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public GroupResponse getGroupResponseById(Long groupId) {
         Group group = getGroupById(groupId);
-        GroupResponse groupResponse = new GroupResponse();
-        prepareResponse(group, groupResponse);
-        return groupResponse;
+        return prepareResponse(group);
     }
 
     @Override
-    public List<GroupResponse> getAllGroupResponse() {
-        List<GroupResponse> groupResponses = new ArrayList<>();
-        groupRepository.findAllByOrderByCreatedDateDesc().forEach(group -> {
-            GroupResponse groupResponse = new GroupResponse();
-            prepareResponse(group, groupResponse);
-            groupResponses.add(groupResponse);
-        });
-        return groupResponses;
+    public PaginationResponse<GroupResponse> getAllGroupResponse(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(DEFAULT_DIRECTION, DEFAULT_SORT_BY));
+        Page<Group> groupList = groupRepository.findAll(pageable);
+
+
+        return PaginationResponse.<GroupResponse>builder()
+            .pageNumber(groupList.getPageable().getPageNumber())
+            .pageSize(groupList.getPageable().getPageSize())
+            .totalElements(groupList.getTotalElements())
+            .content(
+                groupList.getContent()
+                .stream()
+                .map(this::prepareResponse)
+                .toList()
+            )
+            .header(List.of("Group Name", "Description", "Status"))
+            .build();
+
     }
 
     @Override
@@ -111,17 +126,22 @@ public class GroupServiceImpl implements GroupService {
     private void prepareEntity(GroupCreateRequest groupCreateRequest, Group group) {
         group.setName(groupCreateRequest.name());
         group.setDescription(groupCreateRequest.description());
+        group.setActive(groupCreateRequest.active());
     }
 
     private void prepareEntity(GroupUpdateRequest groupUpdateRequest, Group group) {
         group.setName(groupUpdateRequest.name());
         group.setDescription(groupUpdateRequest.description());
+        group.setActive(groupUpdateRequest.active());
     }
 
-    private void prepareResponse(Group group, GroupResponse groupResponse) {
+    private GroupResponse prepareResponse(Group group) {
+        GroupResponse groupResponse = new GroupResponse();
         groupResponse.setId(group.getId());
         groupResponse.setName(group.getName());
         groupResponse.setDescription(group.getDescription());
+        groupResponse.setActive(group.isActive());
+        return groupResponse;
     }
 
     private Group findGroupAndFetchActionsById(Long groupId) {
