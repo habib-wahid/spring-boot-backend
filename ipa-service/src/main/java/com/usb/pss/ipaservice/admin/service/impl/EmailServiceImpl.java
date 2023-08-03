@@ -51,8 +51,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setText(emailBody, true);
             mailSender.send(message);
         } catch (Exception e) {
-            log.error("Failed to send OTP");
-            e.printStackTrace();
+            log.error("Failed to send password reset link");
         }
     }
 
