@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
             .userName(user.getUsername())
             .email(user.getEmail())
             .accessLevel(user.getAccessLevel())
-            .pointOfSale(pointOfSalesService.getPointOfSales(user.getPointOfSale().getId()))
+            .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))
             .status(user.isActive())
             .build();
         if (Objects.nonNull(user.getGroup())) {
