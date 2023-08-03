@@ -14,6 +14,8 @@ public interface DesignationService {
 
     DesignationResponse getDesignationById(Long id);
 
+    DesignationResponse getDesignationResponse(Designation designation);
+
     Designation findDesignationById(Long designationId);
 
     List<DesignationResponse> getAllDesignations();

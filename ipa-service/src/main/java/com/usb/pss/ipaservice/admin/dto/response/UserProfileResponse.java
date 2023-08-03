@@ -17,7 +17,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserPersonalInfoResponse {
+public class UserProfileResponse {
     private Long id;
     private String userName;
     private PersonalInfoResponse personalInfoResponse;

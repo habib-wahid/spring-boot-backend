@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUsername(String username);
 
+    boolean existsByEmail(String email);
+
     Optional<User> findUserByUsername(String username);
 
     Optional<User> findUserByUsernameOrEmail(String username, String email);
@@ -24,7 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserAndFetchActionAndPersonalInfoByUsername(String username);
 
     @EntityGraph(attributePaths = {"personalInfo", "personalInfo.department", "personalInfo.designation",
-        "airports", "pointOfSale", "allowedCurrencies"})
+        "airports", "userType", "pointOfSale", "allowedCurrencies"})
     Optional<User> findUserWithAllInfoById(Long userId);
 
     @EntityGraph(attributePaths = {"pointOfSale"})

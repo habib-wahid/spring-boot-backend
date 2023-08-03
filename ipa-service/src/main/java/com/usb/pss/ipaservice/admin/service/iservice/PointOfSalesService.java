@@ -16,5 +16,7 @@ public interface PointOfSalesService {
 
     PointOfSaleResponse getPointOfSales(Long pointOfSalesId);
 
+    PointOfSaleResponse getPointOfSaleResponse(PointOfSale pointOfSale);
+
     PointOfSale findPointOfSaleById(Long pointOfSaleId);
 }

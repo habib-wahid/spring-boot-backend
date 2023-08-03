@@ -18,23 +18,14 @@ public class UserTypeServiceImpl implements UserTypeService {
 
     @Override
     public UserType findUserTypeById(Long userTypeId) {
-        return getUserTypeById(userTypeId);
-
+        return userTypeRepository.findById(userTypeId)
+            .orElseThrow(() -> new ResourceNotFoundException(USER_TYPE_NOT_FOUND));
     }
 
     @Override
-    public UserTypeResponse getUserType(Long userTypeId) {
-        UserType userType = getUserTypeById(userTypeId);
-        return getUserTypeResponse(userType);
-    }
-
-
     public UserTypeResponse getUserTypeResponse(UserType userType) {
         return new UserTypeResponse(userType.getId(), userType.getName());
     }
 
-    private UserType getUserTypeById(Long userTypeId) {
-        return userTypeRepository.findById(userTypeId)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_TYPE_NOT_FOUND));
-    }
+
 }

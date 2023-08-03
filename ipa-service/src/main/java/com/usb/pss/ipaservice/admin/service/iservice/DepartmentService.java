@@ -12,9 +12,11 @@ public interface DepartmentService {
 
     void updateDepartment(UpdateDepartmentRequest updateDepartmentRequest);
 
-    DepartmentResponse findDepartmentById(Long id);
+    DepartmentResponse getDepartmentById(Long id);
 
-    Department findById(Long departmentId);
+    DepartmentResponse getDepartmentResponse(Department department);
+
+    Department findDepartmentById(Long departmentId);
 
 
     List<DepartmentResponse> getAllDepartments();

@@ -7,9 +7,11 @@ import java.util.Collection;
 import java.util.List;
 
 public interface AirportService {
-    AirportResponse findById(Long airportId);
+    Airport findAirportById(Long airportId);
+
+    AirportResponse getAirportById(Long airportId);
 
     List<Airport> findAllAirportsByIds(Collection<Long> airportIds);
 
-    List<AirportResponse> getAirportResponsesFromAirports(Collection<Airport> airports);
+    List<AirportResponse> getAirportResponses(Collection<Airport> airports);
 }

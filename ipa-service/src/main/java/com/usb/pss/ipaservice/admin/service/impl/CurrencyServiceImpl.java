@@ -27,7 +27,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public List<CurrencyResponse> getAllCurrencyResponsesFromCurrencies(Collection<Currency> currencies) {
+    public List<CurrencyResponse> getAllCurrencyResponses(Collection<Currency> currencies) {
         return currencies
             .stream()
             .map(this::getCurrencyResponse)

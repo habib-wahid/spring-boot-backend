@@ -39,7 +39,7 @@ public class PointOfSalesServiceImpl implements PointOfSalesService {
 
     @Override
     public void updatePointOfSales(UpdatePointOfSalesRequest updatePointOfSalesRequest) {
-        PointOfSale pointOfSale = getPointOfSale(updatePointOfSalesRequest.id());
+        PointOfSale pointOfSale = findPointOfSaleById(updatePointOfSalesRequest.id());
         if (!pointOfSaleRepository.existsByName(updatePointOfSalesRequest.name())) {
             pointOfSale.setName(updatePointOfSalesRequest.name());
             pointOfSaleRepository.save(pointOfSale);
@@ -50,29 +50,24 @@ public class PointOfSalesServiceImpl implements PointOfSalesService {
 
     @Override
     public PointOfSaleResponse getPointOfSales(Long pointOfSalesId) {
-        return getPointOfSaleResponseFromPointOfSale(getPointOfSale(pointOfSalesId));
+        return getPointOfSaleResponse(findPointOfSaleById(pointOfSalesId));
     }
 
     @Override
     public PointOfSale findPointOfSaleById(Long pointOfSaleId) {
-        return getPointOfSale(pointOfSaleId);
-    }
-
-    private PointOfSale getPointOfSale(Long pointOfSalesId) {
-        return pointOfSaleRepository.findById(pointOfSalesId)
+        return pointOfSaleRepository.findById(pointOfSaleId)
             .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.POINT_OF_SALES_NOT_FOUND));
     }
 
-    private PointOfSaleResponse getPointOfSaleResponseFromPointOfSale(PointOfSale pointOfSale) {
-        PointOfSaleResponse pointOfSaleResponse = new PointOfSaleResponse();
-        pointOfSaleResponse.setId(pointOfSale.getId());
-        pointOfSaleResponse.setPointOfSaleName(pointOfSale.getName());
-        return pointOfSaleResponse;
+
+    @Override
+    public PointOfSaleResponse getPointOfSaleResponse(PointOfSale pointOfSale) {
+        return new PointOfSaleResponse(pointOfSale.getId(), pointOfSale.getName());
     }
 
     private List<PointOfSaleResponse> getPointOfSalesResponses(List<PointOfSale> pointOfSales) {
         return pointOfSales.stream()
-            .map(this::getPointOfSaleResponseFromPointOfSale)
+            .map(this::getPointOfSaleResponse)
             .toList();
     }
 }

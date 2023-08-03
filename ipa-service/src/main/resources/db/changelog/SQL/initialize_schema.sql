@@ -1,6 +1,6 @@
--- CREATE SCHEMA IF NOT EXISTS "master";
--- CREATE SCHEMA IF NOT EXISTS "usba";
--- CREATE SCHEMA IF NOT EXISTS "airastra";
+CREATE SCHEMA IF NOT EXISTS "master";
+CREATE SCHEMA IF NOT EXISTS "usba";
+CREATE SCHEMA IF NOT EXISTS "airastra";
 
 
 create table if not exists master.tenant_config

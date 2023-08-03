@@ -35,7 +35,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public void updateDepartment(UpdateDepartmentRequest updateDepartmentRequest) {
         if (!existsByName(updateDepartmentRequest.name())) {
-            Department department = getDepartmentById(updateDepartmentRequest.id());
+            Department department = findDepartmentById(updateDepartmentRequest.id());
             department.setName(updateDepartmentRequest.name());
             departmentRepository.save(department);
         } else {
@@ -44,17 +44,19 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public DepartmentResponse findDepartmentById(Long id) {
-        return getDepartmentResponse(getDepartmentById(id));
+    public DepartmentResponse getDepartmentById(Long id) {
+        return getDepartmentResponse(findDepartmentById(id));
     }
 
     @Override
-    public Department findById(Long departmentId) {
-        return getDepartmentById(departmentId);
+    public DepartmentResponse getDepartmentResponse(Department department) {
+        return new DepartmentResponse(department.getId(), department.getName());
     }
 
-    private DepartmentResponse getDepartmentResponse(Department department) {
-        return new DepartmentResponse(department.getId(), department.getName());
+    @Override
+    public Department findDepartmentById(Long departmentId) {
+        return departmentRepository.findById(departmentId)
+            .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT_NOT_FOUND));
     }
 
     @Override
@@ -62,10 +64,6 @@ public class DepartmentServiceImpl implements DepartmentService {
         return getDepartmentResponses(departmentRepository.findAll());
     }
 
-    private Department getDepartmentById(Long id) {
-        return departmentRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT_NOT_FOUND));
-    }
 
     private Boolean existsByName(String departmentName) {
         return departmentRepository.existsByName(departmentName);

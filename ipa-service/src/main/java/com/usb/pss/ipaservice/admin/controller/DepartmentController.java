@@ -30,7 +30,7 @@ public class DepartmentController {
     @GetMapping("/{departmentId}")
     @Operation(summary = "Get department with it's ID")
     public DepartmentResponse getDepartment(@Validated @PathVariable Long departmentId) {
-        return departmentService.findDepartmentById(departmentId);
+        return departmentService.getDepartmentById(departmentId);
     }
 
     @GetMapping

@@ -20,8 +20,14 @@ public class AirportServiceImpl implements AirportService {
     private final AirportRepository airportRepository;
 
     @Override
-    public AirportResponse findById(Long airportId) {
-        Airport airport = getAirport(airportId);
+    public Airport findAirportById(Long airportId) {
+        return airportRepository.findById(airportId)
+            .orElseThrow(() -> new ResourceNotFoundException(AIRPORT_NOT_FOUND));
+    }
+
+    @Override
+    public AirportResponse getAirportById(Long airportId) {
+        Airport airport = findAirportById(airportId);
         return new AirportResponse(airport.getId(), airport.getName());
     }
 
@@ -31,7 +37,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public List<AirportResponse> getAirportResponsesFromAirports(Collection<Airport> airports) {
+    public List<AirportResponse> getAirportResponses(Collection<Airport> airports) {
         return airports
             .stream()
             .map(this::getAirportResponseFromAirport)
@@ -42,8 +48,5 @@ public class AirportServiceImpl implements AirportService {
         return new AirportResponse(airport.getId(), airport.getName());
     }
 
-    private Airport getAirport(Long airportId) {
-        return airportRepository.findById(airportId)
-            .orElseThrow(() -> new ResourceNotFoundException(AIRPORT_NOT_FOUND));
-    }
+
 }

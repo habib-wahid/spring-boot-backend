@@ -21,8 +21,6 @@ CREATE TABLE IF NOT EXISTS adm_user_airport_mapping
     airport_id BIGINT NOT NULL
 );
 
-ড
-
 
 ALTER TABLE adm_user
     ADD COLUMN

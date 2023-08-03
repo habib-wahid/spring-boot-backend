@@ -12,7 +12,6 @@ import com.usb.pss.ipaservice.admin.repository.GroupRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.GroupService;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
-import com.usb.pss.ipaservice.common.constants.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +20,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DUPLICATE_GROUP_NAME;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.GROUP_NOT_FOUND;
 
 
 /**
@@ -40,7 +42,7 @@ public class GroupServiceImpl implements GroupService {
     public void createNewGroup(GroupCreateRequest groupCreateRequest) {
         Optional<Group> duplicateGroupName = groupRepository.findByNameIgnoreCase(groupCreateRequest.name());
         if (duplicateGroupName.isPresent()) {
-            throw new RuleViolationException(ExceptionConstant.DUPLICATE_GROUP_NAME);
+            throw new RuleViolationException(DUPLICATE_GROUP_NAME);
         }
 
         Group groupToSave = new Group();
@@ -48,37 +50,37 @@ public class GroupServiceImpl implements GroupService {
         groupRepository.save(groupToSave);
     }
 
-    private Group getGroupById(Long groupId) {
+    @Override
+    public Group findGroupById(Long groupId) {
         return groupRepository.findById(groupId)
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.GROUP_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(GROUP_NOT_FOUND));
     }
 
     @Override
-    public GroupResponse getGroupResponseById(Long groupId) {
-        Group group = getGroupById(groupId);
-        GroupResponse groupResponse = new GroupResponse();
-        prepareResponse(group, groupResponse);
-        return groupResponse;
+    public GroupResponse getGroupById(Long groupId) {
+        return getGroupResponseFromGroup(findGroupById(groupId));
     }
 
     @Override
     public List<GroupResponse> getAllGroupResponse() {
         List<GroupResponse> groupResponses = new ArrayList<>();
         groupRepository.findAllByOrderByCreatedDateDesc().forEach(group -> {
-            GroupResponse groupResponse = new GroupResponse();
-            prepareResponse(group, groupResponse);
-            groupResponses.add(groupResponse);
+            groupResponses.add(getGroupResponseFromGroup(group));
         });
         return groupResponses;
     }
 
+    private GroupResponse getGroupResponseFromGroup(Group group) {
+        return new GroupResponse(group.getId(), group.getName(), group.getDescription());
+    }
+
     @Override
     public void updateGroup(GroupUpdateRequest groupUpdateRequest) {
-        Group groupToUpdate = getGroupById(groupUpdateRequest.id());
+        Group groupToUpdate = findGroupById(groupUpdateRequest.id());
         if (!groupToUpdate.getName().equals(groupUpdateRequest.name())) {
             Optional<Group> duplicateGroupName = groupRepository.findByNameIgnoreCase(groupUpdateRequest.name());
             if (duplicateGroupName.isPresent()) {
-                throw new RuleViolationException(ExceptionConstant.DUPLICATE_GROUP_NAME);
+                throw new RuleViolationException(DUPLICATE_GROUP_NAME);
             }
         }
 
@@ -118,14 +120,9 @@ public class GroupServiceImpl implements GroupService {
         group.setDescription(groupUpdateRequest.description());
     }
 
-    private void prepareResponse(Group group, GroupResponse groupResponse) {
-        groupResponse.setId(group.getId());
-        groupResponse.setName(group.getName());
-        groupResponse.setDescription(group.getDescription());
-    }
 
     private Group findGroupAndFetchActionsById(Long groupId) {
         return groupRepository.findGroupAndFetchActionsById(groupId)
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.GROUP_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(GROUP_NOT_FOUND));
     }
 }

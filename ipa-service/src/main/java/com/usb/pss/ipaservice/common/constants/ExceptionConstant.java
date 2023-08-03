@@ -5,6 +5,7 @@ public enum ExceptionConstant {
     AIRPORT_NOT_FOUND("Airport not found"),
     PASSWORD_CONFIRM_PASSWORD_NOT_MATCH("Passwords & confirm password are not same."),
     DUPLICATE_USERNAME("User already exists with this username."),
+    DUPLICATE_EMAIL("User already exists with this email."),
     USER_NOT_FOUND_BY_USERNAME("No user exists with this username."),
     USER_NOT_FOUND_BY_EMAIL("No user exists with this email"),
     USER_NOT_FOUND_BY_ID("No user exists with this id."),

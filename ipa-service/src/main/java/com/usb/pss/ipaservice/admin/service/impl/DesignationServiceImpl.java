@@ -34,7 +34,7 @@ public class DesignationServiceImpl implements DesignationService {
 
     @Override
     public void updateDesignation(UpdateDesignationRequest updateDesignationRequest) {
-        Designation designation = getDesignation(updateDesignationRequest.id());
+        Designation designation = findDesignationById(updateDesignationRequest.id());
         if (!checkDesignationExistsByName(updateDesignationRequest.name())) {
             designation.setName(updateDesignationRequest.name());
             designationRepository.save(designation);
@@ -45,12 +45,13 @@ public class DesignationServiceImpl implements DesignationService {
 
     @Override
     public DesignationResponse getDesignationById(Long id) {
-        return getDesignationResponseFromDesignation(getDesignation(id));
+        return getDesignationResponse(findDesignationById(id));
     }
 
     @Override
     public Designation findDesignationById(Long designationId) {
-        return getDesignation(designationId);
+        return designationRepository.findById(designationId)
+            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.DESIGNATION_NOT_FOUND));
     }
 
     @Override
@@ -58,26 +59,17 @@ public class DesignationServiceImpl implements DesignationService {
         return getDesignationResponses(designationRepository.findAll());
     }
 
-    private Designation getDesignation(Long id) {
-        return designationRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.DESIGNATION_NOT_FOUND));
-    }
-
     private Boolean checkDesignationExistsByName(String designationName) {
         return designationRepository.existsByName(designationName);
     }
 
 
-    private DesignationResponse getDesignationResponseFromDesignation(Designation designation) {
-        DesignationResponse designationResponse = new DesignationResponse();
-        designationResponse.setId(designation.getId());
-        designationResponse.setDesignationName(designation.getName());
-        return designationResponse;
+    @Override
+    public DesignationResponse getDesignationResponse(Designation designation) {
+        return new DesignationResponse(designation.getId(), designation.getName());
     }
 
     private List<DesignationResponse> getDesignationResponses(List<Designation> designations) {
-        return designations.stream()
-            .map(this::getDesignationResponseFromDesignation)
-            .toList();
+        return designations.stream().map(this::getDesignationResponse).toList();
     }
 }

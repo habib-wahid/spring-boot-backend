@@ -6,28 +6,26 @@ import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
-import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
-import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
+import com.usb.pss.ipaservice.admin.dto.response.UserProfileResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserGroupResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.model.entity.User;
 
 import java.util.List;
-import java.util.Set;
 
 public interface UserService {
 
     void createNewUser(RegistrationRequest request);
+
     User getUserById(Long userId);
+
     User getUserByUsername(String username);
 
     List<UserGroupResponse> getAllUserWithGroupInfo();
 
     List<UserResponse> getAllUsers();
 
-
-    Set<MenuActionResponse> getUserAllPermittedMenu();
 
     void addAdditionalAction(UserActionRequest userActionRequest);
 
@@ -41,7 +39,7 @@ public interface UserService {
 
     void updateUserPersonalInfo(UpdateUserInfoRequest updateUserInfoRequest);
 
-    UserPersonalInfoResponse getUserPersonalInfo(Long id);
+    UserProfileResponse getUserPersonalInfo(Long id);
 
     User findUserByUsernameOrEmail(String usernameOrEmail);
 }

@@ -10,5 +10,6 @@ public interface CurrencyService {
     List<CurrencyResponse> getAllCurrencies();
 
     List<Currency> findAllCurrenciesByIds(Collection<Long> currencyIds);
-    List<CurrencyResponse> getAllCurrencyResponsesFromCurrencies(Collection<Currency> currencies);
+
+    List<CurrencyResponse> getAllCurrencyResponses(Collection<Currency> currencies);
 }

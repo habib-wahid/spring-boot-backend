@@ -7,6 +7,7 @@ import com.usb.pss.ipaservice.admin.model.entity.UserType;
 public interface UserTypeService {
     UserType findUserTypeById(Long userTypeId);
 
-    UserTypeResponse getUserType(Long userTypeId);
+
+    UserTypeResponse getUserTypeResponse(UserType userType);
 
 }
