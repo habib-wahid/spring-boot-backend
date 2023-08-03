@@ -72,18 +72,16 @@ public class GroupServiceImpl implements GroupService {
         Page<Group> groupList = groupRepository.findAll(pageable);
 
 
-        return PaginationResponse.<GroupResponse>builder()
-            .pageNumber(groupList.getPageable().getPageNumber())
-            .pageSize(groupList.getPageable().getPageSize())
-            .totalElements(groupList.getTotalElements())
-            .content(
-                groupList.getContent()
+        return new PaginationResponse<>(
+            groupList.getPageable().getPageNumber(),
+            groupList.getPageable().getPageSize(),
+            groupList.getTotalElements(),
+            groupList.getContent()
                 .stream()
                 .map(this::prepareResponse)
-                .toList()
-            )
-            .header(List.of("Group Name", "Description", "Status"))
-            .build();
+                .toList(),
+            List.of("Group Name", "Description", "Status")
+            );
 
     }
 
