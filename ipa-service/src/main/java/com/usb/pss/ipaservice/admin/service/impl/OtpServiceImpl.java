@@ -2,11 +2,14 @@ package com.usb.pss.ipaservice.admin.service.impl;
 
 import com.usb.pss.ipaservice.admin.dto.request.OtpResendRequest;
 import com.usb.pss.ipaservice.admin.dto.request.OtpVerifyRequest;
+import com.usb.pss.ipaservice.admin.model.entity.EmailData;
 import com.usb.pss.ipaservice.admin.model.entity.Otp;
 import com.usb.pss.ipaservice.admin.model.entity.User;
+import com.usb.pss.ipaservice.admin.model.enums.EmailType;
 import com.usb.pss.ipaservice.admin.model.enums.OtpStatus;
 import com.usb.pss.ipaservice.admin.model.enums.OtpType;
 import com.usb.pss.ipaservice.admin.repository.OtpRepository;
+import com.usb.pss.ipaservice.admin.service.iservice.EmailDataService;
 import com.usb.pss.ipaservice.admin.service.iservice.EmailService;
 import com.usb.pss.ipaservice.admin.service.iservice.OtpLogService;
 import com.usb.pss.ipaservice.admin.service.iservice.OtpService;
@@ -41,6 +44,7 @@ public class OtpServiceImpl implements OtpService {
     private final OtpRepository otpRepository;
     private final OtpLogService otpLogService;
     private final EmailService emailService;
+    private final EmailDataService emailDataService;
 
     @Override
     @Transactional
@@ -55,15 +59,17 @@ public class OtpServiceImpl implements OtpService {
             .build();
         Otp savedOtp = otpRepository.save(otp);
         otpLogService.saveOtpLog(savedOtp, OtpStatus.GENERATED);
-        sendAsync2faOtpMail(user, savedOtp);
+        EmailData emailData = emailDataService.getEmailDataByEmailType(EmailType.OTP_2FA);
+        sendAsync2faOtpMail(user, savedOtp, emailData);
         return savedOtp;
     }
 
-    private void sendAsync2faOtpMail(User user, Otp otp) {
+    private void sendAsync2faOtpMail(User user, Otp otp, EmailData emailData) {
         CompletableFuture.supplyAsync(() -> {
-            emailService.send2faOtpMail(user, otp);
+            emailService.send2faOtpMail(user, otp, emailData);
             return HttpStatus.OK;
         });
+        // TODO save otp log data that was previously done in email service
     }
 
     @Override
@@ -77,9 +83,8 @@ public class OtpServiceImpl implements OtpService {
                 otpRepository.delete(otp);
                 otpLogService.saveOtpLog(otp, OtpStatus.USED);
                 return true;
-            } else {
-                throw new RuleViolationException(WRONG_OTP);
             }
+            throw new RuleViolationException(WRONG_OTP);
         } else {
             otpRepository.delete(otp);
             throw new RuleViolationException(EXPIRED_OTP);
@@ -98,7 +103,9 @@ public class OtpServiceImpl implements OtpService {
                 oldOtp.setResendTimer(LocalDateTime.now().plusMinutes(OTP_RESEND_TIMER_MINUTES));
                 Otp savedOtp = otpRepository.save(oldOtp);
                 otpLogService.saveOtpLog(savedOtp, OtpStatus.GENERATED);
-                sendAsync2faOtpMail(user, savedOtp);
+                EmailData emailData = emailDataService.getEmailDataByEmailType(EmailType.OTP_2FA);
+                sendAsync2faOtpMail(user, savedOtp, emailData);
+                return;
             }
             throw new RuleViolationException(INVALID_OTP_RESEND_TIMER);
         }

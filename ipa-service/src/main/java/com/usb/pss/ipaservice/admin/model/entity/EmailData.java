@@ -27,6 +27,7 @@ import lombok.Setter;
 @Table(name = "adm_email_data")
 public class EmailData extends BaseAuditorEntity {
     private String subject;
+    @Column(unique = true)
     @Enumerated(EnumType.STRING)
     private EmailType emailType;
     private String attachmentPath;

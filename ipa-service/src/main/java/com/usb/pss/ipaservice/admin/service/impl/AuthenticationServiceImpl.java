@@ -9,18 +9,15 @@ import com.usb.pss.ipaservice.admin.dto.request.OtpVerifyRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ResetPasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.response.AuthenticationResponse;
 import com.usb.pss.ipaservice.admin.dto.response.RefreshAccessTokenResponse;
+import com.usb.pss.ipaservice.admin.model.entity.EmailData;
 import com.usb.pss.ipaservice.admin.model.entity.PasswordReset;
 import com.usb.pss.ipaservice.admin.model.entity.RefreshToken;
 import com.usb.pss.ipaservice.admin.model.entity.User;
+import com.usb.pss.ipaservice.admin.model.enums.EmailType;
 import com.usb.pss.ipaservice.admin.repository.PasswordResetRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.JwtService;
-import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
-import com.usb.pss.ipaservice.admin.service.iservice.EmailService;
-import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
-import com.usb.pss.ipaservice.admin.service.iservice.OtpService;
-import com.usb.pss.ipaservice.admin.service.iservice.TokenService;
-import com.usb.pss.ipaservice.admin.service.iservice.UserService;
+import com.usb.pss.ipaservice.admin.service.iservice.*;
 import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
@@ -28,6 +25,7 @@ import com.usb.pss.ipaservice.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +35,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.usb.pss.ipaservice.admin.model.enums.LoginStatus.CHANGE_PASSWORD;
 import static com.usb.pss.ipaservice.admin.model.enums.LoginStatus.LOGGED_IN;
@@ -67,6 +66,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordResetRepository passwordResetRepository;
     private final EmailService emailService;
     private final OtpService otpService;
+    private final EmailDataService emailDataService;
 
     @Value("${useExpiringMapToBlackListAccessToken}")
     private boolean useExpiringMapToBlackListAccessToken;
@@ -76,33 +76,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.username(),
-                request.password()
-            )
+                new UsernamePasswordAuthenticationToken(
+                        request.username(),
+                        request.password()
+                )
         );
 
         User user = userRepository.findUserAndFetchActionAndPersonalInfoByUsername(request.username())
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
 
         if (
-            user.getPasswordExpiryDate() != null &&
-                user.getPasswordExpiryDate().isBefore(LocalDateTime.now())
+                user.getPasswordExpiryDate() != null &&
+                        user.getPasswordExpiryDate().isBefore(LocalDateTime.now())
         ) {
             return AuthenticationResponse
-                .builder()
-                .username(user.getUsername())
-                .status(CHANGE_PASSWORD)
-                .build();
+                    .builder()
+                    .username(user.getUsername())
+                    .status(CHANGE_PASSWORD)
+                    .build();
         }
 
         if (user.is2faEnabled()) {
             otpService.saveAndSend2faOtp(user);
             return AuthenticationResponse.builder()
-                .username(user.getUsername())
-                .status(VERIFY_OTP)
-                .otpValidity(OTP_VALIDITY)
-                .build();
+                    .username(user.getUsername())
+                    .status(VERIFY_OTP)
+                    .otpValidity(OTP_VALIDITY)
+                    .build();
         } else {
             return generateAuthenticationResponse(user);
         }
@@ -122,15 +122,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationResponse resend2faOtp(OtpResendRequest request) {
         User user = userRepository.findUserAndFetchActionAndPersonalInfoByUsername(request.username())
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
         if (user.is2faEnabled()) {
             otpService.resend2faOtp(user, request);
 
             return AuthenticationResponse.builder()
-                .username(user.getUsername())
-                .status(VERIFY_OTP)
-                .otpValidity(OTP_VALIDITY)
-                .build();
+                    .username(user.getUsername())
+                    .status(VERIFY_OTP)
+                    .otpValidity(OTP_VALIDITY)
+                    .build();
         }
         throw new RuleViolationException(INVALID_AUTH_REQUEST);
     }
@@ -140,22 +140,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         RefreshToken refreshToken = tokenService.createNewRefreshToken(user);
 
         return AuthenticationResponse.builder()
-            .userId(user.getId())
-            .username(user.getUsername())
-            .status(LOGGED_IN)
-            .accessToken(accessToken)
-            .refreshToken(refreshToken.getTokenId())
-            .modules(moduleService.getModuleWiseUserActions(user))
-            .build();
+                .userId(user.getId())
+                .username(user.getUsername())
+                .status(LOGGED_IN)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getTokenId())
+                .modules(moduleService.getModuleWiseUserActions(user))
+                .build();
     }
 
     @Override
     public void forceChangePassword(ForceChangePasswordRequest request) {
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.username(),
-                request.currentPassword()
-            )
+                new UsernamePasswordAuthenticationToken(
+                        request.username(),
+                        request.currentPassword()
+                )
         );
 
         if (!request.newPassword().equals(request.confirmPassword())) {
@@ -163,7 +163,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         User user = userRepository.findUserByUsername(request.username())
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME));
 
         // TO-DO: Need to change the password expiry date based on password policy.
         user.setPasswordExpiryDate(null);
@@ -200,24 +200,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userService.findUserByUsernameOrEmail(forgotPasswordRequest.usernameOrEmail());
         PasswordReset passwordReset = savePasswordReset(user);
         String url = "http://localhost:3000/auth/password" + "/reset?token="
-            + passwordReset.getTokenId();
-        emailService.sendPasswordResetEmail(user, url);
+                + passwordReset.getTokenId();
+        EmailData emailData = emailDataService.getEmailDataByEmailType(EmailType.PASSWORD_RESET);
+        CompletableFuture.supplyAsync(() -> {
+            emailService.sendPasswordResetEmail(user, url, emailData);
+            return HttpStatus.OK;
+        });
     }
+
 
     private PasswordReset savePasswordReset(User user) {
         return passwordResetRepository.save(
-            PasswordReset.builder()
-                .user(user)
-                .expiration(LocalDateTime.now().plusMinutes(resetPasswordValidity))
-                .build()
+                PasswordReset.builder()
+                        .user(user)
+                        .expiration(LocalDateTime.now().plusMinutes(resetPasswordValidity))
+                        .build()
         );
     }
 
     @Override
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
         PasswordReset passwordReset = passwordResetRepository
-            .findPasswordResetByTokenId(UUID.fromString(resetPasswordRequest.token()))
-            .orElseThrow(() -> new ResourceNotFoundException(RESET_TOKEN_NOT_FOUND));
+                .findPasswordResetByTokenId(UUID.fromString(resetPasswordRequest.token()))
+                .orElseThrow(() -> new ResourceNotFoundException(RESET_TOKEN_NOT_FOUND));
         if (passwordReset.getExpiration().isBefore(LocalDateTime.now())) {
             throw new RuleViolationException(EMAIL_VALIDITY_EXPIRED);
         }
