@@ -23,7 +23,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public List<Currency> findAllCurrenciesByIds(Collection<Long> currencyIds) {
-        return currencyRepository.findAll();
+        return currencyRepository.findByIdIn(currencyIds);
     }
 
     @Override
