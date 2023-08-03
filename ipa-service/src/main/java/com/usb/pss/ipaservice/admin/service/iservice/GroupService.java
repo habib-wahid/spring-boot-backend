@@ -18,8 +18,9 @@ import java.util.List;
 public interface GroupService {
     void createNewGroup(GroupCreateRequest groupCreateRequest);
 
-
     GroupResponse getGroupById(Long groupId);
+
+    GroupResponse getGroupResponse(Group group);
 
     Group findGroupById(Long groupId);
 

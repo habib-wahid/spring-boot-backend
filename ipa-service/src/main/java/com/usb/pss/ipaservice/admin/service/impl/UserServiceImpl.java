@@ -138,48 +138,43 @@ public class UserServiceImpl implements UserService {
 
     public List<UserGroupResponse> getAllUserWithGroupInfo() {
 
-        return userRepository.findAll()
+        return userRepository.findAllWithGroupByIdIsNotNull()
             .stream()
-            .map(user -> {
-                UserGroupResponse userGroupResponse = new UserGroupResponse();
-                prepareUserWithGroupResponse(user, userGroupResponse);
-                return userGroupResponse;
-            })
+            .map(this::getUserGroupResponse)
             .toList();
     }
 
     @Override
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAllWithPointOfSaleByIdIsNotNull()
+        return userRepository.findAllWithPointOfSaleAndGroupByIdIsNotNull()
             .stream()
             .map(this::prepareUserResponse)
             .toList();
     }
 
 
-    private void prepareUserWithGroupResponse(User user, UserGroupResponse userGroupResponse) {
+    private UserGroupResponse getUserGroupResponse(User user) {
+        UserGroupResponse userGroupResponse = new UserGroupResponse();
         userGroupResponse.setId(user.getId());
         userGroupResponse.setName(user.getUsername());
         if (Objects.nonNull(user.getGroup())) {
             userGroupResponse.setGroupId(user.getGroup().getId());
             userGroupResponse.setGroupName(user.getGroup().getName());
         }
+        return userGroupResponse;
     }
 
     private UserResponse prepareUserResponse(User user) {
-        UserResponse userResponse = UserResponse
+        return UserResponse
             .builder()
             .id(user.getId())
             .userName(user.getUsername())
             .email(user.getEmail())
             .accessLevel(user.getAccessLevel())
             .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))
+            .group(groupService.getGroupResponse(user.getGroup()))
             .status(user.isActive())
             .build();
-        if (Objects.nonNull(user.getGroup())) {
-            userResponse.setGroup(groupService.getGroupById(user.getGroup().getId()));
-        }
-        return userResponse;
     }
 
     @Override

@@ -23,6 +23,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = {"group.permittedActions", "additionalActions"})
     Optional<User> findUserAndFetchActionByUsername(String username);
 
+    @EntityGraph(attributePaths = {"group"})
+    List<User> findAllWithGroupByIdIsNotNull();
+
     @EntityGraph(attributePaths = {"group.permittedActions", "additionalActions", "personalInfo"})
     Optional<User> findUserAndFetchActionAndPersonalInfoByUsername(String username);
 
@@ -30,8 +33,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
         "airports", "userType", "pointOfSale", "allowedCurrencies"})
     Optional<User> findUserWithAllInfoById(Long userId);
 
-    @EntityGraph(attributePaths = {"pointOfSale"})
-    List<User> findAllWithPointOfSaleByIdIsNotNull();
+    @EntityGraph(attributePaths = {"pointOfSale", "group"})
+    List<User> findAllWithPointOfSaleAndGroupByIdIsNotNull();
 
     @EntityGraph(attributePaths = {"additionalActions"})
     Optional<User> findUserFetchAdditionalActionsById(Long userId);

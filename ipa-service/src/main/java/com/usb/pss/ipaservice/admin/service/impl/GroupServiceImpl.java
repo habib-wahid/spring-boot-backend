@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DUPLICATE_GROUP_NAME;
@@ -59,6 +60,14 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public GroupResponse getGroupById(Long groupId) {
         return getGroupResponseFromGroup(findGroupById(groupId));
+    }
+
+    @Override
+    public GroupResponse getGroupResponse(Group group) {
+        if (Objects.nonNull(group)) {
+            return new GroupResponse(group.getId(), group.getName(), group.getDescription());
+        }
+        return null;
     }
 
     @Override
