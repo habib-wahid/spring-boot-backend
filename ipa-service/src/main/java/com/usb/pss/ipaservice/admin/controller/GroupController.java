@@ -45,9 +45,9 @@ public class GroupController {
     @PreAuthorize("hasAnyAuthority('VIEW_GROUP')")
     @Operation(summary = "Get active Groups in a list.")
     public PaginationResponse<GroupResponse> getAllGroups(
-        @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int page,
+        @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int pageNumber,
         @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int pageSize) {
-        return groupService.getAllGroupResponse(page, pageSize);
+        return groupService.getAllGroupResponse(pageNumber, pageSize);
     }
 
     @GetMapping("/{groupId}")
