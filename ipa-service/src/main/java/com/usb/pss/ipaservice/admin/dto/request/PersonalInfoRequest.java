@@ -4,18 +4,20 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.jetbrains.annotations.NotNull;
 
-
-public record UpdateUserInfoRequest(
-    @NotNull
-    Long id,
+public record PersonalInfoRequest(
+    @NotBlank
+    String firstName,
+    String lastName,
     @NotBlank
     @Email
-    String emailOfficial,
+    String email,
     @Email
     String emailOther,
-    @NotNull
-    Boolean is2faEnabled,
     String mobileNumber,
-    String telephoneNumber
+    String telephoneNumber,
+    @NotNull
+    Long departmentId,
+    @NotNull
+    Long designationId
 ) {
 }
