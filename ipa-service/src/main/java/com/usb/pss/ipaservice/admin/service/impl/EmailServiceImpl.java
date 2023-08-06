@@ -36,6 +36,7 @@ public class EmailServiceImpl implements EmailService {
             mailSender.send(message);
         } catch (Exception e) {
             log.error("Failed to send OTP");
+            e.printStackTrace();
         }
     }
 
