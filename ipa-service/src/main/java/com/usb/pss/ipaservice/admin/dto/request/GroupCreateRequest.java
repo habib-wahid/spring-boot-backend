@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.admin.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * @author Junaid Khan Pathan
@@ -10,6 +11,8 @@ import jakarta.validation.constraints.NotBlank;
 public record GroupCreateRequest(
     @NotBlank
     String name,
-    String description
+    String description,
+    @NotNull
+    Boolean active
 ) {
 }
