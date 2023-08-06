@@ -20,6 +20,7 @@ import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.common.constants.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -70,20 +71,21 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public PaginationResponse<GroupResponse> getAllGroupResponse(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(DEFAULT_DIRECTION, DEFAULT_SORT_BY));
-        Page<Group> groupList = groupRepository.findAll(pageable);
-
+        Page<Group> groupPage = groupRepository.findAll(pageable);
 
         return new PaginationResponse<>(
-            groupList.getPageable().getPageNumber(),
-            groupList.getPageable().getPageSize(),
-            groupList.getTotalElements(),
-            groupList.getContent()
+            groupPage.getPageable().getPageNumber(),
+            groupPage.getPageable().getPageSize(),
+            groupPage.getTotalElements(),
+            groupPage.getContent()
                 .stream()
                 .map(this::prepareResponse)
                 .toList(),
-            List.of("Group Name", "Description", "Status")
-            );
-
+            Map.of(
+                    "name",  "Group/Role Name",
+                    "active", "Status"
+            )
+        );
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.admin.dto;
 
 import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +17,5 @@ public class PaginationResponse<T> {
     private int pageSize;
     private long totalElements;
     private List<T> content;
-    private List<String> header;
+    private Map<String, String> header;
 }
