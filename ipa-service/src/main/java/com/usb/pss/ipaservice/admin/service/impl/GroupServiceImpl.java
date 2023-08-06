@@ -17,7 +17,6 @@ import com.usb.pss.ipaservice.admin.repository.GroupRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.GroupService;
 import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
-import com.usb.pss.ipaservice.common.constants.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import java.util.Map;
@@ -29,7 +28,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DUPLICATE_GROUP_NAME;
+import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.GROUP_NOT_FOUND;
 
 
 /**
@@ -41,7 +44,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
-    private final MenuService menuService;
     private final ActionRepository actionRepository;
     private final ModuleService moduleService;
 
@@ -49,7 +51,7 @@ public class GroupServiceImpl implements GroupService {
     public void createNewGroup(GroupCreateRequest groupCreateRequest) {
         Optional<Group> duplicateGroupName = groupRepository.findByNameIgnoreCase(groupCreateRequest.name());
         if (duplicateGroupName.isPresent()) {
-            throw new RuleViolationException(ExceptionConstant.DUPLICATE_GROUP_NAME);
+            throw new RuleViolationException(DUPLICATE_GROUP_NAME);
         }
 
         Group groupToSave = new Group();
@@ -57,16 +59,12 @@ public class GroupServiceImpl implements GroupService {
         groupRepository.save(groupToSave);
     }
 
-    private Group getGroupById(Long groupId) {
+    @Override
+    public Group findGroupById(Long groupId) {
         return groupRepository.findById(groupId)
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.GROUP_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(GROUP_NOT_FOUND));
     }
 
-    @Override
-    public GroupResponse getGroupResponseById(Long groupId) {
-        Group group = getGroupById(groupId);
-        return prepareResponse(group);
-    }
 
     @Override
     public PaginationResponse<GroupResponse> getAllGroupResponse(int page, int pageSize) {
@@ -82,19 +80,36 @@ public class GroupServiceImpl implements GroupService {
                 .map(this::prepareResponse)
                 .toList(),
             Map.of(
-                    "name",  "Group/Role Name",
-                    "active", "Status"
+                "name", "Group/Role Name",
+                "active", "Status"
             )
         );
     }
 
     @Override
+    public GroupResponse getGroupById(Long groupId) {
+        return getGroupResponseFromGroup(findGroupById(groupId));
+    }
+
+    @Override
+    public GroupResponse getGroupResponse(Group group) {
+        if (Objects.nonNull(group)) {
+            return new GroupResponse(group.getId(), group.getName(), group.getDescription(), group.isActive());
+        }
+        return null;
+    }
+
+    private GroupResponse getGroupResponseFromGroup(Group group) {
+        return new GroupResponse(group.getId(), group.getName(), group.getDescription(), group.isActive());
+    }
+
+    @Override
     public void updateGroup(GroupUpdateRequest groupUpdateRequest) {
-        Group groupToUpdate = getGroupById(groupUpdateRequest.id());
+        Group groupToUpdate = findGroupById(groupUpdateRequest.id());
         if (!groupToUpdate.getName().equals(groupUpdateRequest.name())) {
             Optional<Group> duplicateGroupName = groupRepository.findByNameIgnoreCase(groupUpdateRequest.name());
             if (duplicateGroupName.isPresent()) {
-                throw new RuleViolationException(ExceptionConstant.DUPLICATE_GROUP_NAME);
+                throw new RuleViolationException(DUPLICATE_GROUP_NAME);
             }
         }
 
@@ -104,7 +119,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void updateGroupActivationStatus(GroupActivationRequest request) {
-        Group group = getGroupById(request.groupId());
+        Group group = findGroupById(request.groupId());
         group.setActive(request.active());
         groupRepository.save(group);
     }
@@ -149,6 +164,6 @@ public class GroupServiceImpl implements GroupService {
 
     private Group findGroupAndFetchActionsById(Long groupId) {
         return groupRepository.findGroupAndFetchActionsById(groupId)
-            .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.GROUP_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(GROUP_NOT_FOUND));
     }
 }

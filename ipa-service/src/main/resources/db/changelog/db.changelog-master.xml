@@ -8,7 +8,7 @@
     <include file="initial/changelog-1.0.xml" relativeToChangelogFile="true"/>
 
 <!--    <changeSet author="techno-next" id="TS01681">-->
-<!--        <sqlFile path="updates/001T-TS01681.sql" relativeToChangelogFile="false" splitStatements="false"/>-->
+<!--        <sqlFile path="db/changelog/update/001T-TS01681.sql" relativeToChangelogFile="false" splitStatements="false"/>-->
 <!--    </changeSet>-->
 
     <changeSet author="techno-next" id="T000001">
@@ -18,7 +18,10 @@
         <sqlFile path="db/changelog/updates/000002-PSS_314.sql" relativeToChangelogFile="false" splitStatements="false"/>
     </changeSet>
     <changeSet author="techno-next" id="T000003">
-        <sqlFile path="db/changelog/updates/000003-PSS_301.sql" relativeToChangelogFile="false" splitStatements="false"/>
+        <sqlFile path="db/changelog/updates/000003-PSS_334.sql" relativeToChangelogFile="false" splitStatements="false"/>
+    </changeSet>
+    <changeSet author="techno-next" id="T000004">
+        <sqlFile path="db/changelog/updates/000004-PSS_301.sql" relativeToChangelogFile="false" splitStatements="false"/>
     </changeSet>
 
 </databaseChangeLog>

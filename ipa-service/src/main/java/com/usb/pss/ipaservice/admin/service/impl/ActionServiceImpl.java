@@ -8,6 +8,8 @@ import com.usb.pss.ipaservice.utils.DaprUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -32,6 +34,11 @@ public class ActionServiceImpl implements ActionService {
             });
             return adminActionResponse;
         }
+    }
+
+    @Override
+    public List<Action> getActionsByIds(Collection<Long> actionIds) {
+        return actionRepository.findByIdIn(actionIds);
     }
 
 }

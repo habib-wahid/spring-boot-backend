@@ -54,7 +54,7 @@ public class GroupController {
     @PreAuthorize("hasAnyAuthority('VIEW_GROUP')")
     @Operation(summary = "Get a single Group with it's ID.")
     public GroupResponse getGroupById(@Validated @PathVariable Long groupId) {
-        return groupService.getGroupResponseById(groupId);
+        return groupService.getGroupById(groupId);
     }
 
     @PostMapping

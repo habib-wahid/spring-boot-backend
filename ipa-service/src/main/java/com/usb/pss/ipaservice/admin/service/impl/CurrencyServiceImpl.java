@@ -7,8 +7,8 @@ import com.usb.pss.ipaservice.admin.service.iservice.CurrencyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,16 +18,28 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public List<CurrencyResponse> getAllCurrencies() {
-        return currencyRepository.findAll()
+        return currencyRepository.findAll().stream().map(this::getCurrencyResponse).toList();
+    }
+
+    @Override
+    public List<Currency> findAllCurrenciesByIds(Collection<Long> currencyIds) {
+        return currencyRepository.findByIdIn(currencyIds);
+    }
+
+    @Override
+    public List<CurrencyResponse> getAllCurrencyResponses(Collection<Currency> currencies) {
+        return currencies
             .stream()
             .map(this::getCurrencyResponse)
-            .collect(Collectors.toList());
+            .toList();
     }
+
 
     private CurrencyResponse getCurrencyResponse(Currency currency) {
         CurrencyResponse currencyResponse = new CurrencyResponse();
         currencyResponse.setId(currency.getId());
         currencyResponse.setCode(currency.getCode());
+        currencyResponse.setName(currency.getName());
         return currencyResponse;
     }
 }
