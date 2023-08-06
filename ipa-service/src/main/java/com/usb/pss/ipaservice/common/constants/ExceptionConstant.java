@@ -2,8 +2,10 @@ package com.usb.pss.ipaservice.common.constants;
 
 public enum ExceptionConstant {
     ACTION_NOT_FOUND("Action not found"),
+    AIRPORT_NOT_FOUND("Airport not found"),
     PASSWORD_CONFIRM_PASSWORD_NOT_MATCH("Passwords & confirm password are not same."),
     DUPLICATE_USERNAME("User already exists with this username."),
+    DUPLICATE_EMAIL("User already exists with this email."),
     USER_NOT_FOUND_BY_USERNAME("No user exists with this username."),
     USER_NOT_FOUND_BY_EMAIL("No user exists with this email"),
     USER_NOT_FOUND_BY_ID("No user exists with this id."),
@@ -21,6 +23,7 @@ public enum ExceptionConstant {
     EMAIL_VALIDITY_EXPIRED("Email validity expired"),
     RESET_TOKEN_NOT_FOUND("Reset token not found"),
     DEPARTMENT_NOT_FOUND("Department not found by id"),
+    USER_TYPE_NOT_FOUND("User Type not found by id"),
     DUPLICATE_DEPARTMENT_NAME("A department already exists with this name"),
     DESIGNATION_NOT_FOUND("Designation not found by id"),
     DUPLICATE_DESIGNATION("Designation Already exists with this name."),

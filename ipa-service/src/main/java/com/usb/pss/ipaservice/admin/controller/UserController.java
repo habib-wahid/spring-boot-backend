@@ -6,9 +6,8 @@ import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
-import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
-import com.usb.pss.ipaservice.admin.dto.response.UserPersonalInfoResponse;
+import com.usb.pss.ipaservice.admin.dto.response.UserProfileResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserGroupResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
 
 import static com.usb.pss.ipaservice.common.constants.APIEndpointConstants.USER_ENDPOINT;
 
@@ -60,11 +58,6 @@ public class UserController {
         return userService.getAllUserWithGroupInfo();
     }
 
-    @GetMapping("/permittedMenus")
-    @Operation(summary = "Get all permitted menus by current logged in user")
-    public Set<MenuActionResponse> getPermittedMenusByUserId() {
-        return userService.getUserAllPermittedMenu();
-    }
 
     @PutMapping("/additionalActions")
     @PreAuthorize("hasAnyAuthority('UPDATE_USER_ADDITIONAL_ACTIONS')")
@@ -83,7 +76,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     @Operation(summary = "Retrieve user information with its id")
-    public UserPersonalInfoResponse getUserPersonalInfo(@Validated @PathVariable Long userId) {
+    public UserProfileResponse getUserPersonalInfo(@Validated @PathVariable Long userId) {
         return userService.getUserPersonalInfo(userId);
     }
 
