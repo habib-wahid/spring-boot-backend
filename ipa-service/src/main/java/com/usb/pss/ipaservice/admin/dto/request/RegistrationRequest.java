@@ -29,8 +29,8 @@ public record RegistrationRequest(
     Set<Long> airportIds,
     @NotNull
     Long pointOfSaleId,
-    @NotNull
-    AccessLevel accessLevel
+    @NotEmpty
+    Set<AccessLevel> accessLevels
 ) {
 
 }

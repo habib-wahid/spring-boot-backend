@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,7 +24,7 @@ public class UserProfileResponse {
     private String userCode;
     private UserTypeResponse userType;
     private PointOfSaleResponse pointOfSale;
-    private AccessLevel accessLevel;
+    private Set<AccessLevel> accessLevel;
     private List<AirportResponse> airports;
     private List<CurrencyResponse> allowedCurrencies;
 }

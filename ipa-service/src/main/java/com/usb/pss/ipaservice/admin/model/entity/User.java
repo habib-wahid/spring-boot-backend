@@ -54,7 +54,7 @@ public class User extends BaseAuditorEntity implements UserDetails {
     @ManyToOne(fetch = FetchType.LAZY)
     private PointOfSale pointOfSale;
     @Enumerated(EnumType.STRING)
-    private AccessLevel accessLevel;
+    private Set<AccessLevel> accessLevels;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "adm_user_airport_mapping",

@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
             .userType(userTypeService.findUserTypeById(request.userTypeId()))
             .allowedCurrencies(currencies)
             .pointOfSale(pointOfSale)
-            .accessLevel(request.accessLevel())
+            .accessLevels(request.accessLevels())
             .airports(airports)
             .active(true)
             .is2faEnabled(request.is2faEnabled())
@@ -165,12 +165,18 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserResponse prepareUserResponse(User user) {
+        StringBuilder stringBuilder = new StringBuilder();
+        user.getAccessLevels().forEach(accessLevel -> {
+            stringBuilder.append(accessLevel.toString()).append(" ,");
+            ;
+        });
+        stringBuilder.setLength(stringBuilder.length() - 2);
         return UserResponse
             .builder()
             .id(user.getId())
             .userName(user.getUsername())
             .email(user.getEmail())
-            .accessLevel(user.getAccessLevel())
+            .accessLevel(stringBuilder.toString())
             .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))
             .group(groupService.getGroupResponse(user.getGroup()))
             .status(user.isActive())
@@ -268,7 +274,7 @@ public class UserServiceImpl implements UserService {
             .userCode(user.getUserCode())
             .userName(user.getUsername())
             .personalInfoResponse(personalInfoResponse)
-            .accessLevel(user.getAccessLevel())
+            .accessLevel(user.getAccessLevels())
             .is2faEnabled(user.is2faEnabled())
             .userType(userTypeService.getUserTypeResponse(user.getUserType()))
             .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))
