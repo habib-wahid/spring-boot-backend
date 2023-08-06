@@ -13,6 +13,7 @@ public class APIEndpointConstants {
 
     public static final String MODULE_ENDPOINT = API_VERSION + "/modules";
     public static final String ACTION_ENDPOINT = API_VERSION + "/actions";
+    public static final String ACCESS_LEVEL_ENDPOINT = API_VERSION + "/accessLevels";
     public static final String DEPARTMENT_ENDPOINT = API_VERSION + "/departments";
     public static final String DESIGNATION_ENDPOINT = API_VERSION + "/designations";
     public static final String CURRENCY_ENDPOINT = API_VERSION + "/currencies";
