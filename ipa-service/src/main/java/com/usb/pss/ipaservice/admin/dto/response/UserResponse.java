@@ -17,6 +17,6 @@ public class UserResponse {
     private GroupResponse group;
     private String email;
     private PointOfSaleResponse pointOfSale;
-    private String accessLevel;
+    private String accessLevels;
     private Boolean status;
 }

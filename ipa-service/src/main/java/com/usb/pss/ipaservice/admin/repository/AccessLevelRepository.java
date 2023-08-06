@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface AccessLevelRepository extends JpaRepository<AccessLevel, Long> {
     List<AccessLevel> findByIdIn(Collection<Long> accessLevelIds);
+    Boolean existsByName(String name);
 }

@@ -181,7 +181,7 @@ public class UserServiceImpl implements UserService {
             .id(user.getId())
             .userName(user.getUsername())
             .email(user.getEmail())
-            .accessLevel(accessLevels)
+            .accessLevels(accessLevels)
             .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))
             .group(groupService.getGroupResponse(user.getGroup()))
             .status(user.isActive())
