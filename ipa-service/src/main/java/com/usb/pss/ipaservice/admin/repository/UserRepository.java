@@ -33,7 +33,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         "airports", "userType", "pointOfSale", "allowedCurrencies"})
     Optional<User> findUserWithAllInfoById(Long userId);
 
-    @EntityGraph(attributePaths = {"pointOfSale", "group"})
+    @EntityGraph(attributePaths = {"pointOfSale", "group", "accessLevels"})
     List<User> findAllWithPointOfSaleAndGroupByIdIsNotNull();
 
     @EntityGraph(attributePaths = {"additionalActions"})

@@ -1,6 +1,5 @@
 package com.usb.pss.ipaservice.admin.dto.request;
 
-import com.usb.pss.ipaservice.admin.model.enums.AccessLevel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -30,7 +29,7 @@ public record RegistrationRequest(
     @NotNull
     Long pointOfSaleId,
     @NotEmpty
-    Set<AccessLevel> accessLevels
+    Set<Long> accessLevelIds
 ) {
 
 }

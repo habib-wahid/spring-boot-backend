@@ -271,7 +271,6 @@ CREATE TABLE usba.adm_user
     password_expiry_date TIMESTAMP WITHOUT TIME ZONE,
     group_id             BIGINT,
     point_of_sale_id     BIGINT,
-    access_level         VARCHAR(255),
     user_type_id         BIGINT,
     personal_info_id     BIGINT,
     CONSTRAINT pk_adm_user PRIMARY KEY (id)

@@ -7,6 +7,8 @@ import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.PersonalInfoResponse;
+import com.usb.pss.ipaservice.admin.model.entity.AccessLevel;
+import com.usb.pss.ipaservice.admin.service.iservice.AccessLevelService;
 import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.admin.service.iservice.AirportService;
 import com.usb.pss.ipaservice.admin.service.iservice.CurrencyService;
@@ -68,6 +70,7 @@ public class UserServiceImpl implements UserService {
     private final PointOfSalesService pointOfSalesService;
     private final UserTypeService userTypeService;
     private final AirportService airportService;
+    private final AccessLevelService accessLevelService;
 
     public void createNewUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -85,6 +88,8 @@ public class UserServiceImpl implements UserService {
         PointOfSale pointOfSale = pointOfSalesService.findPointOfSaleById(request.pointOfSaleId());
         Set<Currency> currencies = new HashSet<>(currencyService.findAllCurrenciesByIds(request.currencyIds()));
         Set<Airport> airports = new HashSet<>(airportService.findAllAirportsByIds(request.airportIds()));
+        Set<AccessLevel> accessLevels =
+            new HashSet<>(accessLevelService.findAccessLevelsByIds(request.accessLevelIds()));
 
         User user = User
             .builder()
@@ -95,7 +100,7 @@ public class UserServiceImpl implements UserService {
             .userType(userTypeService.findUserTypeById(request.userTypeId()))
             .allowedCurrencies(currencies)
             .pointOfSale(pointOfSale)
-            .accessLevels(request.accessLevels())
+            .accessLevels(accessLevels)
             .airports(airports)
             .active(true)
             .is2faEnabled(request.is2faEnabled())
@@ -165,18 +170,18 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserResponse prepareUserResponse(User user) {
-        StringBuilder stringBuilder = new StringBuilder();
-        user.getAccessLevels().forEach(accessLevel -> {
-            stringBuilder.append(accessLevel.toString()).append(" ,");
-            ;
-        });
-        stringBuilder.setLength(stringBuilder.length() - 2);
+        String accessLevels = String
+            .join(", ", user
+                .getAccessLevels()
+                .stream()
+                .map(AccessLevel::getName)
+                .toList());
         return UserResponse
             .builder()
             .id(user.getId())
             .userName(user.getUsername())
             .email(user.getEmail())
-            .accessLevel(stringBuilder.toString())
+            .accessLevel(accessLevels)
             .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))
             .group(groupService.getGroupResponse(user.getGroup()))
             .status(user.isActive())
@@ -274,7 +279,7 @@ public class UserServiceImpl implements UserService {
             .userCode(user.getUserCode())
             .userName(user.getUsername())
             .personalInfoResponse(personalInfoResponse)
-            .accessLevel(user.getAccessLevels())
+            .accessLevel(accessLevelService.getAccessLevelResponses(user.getAccessLevels()))
             .is2faEnabled(user.is2faEnabled())
             .userType(userTypeService.getUserTypeResponse(user.getUserType()))
             .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))
