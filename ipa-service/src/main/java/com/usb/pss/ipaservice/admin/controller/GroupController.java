@@ -2,6 +2,7 @@ package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.GroupActivationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
 import com.usb.pss.ipaservice.admin.dto.response.GroupResponse;
@@ -70,11 +71,11 @@ public class GroupController {
         groupService.updateGroup(groupUpdateRequest);
     }
 
-    @PatchMapping("/{groupId}")
+    @PatchMapping("/updateGroupActivation")
     @PreAuthorize("hasAnyAuthority('UPDATE_GROUP')")
-    @Operation(summary = "Deactivate an active Group with it's ID.")
-    public void deactivateGroup(@PathVariable Long groupId) {
-        groupService.deactivateGroup(groupId);
+    @Operation(summary = "Update Group Activation Status")
+    public void deactivateGroup(@RequestBody @Validated GroupActivationRequest request) {
+        groupService.updateGroupActivationStatus(request);
     }
 
     @PutMapping("/groupWiseAction")

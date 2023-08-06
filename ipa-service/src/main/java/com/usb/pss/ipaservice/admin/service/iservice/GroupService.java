@@ -2,6 +2,7 @@ package com.usb.pss.ipaservice.admin.service.iservice;
 
 import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.GroupActivationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
@@ -25,7 +26,7 @@ public interface GroupService {
 
     void updateGroup(GroupUpdateRequest groupUpdateRequest);
 
-    void deactivateGroup(Long groupId);
+    void updateGroupActivationStatus(GroupActivationRequest request);
 
     void updateGroupWiseAction(GroupActionRequest request);
 

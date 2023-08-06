@@ -5,6 +5,7 @@ import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_SORT_BY
 
 import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.GroupActivationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
 import com.usb.pss.ipaservice.admin.dto.response.GroupResponse;
@@ -100,8 +101,10 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void deactivateGroup(Long groupId) {
-        //TODO will be implemented later if needed
+    public void updateGroupActivationStatus(GroupActivationRequest request) {
+        Group group = getGroupById(request.groupId());
+        group.setActive(request.active());
+        groupRepository.save(group);
     }
 
     @Override
