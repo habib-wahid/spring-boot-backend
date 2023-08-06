@@ -279,7 +279,7 @@ public class UserServiceImpl implements UserService {
             .userCode(user.getUserCode())
             .userName(user.getUsername())
             .personalInfoResponse(personalInfoResponse)
-            .accessLevel(accessLevelService.getAccessLevelResponses(user.getAccessLevels()))
+            .accessLevels(accessLevelService.getAccessLevelResponses(user.getAccessLevels()))
             .is2faEnabled(user.is2faEnabled())
             .userType(userTypeService.getUserTypeResponse(user.getUserType()))
             .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))

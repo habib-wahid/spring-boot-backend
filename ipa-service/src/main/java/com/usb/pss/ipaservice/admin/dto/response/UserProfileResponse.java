@@ -22,7 +22,7 @@ public class UserProfileResponse {
     private String userCode;
     private UserTypeResponse userType;
     private PointOfSaleResponse pointOfSale;
-    private List<AccessLevelResponse> accessLevel;
+    private List<AccessLevelResponse> accessLevels;
     private List<AirportResponse> airports;
     private List<CurrencyResponse> allowedCurrencies;
 }
