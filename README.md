@@ -191,4 +191,4 @@ Using Redocly is a little lengthier process. The steps include:
 ### Two Factor Authentication Flow
 The following diagram shows the two factor authentication flow diagram for a user of PSS:
 
-[a link] (https://github.com/mdgiasuddin/pss-backend-application/blob/feature/pss-258/2fa-otp-flow-diagram/token-blacklisting.png)
+![two-fa-flow-diagram](https://github.com/mdgiasuddin/pss-backend-application/blob/feature/pss-258/2fa-otp-flow-diagram/two-fa-flow.png)
