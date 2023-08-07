@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
+import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
@@ -37,16 +38,23 @@ import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.LoggedUserHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_DIRECTION;
+import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_SORT_BY;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.CURRENT_PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DUPLICATE_EMAIL;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DUPLICATE_USERNAME;
@@ -150,11 +158,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUsers() {
-        return userRepository.findAllWithPointOfSaleAndGroupByIdIsNotNull()
-            .stream()
-            .map(this::prepareUserResponse)
-            .toList();
+    public PaginationResponse<UserResponse> getAllUsers(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(DEFAULT_DIRECTION, DEFAULT_SORT_BY));
+        Page<User> userPage = userRepository.findAllWithPointOfSaleAndGroupAndAccessLevelByIdIsNotNull(pageable);
+        return new PaginationResponse<>(
+            userPage.getPageable().getPageNumber(),
+            userPage.getPageable().getPageSize(),
+            userPage.getTotalElements(),
+            userPage.getContent()
+                .stream()
+                .map(this::prepareUserResponse)
+                .toList(),
+            Map.of(
+                "serialNo", "Serial No",
+                "userName", "User Name",
+                "group", "Group Name",
+                "email", "Email",
+                "pointOfSale", "Point of Sale",
+                "accessLevels", "Access Level",
+                "status", "Status"
+            )
+        );
     }
 
 
@@ -176,16 +200,17 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(AccessLevel::getName)
                 .toList());
-        return UserResponse
+        UserResponse userResponse = UserResponse
             .builder()
             .id(user.getId())
             .userName(user.getUsername())
             .email(user.getEmail())
             .accessLevels(accessLevels)
-            .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))
-            .group(groupService.getGroupResponse(user.getGroup()))
+            .pointOfSale(user.getPointOfSale().getName())
             .status(user.isActive())
             .build();
+        userResponse.setGroup(Objects.nonNull(user.getGroup()) ? user.getGroup().getName() : "");
+        return userResponse;
     }
 
     @Override

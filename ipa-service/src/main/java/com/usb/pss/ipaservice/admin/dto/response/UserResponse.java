@@ -14,9 +14,9 @@ import lombok.Setter;
 public class UserResponse {
     private Long id;
     private String userName;
-    private GroupResponse group;
+    private String group;
     private String email;
-    private PointOfSaleResponse pointOfSale;
+    private String pointOfSale;
     private String accessLevels;
     private Boolean status;
 }
