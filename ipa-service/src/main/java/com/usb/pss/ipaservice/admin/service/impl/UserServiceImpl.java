@@ -209,7 +209,7 @@ public class UserServiceImpl implements UserService {
             .pointOfSale(user.getPointOfSale().getName())
             .status(user.isActive())
             .build();
-        userResponse.setGroup(Objects.nonNull(user.getGroup()) ? user.getGroup().getName() : "Not assigned yet.");
+        userResponse.setGroup(Objects.nonNull(user.getGroup()) ? user.getGroup().getName() : "");
         return userResponse;
     }
 
