@@ -23,5 +23,8 @@
     <changeSet author="techno-next" id="T000004">
         <sqlFile path="db/changelog/updates/000004-PSS_301.sql" relativeToChangelogFile="false" splitStatements="false"/>
     </changeSet>
+    <changeSet author="techno-next" id="T000005">
+        <sqlFile path="db/changelog/updates/000005-PSS_258.sql" relativeToChangelogFile="false" splitStatements="false"/>
+    </changeSet>
 
 </databaseChangeLog>
