@@ -18,5 +18,5 @@ public class AuthenticationResponse {
     private String accessToken;
     private UUID refreshToken;
     private Integer otpValidity;
-    private List<ModuleActionResponse> modules;
+    private List<ModuleActionResponse> permissions;
 }
