@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PaginationResponse<UserResponse> getAllUsers(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(DEFAULT_DIRECTION, DEFAULT_SORT_BY));
-        Page<User> userPage = userRepository.findAll(pageable);
+        Page<User> userPage = userRepository.findAllWithPointOfSaleAndGroupAndAccessLevelByIdIsNotNull(pageable);
         return new PaginationResponse<>(
             userPage.getPageable().getPageNumber(),
             userPage.getPageable().getPageSize(),
