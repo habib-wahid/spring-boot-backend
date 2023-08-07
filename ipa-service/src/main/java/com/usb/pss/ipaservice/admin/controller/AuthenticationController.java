@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
@@ -52,8 +53,8 @@ public class AuthenticationController {
     //TODO  security = { @SecurityRequirement(name = AUTHORIZATION)  for only development purpose
     @PostMapping("/refreshToken")
     @Operation(
-            summary = "Refresh the the access token after token expired",
-            security = {@SecurityRequirement(name = AUTHORIZATION)}
+        summary = "Refresh the the access token after token expired",
+        security = {@SecurityRequirement(name = AUTHORIZATION)}
     )
     public RefreshAccessTokenResponse refreshAccessToken(@RequestHeader(HttpHeaders.AUTHORIZATION) UUID token) {
         return authenticationService.refreshAccessToken(token);
@@ -77,9 +78,11 @@ public class AuthenticationController {
 
     @PostMapping("/forgotPassword")
     @Operation(summary = "User forgot password endpoint")
-    public void forgotPassword(@RequestBody @Validated ForgotPasswordRequest forgotPasswordRequest
+    public void forgotPassword(@RequestBody @Validated ForgotPasswordRequest forgotPasswordRequest,
+                               HttpServletRequest request
     ) {
-        authenticationService.sendPasswordResetLink(forgotPasswordRequest);
+        //TODO need to consider check request header for remote address in case of proxy server or load balancer
+        authenticationService.sendPasswordResetLink(forgotPasswordRequest, request.getRemoteAddr());
     }
 
     @PostMapping("/resetPassword")
@@ -91,7 +94,7 @@ public class AuthenticationController {
     @PostMapping("/verify2faOtp")
     @Operation(summary = "Verify 2FA OTP to complete login for a 2FA enabled user", parameters = {
         @Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
-                in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
+            in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
     })
     public AuthenticationResponse authenticateWith2faOtp(@RequestBody @Validated OtpVerifyRequest request) {
         return authenticationService.authenticateWithOtp(request);
@@ -100,7 +103,7 @@ public class AuthenticationController {
     @PostMapping("/resend2faOtp")
     @Operation(summary = "Resend a new 2FA OTP to user's email", parameters = {
         @Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
-                in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
+            in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
     })
     public AuthenticationResponse resend2faOtp(@RequestBody @Validated OtpResendRequest request) {
         return authenticationService.resend2faOtp(request);

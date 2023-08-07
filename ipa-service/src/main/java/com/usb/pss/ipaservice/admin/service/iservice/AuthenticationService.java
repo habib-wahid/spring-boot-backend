@@ -23,7 +23,7 @@ public interface AuthenticationService {
 
     void logout(String authHeader, LogoutRequest request);
 
-    void sendPasswordResetLink(ForgotPasswordRequest forgotPasswordRequest);
+    void sendPasswordResetLink(ForgotPasswordRequest forgotPasswordRequest, String remoteAddress);
 
     void resetPassword(ResetPasswordRequest resetPasswordRequest);
 
