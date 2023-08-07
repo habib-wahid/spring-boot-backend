@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
@@ -41,9 +42,8 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    @Operation(summary = "User log-in", parameters = {
-            @Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
-                    in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
+    @Operation(summary = "User log-in", parameters = {@Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
+            in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
     })
     public AuthenticationResponse authenticate(@RequestBody @Validated AuthenticationRequest request) {
         return authenticationService.authenticate(request);
@@ -67,47 +67,49 @@ public class AuthenticationController {
     }
 
     @PutMapping("/forceChangePassword")
-    @Operation(summary = "Forcefully change expired password.", parameters = {
-            @Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
-                    in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
+    @Operation(summary = "Forcefully change expired password.", parameters = {@Parameter(name = "X-TENANT-ID",
+            description = "Tenant ID Header",
+            in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
     })
     public void forceChangePassword(@RequestBody @Validated ForceChangePasswordRequest request) {
         authenticationService.forceChangePassword(request);
     }
 
     @PostMapping("/forgotPassword")
-    @Operation(summary = "User forgot password endpoint", parameters = {
-        @Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
-                in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
+    @Operation(summary = "User forgot password endpoint", parameters = {@Parameter(name = "X-TENANT-ID",
+            description = "Tenant ID Header",
+            in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
     })
-    public void forgotPassword(@RequestBody @Validated ForgotPasswordRequest forgotPasswordRequest
+    public void forgotPassword(@RequestBody @Validated ForgotPasswordRequest forgotPasswordRequest,
+                               HttpServletRequest request
     ) {
-        authenticationService.sendPasswordResetLink(forgotPasswordRequest);
+        //TODO need to consider check request header for remote address in case of proxy server or load balancer
+        authenticationService.sendPasswordResetLink(forgotPasswordRequest, request.getRemoteAddr());
     }
 
     @PostMapping("/resetPassword")
-    @Operation(summary = "User reset password endpoint with reset token and password reset request body", parameters = {
-        @Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
-                in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
-    })
+    @Operation(summary = "User reset password endpoint with reset token and password reset request body",
+            parameters = {@Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
+                    in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
+            })
     public void resetPassword(@RequestBody @Validated ResetPasswordRequest resetPasswordRequest) {
         authenticationService.resetPassword(resetPasswordRequest);
     }
 
     @PostMapping("/verify2faOtp")
-    @Operation(summary = "Verify 2FA OTP to complete login for a 2FA enabled user", parameters = {
-            @Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
+    @Operation(summary = "Verify 2FA OTP to complete login for a 2FA enabled user",
+            parameters = {@Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
                     in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
-    })
+            })
     public AuthenticationResponse authenticateWith2faOtp(@RequestBody @Validated OtpVerifyRequest request) {
         return authenticationService.authenticateWithOtp(request);
     }
 
     @PostMapping("/resend2faOtp")
-    @Operation(summary = "Resend a new 2FA OTP to user's email", parameters = {
-            @Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
+    @Operation(summary = "Resend a new 2FA OTP to user's email",
+            parameters = {@Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
                     in = ParameterIn.HEADER, required = true, schema = @Schema(type = "string"))
-    })
+            })
     public AuthenticationResponse resend2faOtp(@RequestBody @Validated OtpResendRequest request) {
         return authenticationService.resend2faOtp(request);
     }

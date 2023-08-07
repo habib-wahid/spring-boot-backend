@@ -1,8 +1,5 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
-import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_DIRECTION;
-import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_SORT_BY;
-
 import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActivationRequest;
@@ -15,11 +12,9 @@ import com.usb.pss.ipaservice.admin.model.entity.Group;
 import com.usb.pss.ipaservice.admin.repository.ActionRepository;
 import com.usb.pss.ipaservice.admin.repository.GroupRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.GroupService;
-import com.usb.pss.ipaservice.admin.service.iservice.MenuService;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,9 +23,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_DIRECTION;
+import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_SORT_BY;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DUPLICATE_GROUP_NAME;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.GROUP_NOT_FOUND;
 

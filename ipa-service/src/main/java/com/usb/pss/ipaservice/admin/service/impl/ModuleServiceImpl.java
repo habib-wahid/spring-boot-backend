@@ -173,6 +173,7 @@ public class ModuleServiceImpl implements ModuleService {
             .name(action.getName())
             .description(action.getDescription())
             .sortOrder(action.getSortOrder())
+            .permitted(true)
             .build();
     }
 
