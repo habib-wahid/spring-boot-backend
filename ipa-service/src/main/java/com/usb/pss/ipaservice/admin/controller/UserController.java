@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.controller;
 
+import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
@@ -23,10 +24,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_PAGE_NUMBER;
+import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_PAGE_SIZE;
 import static com.usb.pss.ipaservice.common.constants.APIEndpointConstants.USER_ENDPOINT;
 
 @RestController
@@ -47,8 +51,10 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('VIEW_USER')")
     @Operation(summary = "Get all users in a list")
-    public List<UserResponse> getAllUsers() {
-        return userService.getAllUsers();
+    public PaginationResponse<UserResponse> getAllUsers(
+        @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int pageNumber,
+        @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int pageSize) {
+        return userService.getAllUsers(pageNumber, pageSize);
     }
 
     @GetMapping("/groups")
