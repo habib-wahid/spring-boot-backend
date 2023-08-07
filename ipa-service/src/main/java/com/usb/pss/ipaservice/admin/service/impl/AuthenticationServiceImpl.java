@@ -118,7 +118,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponse authenticateWithOtp(OtpVerifyRequest request) {
         User user = userService.getUserByUsername(request.username());
         Boolean isValidOtp = otpService.verify2faOtp(user, request);
-        if (isValidOtp) {
+        if (Boolean.TRUE.equals(isValidOtp)) {
             return generateAuthenticationResponse(user);
         } else {
             throw new RuleViolationException(INVALID_OTP);
@@ -201,17 +201,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void sendPasswordResetLink(ForgotPasswordRequest forgotPasswordRequest) {
+    public void sendPasswordResetLink(ForgotPasswordRequest forgotPasswordRequest, String remoteAddress) {
 
         User user = userService.findUserByUsernameOrEmail(forgotPasswordRequest.usernameOrEmail());
         PasswordReset passwordReset = savePasswordReset(user);
-        String url = "http://localhost:3000/auth/password" + "/reset?token="
+        String url = "http://" + remoteAddress + ":3000/auth/password" + "/reset?token="
                 + passwordReset.getTokenId();
         EmailData emailData = emailDataService.getEmailDataByEmailType(EmailType.PASSWORD_RESET);
         CompletableFuture.supplyAsync(() -> {
             emailService.sendPasswordResetEmail(user, url, emailData);
             return HttpStatus.OK;
         });
+
     }
 
 
