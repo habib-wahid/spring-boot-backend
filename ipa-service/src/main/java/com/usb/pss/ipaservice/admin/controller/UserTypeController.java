@@ -24,7 +24,7 @@ public class UserTypeController {
 
     @GetMapping
     @Operation(summary = "Get all user Types in a list")
-    public List<UserTypeResponse> getUserTypeById() {
+    public List<UserTypeResponse> getAllUserTypes() {
         return userTypeService.getAllUserTypes();
     }
 
