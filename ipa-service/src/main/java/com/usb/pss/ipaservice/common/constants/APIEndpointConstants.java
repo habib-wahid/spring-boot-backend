@@ -21,4 +21,5 @@ public class APIEndpointConstants {
         = API_VERSION + "/pointOfSales";
     public static final String AIRCRAFT_ENDPOINT = API_VERSION + "/aircraft";
     public static final String PASSWORD_POLICY_ENDPOINT = API_VERSION + "/passwordPolicy";
+    public static final String JOB_ENDPOINT = API_VERSION + "/jobs";
 }

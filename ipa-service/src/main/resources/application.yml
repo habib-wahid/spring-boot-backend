@@ -16,6 +16,11 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   cache:
     type: redis
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
 
 
 

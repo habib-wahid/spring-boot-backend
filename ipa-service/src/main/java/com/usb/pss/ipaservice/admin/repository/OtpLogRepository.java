@@ -13,4 +13,9 @@ import java.util.List;
 
 public interface OtpLogRepository extends JpaRepository<OtpLog, Long> {
     List<OtpLog> findAllByUser(User user);
+
+//    @Query(value = "select * from usba.adm_otp_log where " +
+//        "otp_status_date >= now() - interval '1 day' and otp_status_date < now();",
+//        nativeQuery = true)
+//    Page<OtpLog> findAllOneDayOldOtpLog(Pageable pageable);
 }
