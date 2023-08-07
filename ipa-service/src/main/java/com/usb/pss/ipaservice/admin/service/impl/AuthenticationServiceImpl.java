@@ -151,7 +151,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .status(LOGGED_IN)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken.getTokenId())
-                .modules(moduleService.getModuleWiseUserActions(user))
+                .permissions(moduleService.getModuleWiseUserActions(user))
                 .build();
     }
 
