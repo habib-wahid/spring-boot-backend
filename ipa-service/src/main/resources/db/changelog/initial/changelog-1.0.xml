@@ -8,6 +8,9 @@
     <changeSet author="techno-next" id="001-initDB">
         <sqlFile path="db/changelog/initial/init_db.sql" relativeToChangelogFile="false" splitStatements="false"/>
     </changeSet>
+    <changeSet author="techno-next" id="003-initDB">
+        <sqlFile path="db/changelog/initial/audit_table.sql" relativeToChangelogFile="false" splitStatements="false"/>
+    </changeSet>
     <changeSet author="techno-next" id="002-fillData">
         <sqlFile path="db/changelog/initial/initialize_data.sql" relativeToChangelogFile="false" splitStatements="false"/>
 <!--        <sqlFile path="008-classifiers.sql" relativeToChangelogFile="true"/>-->

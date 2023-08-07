@@ -42,21 +42,14 @@ values (1, 1, false, false, false, false, 0)
     on conflict do nothing;
 
 -- Create Personal Info Table
-insert into usba.adm_personal_info(id, first_name, last_name, email_official, department_id, designation_id, point_of_sale_id, version)
-values (1, 'super', 'admin', 'admin@gmail.com', 1, 1, 1, 0)
+insert into usba.adm_personal_info(id, first_name, last_name, email_official, department_id, designation_id, version)
+values (1, 'super', 'admin', 'admin@gmail.com', 1, 1, 0)
     on conflict do nothing;
 
 -- Create Super Admin => username='admin' password='admin'
 insert into usba.adm_user(id, email, username, password, is2fa_enabled, group_id, active, version, personal_info_id)
 values (1, 'admin@gmail.com', 'admin',
         '$2a$10$FszQtoGSFc/WDJZvOUQiQeGhGiw7KwwXh7tMRbMBpUtYLE.PGmM/y', false, 1, true, 0, 1)
-    on conflict do nothing;
-
-
--- Set data on personal_info currency mapping table
-insert into usba.adm_personal_info_currency_mapping(personal_info_id, currency_id)
-values (1, 1),
-       (1, 2)
     on conflict do nothing;
 
 

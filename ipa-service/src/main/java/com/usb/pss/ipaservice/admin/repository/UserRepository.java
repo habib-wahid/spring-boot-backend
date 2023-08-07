@@ -13,22 +13,28 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUsername(String username);
 
+    boolean existsByEmail(String email);
+
     Optional<User> findUserByUsername(String username);
 
+    @EntityGraph(attributePaths = {"personalInfo"})
     Optional<User> findUserByUsernameOrEmail(String username, String email);
 
     @EntityGraph(attributePaths = {"group.permittedActions", "additionalActions"})
     Optional<User> findUserAndFetchActionByUsername(String username);
 
+    @EntityGraph(attributePaths = {"group"})
+    List<User> findAllWithGroupByIdIsNotNull();
+
     @EntityGraph(attributePaths = {"group.permittedActions", "additionalActions", "personalInfo"})
     Optional<User> findUserAndFetchActionAndPersonalInfoByUsername(String username);
 
     @EntityGraph(attributePaths = {"personalInfo", "personalInfo.department", "personalInfo.designation",
-        "personalInfo.allowedCurrencies"})
-    Optional<User> findUserWithPersonalInfoById(Long userId);
+        "airports", "userType", "pointOfSale", "allowedCurrencies"})
+    Optional<User> findUserWithAllInfoById(Long userId);
 
-    @EntityGraph(attributePaths = {"personalInfo"})
-    List<User> findAllWithPersonalInfoByIdIsNotNull();
+    @EntityGraph(attributePaths = {"pointOfSale", "group", "accessLevels"})
+    List<User> findAllWithPointOfSaleAndGroupByIdIsNotNull();
 
     @EntityGraph(attributePaths = {"additionalActions"})
     Optional<User> findUserFetchAdditionalActionsById(Long userId);

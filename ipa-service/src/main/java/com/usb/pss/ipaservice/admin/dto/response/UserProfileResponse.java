@@ -1,6 +1,6 @@
 package com.usb.pss.ipaservice.admin.dto.response;
 
-import com.usb.pss.ipaservice.admin.model.enums.AccessLevel;
+import com.usb.pss.ipaservice.inventory.dto.response.AirportResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,21 +14,15 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserPersonalInfoResponse {
+public class UserProfileResponse {
     private Long id;
     private String userName;
-    private String firstName;
-    private String lastName;
-    private DepartmentResponse department;
-    private DesignationResponse designation;
+    private PersonalInfoResponse personalInfoResponse;
     private Boolean is2faEnabled;
     private String userCode;
-    private String emailOfficial;
-    private String emailOther;
-    private String mobileNumber;
-    private String telephoneNumber;
+    private UserTypeResponse userType;
     private PointOfSaleResponse pointOfSale;
-    private AccessLevel accessLevel;
-    private String airport;
+    private List<AccessLevelResponse> accessLevels;
+    private List<AirportResponse> airports;
     private List<CurrencyResponse> allowedCurrencies;
 }

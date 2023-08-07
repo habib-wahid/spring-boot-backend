@@ -8,6 +8,8 @@ public record GroupUpdateRequest(
     Long id,
     @NotBlank
     String name,
-    String description
+    String description,
+    @NotNull
+    Boolean active
 ) {
 }

@@ -1,0 +1,5 @@
+ALTER TABLE usba.adm_group
+    ADD COLUMN IF NOT EXISTS active BOOLEAN NOT NULL DEFAULT true;
+
+ALTER TABLE usba.adm_group_aud
+    ADD COLUMN IF NOT EXISTS active BOOLEAN;

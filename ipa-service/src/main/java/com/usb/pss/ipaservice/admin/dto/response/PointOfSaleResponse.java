@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PointOfSaleResponse {
     private Long id;
-    private String pointOfSaleName;
+    private String name;
 }

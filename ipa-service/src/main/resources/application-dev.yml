@@ -5,8 +5,8 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
   datasource:
     url: jdbc:postgresql://localhost:5432/pss_ipa
-    username: admin
-    password: admin
+    username: postgres
+    password: postgres
     data:
       redis:
         host: localhost
@@ -27,6 +27,7 @@ spring:
           auth: true
           starttls:
             enable: true
+    protocol: smtp
 
 application:
   security:

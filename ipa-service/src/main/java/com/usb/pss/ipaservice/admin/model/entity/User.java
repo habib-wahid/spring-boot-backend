@@ -1,6 +1,7 @@
 package com.usb.pss.ipaservice.admin.model.entity;
 
 import com.usb.pss.ipaservice.common.model.BaseAuditorEntity;
+import com.usb.pss.ipaservice.inventory.model.entity.Airport;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,6 +48,28 @@ public class User extends BaseAuditorEntity implements UserDetails {
     private LocalDateTime passwordExpiryDate;
     @ManyToOne(fetch = FetchType.LAZY)
     private Group group;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PointOfSale pointOfSale;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "adm_user_access_level_mapping",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "access_level_id"))
+    private Set<AccessLevel> accessLevels = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "adm_user_airport_mapping",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "airport_id"))
+    private Set<Airport> airports = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "adm_user_currency_mapping",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "currency_id"))
+    private Set<Currency> allowedCurrencies = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UserType userType;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private PersonalInfo personalInfo;

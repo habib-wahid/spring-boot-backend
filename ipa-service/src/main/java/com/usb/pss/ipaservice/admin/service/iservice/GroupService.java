@@ -1,10 +1,13 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
+import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.GroupActivationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.GroupResponse;
+import com.usb.pss.ipaservice.admin.model.entity.Group;
 
 
 import java.util.List;
@@ -17,16 +20,20 @@ import java.util.List;
 public interface GroupService {
     void createNewGroup(GroupCreateRequest groupCreateRequest);
 
+    GroupResponse getGroupById(Long groupId);
 
-    GroupResponse getGroupResponseById(Long groupId);
+    GroupResponse getGroupResponse(Group group);
 
-    List<GroupResponse> getAllGroupResponse();
+    Group findGroupById(Long groupId);
+
+    PaginationResponse<GroupResponse> getAllGroupResponse(int page, int pageSize);
 
     void updateGroup(GroupUpdateRequest groupUpdateRequest);
 
-    void deactivateGroup(Long groupId);
+    void updateGroupActivationStatus(GroupActivationRequest request);
 
     void updateGroupWiseAction(GroupActionRequest request);
 
     List<ModuleActionResponse> getGroupWisePermittedActions(Long groupId);
+
 }
