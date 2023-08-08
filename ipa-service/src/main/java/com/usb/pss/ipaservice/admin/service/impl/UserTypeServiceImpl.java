@@ -9,6 +9,8 @@ import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_TYPE_NOT_FOUND;
 
 @Service
@@ -20,6 +22,15 @@ public class UserTypeServiceImpl implements UserTypeService {
     public UserType findUserTypeById(Long userTypeId) {
         return userTypeRepository.findById(userTypeId)
             .orElseThrow(() -> new ResourceNotFoundException(USER_TYPE_NOT_FOUND));
+    }
+
+    @Override
+    public List<UserTypeResponse> getAllUserTypes() {
+        return userTypeRepository
+            .findAll()
+            .stream()
+            .map(this::getUserTypeResponse)
+            .toList();
     }
 
     @Override

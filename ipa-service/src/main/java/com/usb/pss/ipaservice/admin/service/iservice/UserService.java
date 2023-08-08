@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
+import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
@@ -24,7 +25,7 @@ public interface UserService {
 
     List<UserGroupResponse> getAllUserWithGroupInfo();
 
-    List<UserResponse> getAllUsers();
+    PaginationResponse<UserResponse> getAllUsers(int page, int pageSize);
 
 
     void addAdditionalAction(UserActionRequest userActionRequest);

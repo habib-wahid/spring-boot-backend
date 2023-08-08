@@ -12,6 +12,7 @@ A passenger service system (PSS) is a comprehensive software platform used by ai
 - [Project Setup](#project-setup)
 - [Instructions for Pushing Changes](#instruction-for-pushing-changes)
 - [Using Swagger UI and Redocly](#using-swagger-ui-and-redocly)
+- [Two Factor Authentication Flow](#two-factor-authentication-flow)
 
 
 ## Background
@@ -186,3 +187,8 @@ Using Redocly is a little lengthier process. The steps include:
 6. This command will create a new HTML file in the same directory which is the Redocly documentation file.
 7. Open this HTML documentation file in a browser.
 8. If new endpoints are added or old ones are updated to the project, then follow the previous steps again to get an updated Redocly documentation.
+
+### Two Factor Authentication Flow
+The following diagram shows the two factor authentication flow of PSS:
+
+![two-fa-flow-diagram](https://github.com/mdgiasuddin/pss-backend-application/blob/master/two-fa-flow.png)

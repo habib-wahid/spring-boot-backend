@@ -15,4 +15,5 @@ public class ApplicationConstants {
     public static final String DEFAULT_PAGE_SIZE = "15";
     public static final String DEFAULT_SORT_BY = "id";
     public static final Sort.Direction DEFAULT_DIRECTION = Sort.Direction.ASC;
+    public static final String OTP_LOG_DELETE_JOB_NAME = "otpLogDeleteJob";
 }
