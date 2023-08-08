@@ -118,10 +118,10 @@ public class UserController {
         userService.changeUserPassword(changePasswordRequest);
     }
 
-    @GetMapping("/additionalActions/{userId}")
+    @GetMapping("/additionalActions/{userId}/{moduleId}")
     @Operation(summary = "Get all additional actions of a specific module that are not related to user group")
     public List<ModuleActionResponse> getAllAdditionalActionsWithModules(@PathVariable("userId") Long userId,
-                                                                         @RequestParam(name = "moduleId") Long moduleId
+                                                                         @PathVariable(name = "moduleId") Long moduleId
     ) {
         return moduleService.getAllAdditionalActionsWithModules(userId, moduleId);
     }
