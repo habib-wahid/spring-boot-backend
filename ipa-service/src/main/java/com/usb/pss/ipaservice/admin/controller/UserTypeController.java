@@ -7,8 +7,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,9 +28,9 @@ public class UserTypeController {
         return userTypeService.getAllUserTypes();
     }
 
-    @GetMapping({"/userTypeId"})
+    @GetMapping({"/{userTypeId}"})
     @Operation(summary = "Get a User type with it's id")
-    public UserTypeResponse getUserTypeById(@RequestParam @Validated Long userTypeId) {
+    public UserTypeResponse getUserTypeById(@PathVariable @Validated Long userTypeId) {
         return userTypeService.getUserTypeResponse(userTypeService.findUserTypeById(userTypeId));
     }
 
