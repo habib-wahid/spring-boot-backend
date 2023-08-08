@@ -4,6 +4,7 @@ import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActivationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
+import com.usb.pss.ipaservice.admin.dto.request.GroupSearchRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.GroupResponse;
@@ -26,7 +27,7 @@ public interface GroupService {
 
     Group findGroupById(Long groupId);
 
-    PaginationResponse<GroupResponse> getAllGroupResponse(int page, int pageSize);
+    PaginationResponse<GroupResponse> getAllGroupResponse(int pageNumber, int pageSize);
 
     void updateGroup(GroupUpdateRequest groupUpdateRequest);
 
@@ -35,5 +36,7 @@ public interface GroupService {
     void updateGroupWiseAction(GroupActionRequest request);
 
     List<ModuleActionResponse> getGroupWisePermittedActions(Long groupId);
+
+    PaginationResponse<GroupResponse> getGroupsBySearchCriteria(GroupSearchRequest request, int page, int pageSize);
 
 }

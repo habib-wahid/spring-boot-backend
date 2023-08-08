@@ -4,6 +4,7 @@ import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActivationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
+import com.usb.pss.ipaservice.admin.dto.request.GroupSearchRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
 import com.usb.pss.ipaservice.admin.dto.response.GroupResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
@@ -90,5 +91,15 @@ public class GroupController {
     @Operation(summary = "Get actions of a Group with it's ID")
     public List<ModuleActionResponse> getGroupWiseAction(@PathVariable Long groupId) {
         return groupService.getGroupWisePermittedActions(groupId);
+    }
+
+    @PostMapping("/getGroupBySearch")
+    @PreAuthorize("hasAnyAuthority('VIEW_GROUP')")
+    @Operation(summary = "Get Groups By Search Criteria")
+    public PaginationResponse<GroupResponse> getGroupBySearchCriteria(
+        @RequestBody GroupSearchRequest request,
+        @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int pageNumber,
+        @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int pageSize) {
+        return groupService.getGroupsBySearchCriteria(request, pageNumber, pageSize);
     }
 }

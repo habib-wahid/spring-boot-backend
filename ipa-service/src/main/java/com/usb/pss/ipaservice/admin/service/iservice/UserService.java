@@ -25,7 +25,7 @@ public interface UserService {
 
     List<UserGroupResponse> getAllUserWithGroupInfo();
 
-    PaginationResponse<UserResponse> getAllUsers(int page, int pageSize);
+    PaginationResponse<UserResponse> getAllUsers(int pageNumber, int pageSize);
 
 
     void addAdditionalAction(UserActionRequest userActionRequest);

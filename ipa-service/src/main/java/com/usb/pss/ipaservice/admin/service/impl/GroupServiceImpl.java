@@ -4,6 +4,7 @@ import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActivationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
+import com.usb.pss.ipaservice.admin.dto.request.GroupSearchRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
 import com.usb.pss.ipaservice.admin.dto.response.GroupResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
@@ -69,19 +70,7 @@ public class GroupServiceImpl implements GroupService {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(DEFAULT_DIRECTION, DEFAULT_SORT_BY));
         Page<Group> groupPage = groupRepository.findAll(pageable);
 
-        return new PaginationResponse<>(
-            groupPage.getPageable().getPageNumber(),
-            groupPage.getPageable().getPageSize(),
-            groupPage.getTotalElements(),
-            groupPage.getContent()
-                .stream()
-                .map(this::prepareResponse)
-                .toList(),
-            Map.of(
-                "name", "Group/Role Name",
-                "active", "Status"
-            )
-        );
+        return preparePaginationResponseFromPage(groupPage);
     }
 
     @Override
@@ -163,5 +152,41 @@ public class GroupServiceImpl implements GroupService {
     private Group findGroupAndFetchActionsById(Long groupId) {
         return groupRepository.findGroupAndFetchActionsById(groupId)
             .orElseThrow(() -> new ResourceNotFoundException(GROUP_NOT_FOUND));
+    }
+
+    @Override
+    public PaginationResponse<GroupResponse> getGroupsBySearchCriteria(GroupSearchRequest request,
+                                                                       int pageNumber, int pageSize) {
+        Page<Group> groupPage = groupRepository.searchGroupByFilteringCriteria(
+            request.name(),
+            request.description(),
+            request.activeStatus(),
+            request.createdBy(),
+            Objects.nonNull(request.startCreatedDate())
+                ? request.startCreatedDate().atStartOfDay()
+                : null,
+            Objects.nonNull(request.endCreatedDate())
+                ? request.endCreatedDate().plusDays(1).atStartOfDay()
+                : null,
+            PageRequest.of(pageNumber, pageSize, Sort.by(DEFAULT_DIRECTION, DEFAULT_SORT_BY))
+        );
+
+        return preparePaginationResponseFromPage(groupPage);
+    }
+
+    private PaginationResponse<GroupResponse> preparePaginationResponseFromPage(Page<Group> groupPage) {
+        return new PaginationResponse<>(
+            groupPage.getPageable().getPageNumber(),
+            groupPage.getPageable().getPageSize(),
+            groupPage.getTotalElements(),
+            groupPage.getContent()
+                .stream()
+                .map(this::prepareResponse)
+                .toList(),
+            Map.of(
+                "name", "Group/Role Name",
+                "active", "Status"
+            )
+        );
     }
 }
