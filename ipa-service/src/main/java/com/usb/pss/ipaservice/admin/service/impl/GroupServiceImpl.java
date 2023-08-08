@@ -156,7 +156,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public PaginationResponse<GroupResponse> getGroupsBySearchCriteria(GroupSearchRequest request,
-                                                                       int page, int pageSize) {
+                                                                       int pageNumber, int pageSize) {
         Page<Group> groupPage = groupRepository.searchGroupByFilteringCriteria(
             request.name(),
             request.description(),
@@ -168,7 +168,7 @@ public class GroupServiceImpl implements GroupService {
             Objects.nonNull(request.endCreatedDate())
                 ? request.endCreatedDate().plusDays(1).atStartOfDay()
                 : null,
-            PageRequest.of(page, pageSize, Sort.by(DEFAULT_DIRECTION, DEFAULT_SORT_BY))
+            PageRequest.of(pageNumber, pageSize, Sort.by(DEFAULT_DIRECTION, DEFAULT_SORT_BY))
         );
 
         return preparePaginationResponseFromPage(groupPage);

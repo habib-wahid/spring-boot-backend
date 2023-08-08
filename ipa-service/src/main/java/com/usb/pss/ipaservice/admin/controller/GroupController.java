@@ -97,7 +97,7 @@ public class GroupController {
     @PreAuthorize("hasAnyAuthority('VIEW_GROUP')")
     @Operation(summary = "Get Groups By Search Criteria")
     public PaginationResponse<GroupResponse> getGroupBySearchCriteria(
-        @RequestBody @Validated GroupSearchRequest request,
+        @RequestBody GroupSearchRequest request,
         @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int pageNumber,
         @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int pageSize) {
         return groupService.getGroupsBySearchCriteria(request, pageNumber, pageSize);

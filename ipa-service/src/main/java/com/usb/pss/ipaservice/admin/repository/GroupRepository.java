@@ -25,7 +25,7 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     @Query("select g from Group g where (:name is null or g.name ilike %:name%) and" +
         "(:description is null or g.description ilike %:description%) and" +
-        "(g.active = :activeStatus) and" +
+        "(:activeStatus is null or g.active = :activeStatus) and" +
         "(:createdBy is null or g.createdBy  = :createdBy) and" +
         "((cast(:startCreatedDate as localdatetime ) is null or cast(:endCreatedDate as localdatetime )is null)" +
         " or (g.createdDate between :startCreatedDate and :endCreatedDate))")

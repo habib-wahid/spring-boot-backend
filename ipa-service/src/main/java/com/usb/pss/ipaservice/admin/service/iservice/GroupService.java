@@ -27,7 +27,7 @@ public interface GroupService {
 
     Group findGroupById(Long groupId);
 
-    PaginationResponse<GroupResponse> getAllGroupResponse(int page, int pageSize);
+    PaginationResponse<GroupResponse> getAllGroupResponse(int pageNumber, int pageSize);
 
     void updateGroup(GroupUpdateRequest groupUpdateRequest);
 
