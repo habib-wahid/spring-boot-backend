@@ -43,5 +43,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = {"additionalActions"})
     Optional<User> findUserFetchAdditionalActionsByUsername(String username);
 
-
+    @EntityGraph(attributePaths = {"additionalActions", "group.permittedActions"})
+    Optional<User> findUserFetchAdditionalActionsAndGroupActionsById(Long userId);
 }

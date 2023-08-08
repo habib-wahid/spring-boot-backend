@@ -27,7 +27,7 @@ public interface ModuleRepository extends JpaRepository<Module, Long> {
     @Query("select md from Module md left join fetch md.subModules smd left join fetch smd.menus mn " +
             "left join fetch mn.actions ac where md.id = :moduleId and ac not in :groupActions"
     )
-    List<Module> findActionsByModuleNotInGroup(
+    List<Module> findUserAdditionalActionPermission(
             @Param("groupActions") Collection<Action> groupActions,
             @Param("moduleId") Long moduleId
     );

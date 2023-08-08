@@ -11,6 +11,7 @@ import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserProfileResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserGroupResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserResponse;
+import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,6 +41,7 @@ import static com.usb.pss.ipaservice.common.constants.APIEndpointConstants.USER_
 public class UserController {
 
     private final UserService userService;
+    private final ModuleService moduleService;
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('CREATE_USER')")
@@ -115,4 +117,13 @@ public class UserController {
     ) {
         userService.changeUserPassword(changePasswordRequest);
     }
+
+    @GetMapping("/additionalActions/{userId}")
+    @Operation(summary = "Get all additional actions of a specific module that are not related to user group")
+    public List<ModuleActionResponse> getAllAdditionalActionsWithModules(@PathVariable("userId") Long userId,
+                                                                         @RequestParam(name = "moduleId") Long moduleId
+    ) {
+        return moduleService.getAllAdditionalActionsWithModules(userId, moduleId);
+    }
+
 }

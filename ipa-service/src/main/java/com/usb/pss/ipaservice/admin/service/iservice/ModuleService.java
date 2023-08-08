@@ -21,7 +21,7 @@ public interface ModuleService {
     List<ModuleResponse> getAllModules();
 
     List<ModuleActionResponse> getAllAdditionalActionsWithModules(
-            String username,
+            Long userId,
             Long moduleId
     );
 }

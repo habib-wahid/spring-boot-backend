@@ -20,6 +20,7 @@ import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.common.constants.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -50,7 +51,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public List<ModuleActionResponse> getAllModulesByGroup(Long groupId) {
-        List<Module> modules = moduleRepository.findAllByOrderBySortOrder();
+        List<Module> modules = moduleRepository.findAll();
         Set<Action> permittedActions = new HashSet<>(actionRepository.findGroupWiseAction(groupId));
         return getModuleResponsesFromModules(modules, permittedActions);
     }
@@ -77,23 +78,22 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public List<ModuleResponse> getAllModules() {
-        List<Module> modules = moduleRepository.findAll();
+        List<Module> modules = moduleRepository.findAll(Sort.by("sortOrder").ascending());
         return modules.stream().map(module -> ModuleResponse.builder()
                         .id(module.getId())
                         .name(module.getName())
                         .description(module.getDescription())
                         .sortOrder(module.getSortOrder()).build()
                 )
-                .sorted(Comparator.comparingInt(ModuleResponse::getSortOrder))
                 .toList();
     }
 
     @Override
-    public List<ModuleActionResponse> getAllAdditionalActionsWithModules(String username, Long moduleId) {
-        User user = userRepository.findUserFetchAdditionalActionsByUsername(username)
+    public List<ModuleActionResponse> getAllAdditionalActionsWithModules(Long userId, Long moduleId) {
+        User user = userRepository.findUserFetchAdditionalActionsAndGroupActionsById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         ExceptionConstant.USER_NOT_FOUND_BY_ID));
-        List<Module> modules = moduleRepository.findActionsByModuleNotInGroup(
+        List<Module> modules = moduleRepository.findUserAdditionalActionPermission(
                  user.getGroup().getPermittedActions(), moduleId
         );
         return getModuleResponsesFromModules(modules, user.getAdditionalActions());
