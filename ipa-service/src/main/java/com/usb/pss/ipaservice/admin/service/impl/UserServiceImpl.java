@@ -170,7 +170,6 @@ public class UserServiceImpl implements UserService {
                 .map(this::prepareUserResponse)
                 .toList(),
             Map.of(
-                "serialNo", "Serial No",
                 "userName", "User Name",
                 "group", "Group Name",
                 "email", "Email",
