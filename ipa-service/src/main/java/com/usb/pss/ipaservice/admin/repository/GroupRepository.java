@@ -23,17 +23,17 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     @EntityGraph(attributePaths = {"permittedActions", "permittedActions.menu"})
     List<Group> findAllGroupAndMenuAndActionByIdIn(Set<Long> groups);
 
-    @Query("select g from Group g where (:searchByName = false or g.name ilike %:name%) and" +
-        "(:searchByDescription = false or g.description ilike %:description%) and" +
-        "(:searchByActiveStatus = false or g.active = :activeStatus) and" +
-        "(:searchByCreatedBy = false or g.createdBy  = :createdBy) and" +
-        "(:searchByCreatedDate = false or (g.createdDate >= :startCreatedDate and g.createdDate < :endCreatedDate))")
+    @Query("select g from Group g where (:name is null or g.name ilike %:name%) and" +
+        "(:description is null or g.description ilike %:description%) and" +
+        "(g.active = :activeStatus) and" +
+        "(:createdBy is null or g.createdBy  = :createdBy) and" +
+        "((cast(:startCreatedDate as localdatetime ) is null or cast(:endCreatedDate as localdatetime )is null)" +
+        " or (g.createdDate between :startCreatedDate and :endCreatedDate))")
     Page<Group> searchGroupByFilteringCriteria(
-        boolean searchByName, String name,
-        boolean searchByDescription, String description,
-        boolean searchByActiveStatus, boolean activeStatus,
-        boolean searchByCreatedBy, Long createdBy,
-        boolean searchByCreatedDate,
+        String name,
+        String description,
+        boolean activeStatus,
+        Long createdBy,
         LocalDateTime startCreatedDate,
         LocalDateTime endCreatedDate,
         Pageable pageable

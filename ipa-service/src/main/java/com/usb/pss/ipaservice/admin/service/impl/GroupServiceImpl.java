@@ -158,13 +158,16 @@ public class GroupServiceImpl implements GroupService {
     public PaginationResponse<GroupResponse> getGroupsBySearchCriteria(GroupSearchRequest request,
                                                                        int page, int pageSize) {
         Page<Group> groupPage = groupRepository.searchGroupByFilteringCriteria(
-            request.searchByName(), request.name(),
-            request.searchByDescription(), request.description(),
-            request.searchByActiveStatus(), request.activeStatus(),
-            request.searchByCreatedBy(), request.createdBy(),
-            request.searchByCreatedDate(),
-            request.startCreatedDate().atStartOfDay(),
-            request.endCreatedDate().plusDays(1).atStartOfDay(),
+            request.name(),
+            request.description(),
+            request.activeStatus(),
+            request.createdBy(),
+            Objects.nonNull(request.startCreatedDate())
+                ? request.startCreatedDate().atStartOfDay()
+                : null,
+            Objects.nonNull(request.endCreatedDate())
+                ? request.endCreatedDate().plusDays(1).atStartOfDay()
+                : null,
             PageRequest.of(page, pageSize, Sort.by(DEFAULT_DIRECTION, DEFAULT_SORT_BY))
         );
 
