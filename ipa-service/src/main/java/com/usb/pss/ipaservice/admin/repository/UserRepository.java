@@ -2,6 +2,8 @@ package com.usb.pss.ipaservice.admin.repository;
 
 
 import com.usb.pss.ipaservice.admin.model.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -33,8 +35,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "airports", "userType", "pointOfSale", "allowedCurrencies"})
     Optional<User> findUserWithAllInfoById(Long userId);
 
-    @EntityGraph(attributePaths = {"pointOfSale", "group"})
-    List<User> findAllWithPointOfSaleAndGroupByIdIsNotNull();
+    @EntityGraph(attributePaths = {"pointOfSale", "group", "accessLevels"})
+    Page<User> findAllWithPointOfSaleAndGroupAndAccessLevelByIdIsNotNull(Pageable pageable);
 
     @EntityGraph(attributePaths = {"additionalActions"})
     Optional<User> findUserFetchAdditionalActionsById(Long userId);

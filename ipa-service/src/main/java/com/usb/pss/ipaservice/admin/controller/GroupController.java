@@ -1,6 +1,8 @@
 package com.usb.pss.ipaservice.admin.controller;
 
+import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.GroupActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.GroupActivationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupCreateRequest;
 import com.usb.pss.ipaservice.admin.dto.request.GroupUpdateRequest;
 import com.usb.pss.ipaservice.admin.dto.response.GroupResponse;
@@ -18,10 +20,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_PAGE_NUMBER;
+import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_PAGE_SIZE;
 import static com.usb.pss.ipaservice.common.constants.APIEndpointConstants.GROUP_ENDPOINT;
 
 /**
@@ -39,8 +44,10 @@ public class GroupController {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('VIEW_GROUP')")
     @Operation(summary = "Get active Groups in a list.")
-    public List<GroupResponse> getAllGroups() {
-        return groupService.getAllGroupResponse();
+    public PaginationResponse<GroupResponse> getAllGroups(
+        @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int pageNumber,
+        @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int pageSize) {
+        return groupService.getAllGroupResponse(pageNumber, pageSize);
     }
 
     @GetMapping("/{groupId}")
@@ -64,11 +71,11 @@ public class GroupController {
         groupService.updateGroup(groupUpdateRequest);
     }
 
-    @PatchMapping("/{groupId}")
+    @PatchMapping("/updateGroupActivation")
     @PreAuthorize("hasAnyAuthority('UPDATE_GROUP')")
-    @Operation(summary = "Deactivate an active Group with it's ID.")
-    public void deactivateGroup(@PathVariable Long groupId) {
-        groupService.deactivateGroup(groupId);
+    @Operation(summary = "Update Group Activation Status")
+    public void deactivateGroup(@RequestBody @Validated GroupActivationRequest request) {
+        groupService.updateGroupActivationStatus(request);
     }
 
     @PutMapping("/groupWiseAction")

@@ -17,7 +17,13 @@ import com.usb.pss.ipaservice.admin.model.enums.EmailType;
 import com.usb.pss.ipaservice.admin.repository.PasswordResetRepository;
 import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.JwtService;
-import com.usb.pss.ipaservice.admin.service.iservice.*;
+import com.usb.pss.ipaservice.admin.service.iservice.AuthenticationService;
+import com.usb.pss.ipaservice.admin.service.iservice.EmailDataService;
+import com.usb.pss.ipaservice.admin.service.iservice.EmailService;
+import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
+import com.usb.pss.ipaservice.admin.service.iservice.OtpService;
+import com.usb.pss.ipaservice.admin.service.iservice.TokenService;
+import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.exception.AuthenticationFailedException;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
@@ -112,7 +118,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponse authenticateWithOtp(OtpVerifyRequest request) {
         User user = userService.getUserByUsername(request.username());
         Boolean isValidOtp = otpService.verify2faOtp(user, request);
-        if (isValidOtp) {
+        if (Boolean.TRUE.equals(isValidOtp)) {
             return generateAuthenticationResponse(user);
         } else {
             throw new RuleViolationException(INVALID_OTP);
@@ -145,7 +151,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .status(LOGGED_IN)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken.getTokenId())
-                .modules(moduleService.getModuleWiseUserActions(user))
+                .permissions(moduleService.getModuleWiseUserActions(user))
                 .build();
     }
 
@@ -195,17 +201,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void sendPasswordResetLink(ForgotPasswordRequest forgotPasswordRequest) {
+    public void sendPasswordResetLink(ForgotPasswordRequest forgotPasswordRequest, String remoteAddress) {
 
         User user = userService.findUserByUsernameOrEmail(forgotPasswordRequest.usernameOrEmail());
         PasswordReset passwordReset = savePasswordReset(user);
-        String url = "http://localhost:3000/auth/password" + "/reset?token="
+        String url = "http://" + remoteAddress + ":3000/auth/password" + "/reset?token="
                 + passwordReset.getTokenId();
         EmailData emailData = emailDataService.getEmailDataByEmailType(EmailType.PASSWORD_RESET);
         CompletableFuture.supplyAsync(() -> {
             emailService.sendPasswordResetEmail(user, url, emailData);
             return HttpStatus.OK;
         });
+
     }
 
 

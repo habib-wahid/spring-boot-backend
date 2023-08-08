@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
+import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
 import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
@@ -7,6 +8,8 @@ import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
 import com.usb.pss.ipaservice.admin.dto.response.PersonalInfoResponse;
+import com.usb.pss.ipaservice.admin.model.entity.AccessLevel;
+import com.usb.pss.ipaservice.admin.service.iservice.AccessLevelService;
 import com.usb.pss.ipaservice.admin.service.iservice.ActionService;
 import com.usb.pss.ipaservice.admin.service.iservice.AirportService;
 import com.usb.pss.ipaservice.admin.service.iservice.CurrencyService;
@@ -35,16 +38,23 @@ import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.LoggedUserHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_DIRECTION;
+import static com.usb.pss.ipaservice.common.ApplicationConstants.DEFAULT_SORT_BY;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.CURRENT_PASSWORD_NOT_MATCH;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DUPLICATE_EMAIL;
 import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.DUPLICATE_USERNAME;
@@ -68,6 +78,7 @@ public class UserServiceImpl implements UserService {
     private final PointOfSalesService pointOfSalesService;
     private final UserTypeService userTypeService;
     private final AirportService airportService;
+    private final AccessLevelService accessLevelService;
 
     public void createNewUser(RegistrationRequest request) {
         if (!request.password().equals(request.confirmPassword())) {
@@ -85,6 +96,8 @@ public class UserServiceImpl implements UserService {
         PointOfSale pointOfSale = pointOfSalesService.findPointOfSaleById(request.pointOfSaleId());
         Set<Currency> currencies = new HashSet<>(currencyService.findAllCurrenciesByIds(request.currencyIds()));
         Set<Airport> airports = new HashSet<>(airportService.findAllAirportsByIds(request.airportIds()));
+        Set<AccessLevel> accessLevels =
+            new HashSet<>(accessLevelService.findAccessLevelsByIds(request.accessLevelIds()));
 
         User user = User
             .builder()
@@ -95,7 +108,7 @@ public class UserServiceImpl implements UserService {
             .userType(userTypeService.findUserTypeById(request.userTypeId()))
             .allowedCurrencies(currencies)
             .pointOfSale(pointOfSale)
-            .accessLevel(request.accessLevel())
+            .accessLevels(accessLevels)
             .airports(airports)
             .active(true)
             .is2faEnabled(request.is2faEnabled())
@@ -145,11 +158,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUsers() {
-        return userRepository.findAllWithPointOfSaleAndGroupByIdIsNotNull()
-            .stream()
-            .map(this::prepareUserResponse)
-            .toList();
+    public PaginationResponse<UserResponse> getAllUsers(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(DEFAULT_DIRECTION, DEFAULT_SORT_BY));
+        Page<User> userPage = userRepository.findAllWithPointOfSaleAndGroupAndAccessLevelByIdIsNotNull(pageable);
+        return new PaginationResponse<>(
+            userPage.getPageable().getPageNumber(),
+            userPage.getPageable().getPageSize(),
+            userPage.getTotalElements(),
+            userPage.getContent()
+                .stream()
+                .map(this::prepareUserResponse)
+                .toList(),
+            Map.of(
+                "userName", "User Name",
+                "group", "Group Name",
+                "email", "Email",
+                "pointOfSale", "Point of Sale",
+                "accessLevels", "Access Level",
+                "status", "Status"
+            )
+        );
     }
 
 
@@ -165,16 +193,23 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserResponse prepareUserResponse(User user) {
-        return UserResponse
+        String accessLevels = String
+            .join(", ", user
+                .getAccessLevels()
+                .stream()
+                .map(AccessLevel::getName)
+                .toList());
+        UserResponse userResponse = UserResponse
             .builder()
             .id(user.getId())
             .userName(user.getUsername())
             .email(user.getEmail())
-            .accessLevel(user.getAccessLevel())
-            .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))
-            .group(groupService.getGroupResponse(user.getGroup()))
+            .accessLevels(accessLevels)
+            .pointOfSale(user.getPointOfSale().getName())
             .status(user.isActive())
             .build();
+        userResponse.setGroup(Objects.nonNull(user.getGroup()) ? user.getGroup().getName() : "");
+        return userResponse;
     }
 
     @Override
@@ -268,7 +303,7 @@ public class UserServiceImpl implements UserService {
             .userCode(user.getUserCode())
             .userName(user.getUsername())
             .personalInfoResponse(personalInfoResponse)
-            .accessLevel(user.getAccessLevel())
+            .accessLevels(accessLevelService.getAccessLevelResponses(user.getAccessLevels()))
             .is2faEnabled(user.is2faEnabled())
             .userType(userTypeService.getUserTypeResponse(user.getUserType()))
             .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))
