@@ -1,13 +1,16 @@
 package com.usb.pss.ipaservice.admin.controller;
 
+import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleMenuResponse;
+import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -24,5 +27,20 @@ public class ModuleController {
     @Operation(summary = "Get all modules with subModules in a list.")
     public List<ModuleMenuResponse> getAllModulesWithSubModulesAndMenus() {
         return moduleService.getModuleWithSubModulesAndMenus();
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "Get all module list")
+    public List<ModuleResponse> getAllModules() {
+        return moduleService.getAllModules();
+    }
+
+
+    @GetMapping("/additionalActions")
+    @Operation(summary = "Get all additional actions of a specific module that are not related to any group")
+    public List<ModuleActionResponse> getAllAdditionalActionsWithModules(@RequestParam(name = "username") String username,
+                                                                         @RequestParam(name = "moduleId") Long moduleId
+    ) {
+        return moduleService.getAllAdditionalActionsWithModules(username, moduleId);
     }
 }

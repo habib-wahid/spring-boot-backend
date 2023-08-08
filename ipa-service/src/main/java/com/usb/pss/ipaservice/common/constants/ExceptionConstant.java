@@ -40,7 +40,8 @@ public enum ExceptionConstant {
     INVALID_OTP_TYPE_CODE("Invalid OTP Type Code."),
     INVALID_OTP_RESEND_TIMER("Please, wait before resending an OTP."),
     INVALID_EMAIL_TYPE_CODE("Invalid Email Type Code."),
-    INVALID_AUTH_REQUEST("Invalid Authentication Request.");
+    INVALID_AUTH_REQUEST("Invalid Authentication Request."),
+    MODULE_NOT_FOUND("Module not found by Id");
 
     private final String message;
 

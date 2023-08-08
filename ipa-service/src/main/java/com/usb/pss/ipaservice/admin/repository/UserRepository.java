@@ -30,7 +30,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserAndFetchActionAndPersonalInfoByUsername(String username);
 
     @EntityGraph(attributePaths = {"personalInfo", "personalInfo.department", "personalInfo.designation",
-        "airports", "userType", "pointOfSale", "allowedCurrencies"})
+            "airports", "userType", "pointOfSale", "allowedCurrencies"})
     Optional<User> findUserWithAllInfoById(Long userId);
 
     @EntityGraph(attributePaths = {"pointOfSale", "group"})
@@ -38,7 +38,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = {"additionalActions"})
     Optional<User> findUserFetchAdditionalActionsById(Long userId);
-
     @EntityGraph(attributePaths = {"additionalActions"})
     Optional<User> findUserFetchAdditionalActionsByUsername(String username);
 
