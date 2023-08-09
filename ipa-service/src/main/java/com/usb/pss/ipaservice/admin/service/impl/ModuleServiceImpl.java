@@ -109,7 +109,7 @@ public class ModuleServiceImpl implements ModuleService {
         List<Action> newAssignedActions = actionRepository.findByIdIn(additionalActionPermissionRequest.actionIds());
         List<Action> actionsToBeDeleted = actions.stream().filter(action -> !newAssignedActions.contains(action)).toList();
         user.getAdditionalActions().removeAll(actionsToBeDeleted);
-        user.setAdditionalActions(new HashSet<>(newAssignedActions));
+        user.getAdditionalActions().addAll(new HashSet<>(newAssignedActions));
         userRepository.save(user);
     }
 
