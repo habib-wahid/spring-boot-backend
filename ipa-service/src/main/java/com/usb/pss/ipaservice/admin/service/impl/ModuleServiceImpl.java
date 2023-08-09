@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.service.impl;
 
+import com.usb.pss.ipaservice.admin.dto.request.AdditionalActionPermissionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.ActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.MenuActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.MenuResponse;
@@ -23,10 +24,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.HashSet;
 
 
 @Service
@@ -94,9 +95,22 @@ public class ModuleServiceImpl implements ModuleService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         ExceptionConstant.USER_NOT_FOUND_BY_ID));
         List<Module> modules = moduleRepository.findUserAdditionalActionPermission(
-                 user.getGroup().getPermittedActions(), moduleId
+                user.getGroup().getPermittedActions(), moduleId
         );
         return getModuleResponsesFromModules(modules, user.getAdditionalActions());
+    }
+
+    @Override
+    public void editAdditionalActions(AdditionalActionPermissionRequest additionalActionPermissionRequest) {
+        User user = userRepository.findUserFetchAdditionalActionsById(additionalActionPermissionRequest.userId())
+                .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
+        List<Action> actions = moduleRepository.
+                findUserAdditionalActionsByModule(user.getAdditionalActions(), additionalActionPermissionRequest.moduleId());
+        List<Action> newAssignedActions = actionRepository.findByIdIn(additionalActionPermissionRequest.actionIds());
+        List<Action> actionsToBeDeleted = actions.stream().filter(action -> !newAssignedActions.contains(action)).toList();
+        user.getAdditionalActions().removeAll(actionsToBeDeleted);
+        user.setAdditionalActions(new HashSet<>(newAssignedActions));
+        userRepository.save(user);
     }
 
     private List<ModuleMenuResponse> getModuleResponseWithSubModulesAndMenus(

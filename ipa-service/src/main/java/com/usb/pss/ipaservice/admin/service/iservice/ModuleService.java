@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.service.iservice;
 
+import com.usb.pss.ipaservice.admin.dto.request.AdditionalActionPermissionRequest;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleMenuResponse;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleResponse;
@@ -24,4 +25,6 @@ public interface ModuleService {
             Long userId,
             Long moduleId
     );
+
+    void editAdditionalActions(AdditionalActionPermissionRequest additionalActionPermissionRequest);
 }

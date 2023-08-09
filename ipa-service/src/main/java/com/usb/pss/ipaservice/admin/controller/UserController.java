@@ -1,12 +1,13 @@
 package com.usb.pss.ipaservice.admin.controller;
 
 import com.usb.pss.ipaservice.admin.dto.PaginationResponse;
-import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
+import com.usb.pss.ipaservice.admin.dto.request.AdditionalActionPermissionRequest;
 import com.usb.pss.ipaservice.admin.dto.request.RegistrationRequest;
-import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserActionRequest;
+import com.usb.pss.ipaservice.admin.dto.request.UpdateUserInfoRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserGroupRequest;
 import com.usb.pss.ipaservice.admin.dto.request.UserStatusRequest;
+import com.usb.pss.ipaservice.admin.dto.request.ChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.response.ModuleActionResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserProfileResponse;
 import com.usb.pss.ipaservice.admin.dto.response.UserGroupResponse;
@@ -54,8 +55,8 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('VIEW_USER')")
     @Operation(summary = "Get all users in a list")
     public PaginationResponse<UserResponse> getAllUsers(
-        @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int pageNumber,
-        @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int pageSize) {
+            @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int pageNumber,
+            @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int pageSize) {
         return userService.getAllUsers(pageNumber, pageSize);
     }
 
@@ -71,7 +72,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('UPDATE_USER_ADDITIONAL_ACTIONS')")
     @Operation(summary = "Give additional action permission to a user")
     public void addAdditionalAction(
-        @RequestBody @Validated UserActionRequest userActionRequest) {
+            @RequestBody @Validated UserActionRequest userActionRequest) {
         userService.addAdditionalAction(userActionRequest);
     }
 
@@ -98,7 +99,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('UPDATE_USER_GROUP')")
     @Operation(summary = "Update group of a user")
     public void updateUserGroup(
-        @RequestBody UserGroupRequest userGroupRequest
+            @RequestBody UserGroupRequest userGroupRequest
     ) {
         userService.updateUserGroup(userGroupRequest);
     }
@@ -113,7 +114,7 @@ public class UserController {
     @PutMapping("/changePassword")
     @Operation(summary = "Update user password")
     public void changeUserPassword(
-        @RequestBody ChangePasswordRequest changePasswordRequest
+            @RequestBody ChangePasswordRequest changePasswordRequest
     ) {
         userService.changeUserPassword(changePasswordRequest);
     }
@@ -126,4 +127,9 @@ public class UserController {
         return moduleService.getAllAdditionalActionsWithModules(userId, moduleId);
     }
 
+    @PutMapping("/editAdditionalAction")
+    @Operation(summary = "Edit user additional Actions of a specific module")
+    public void editAdditionalActions(@Validated @RequestBody AdditionalActionPermissionRequest additionalActionPermissionRequest) {
+        moduleService.editAdditionalActions(additionalActionPermissionRequest);
+    }
 }
