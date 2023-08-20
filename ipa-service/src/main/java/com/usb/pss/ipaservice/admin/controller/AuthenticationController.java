@@ -1,5 +1,6 @@
 package com.usb.pss.ipaservice.admin.controller;
 
+import com.usb.pss.ipaservice.admin.configuration.Person;
 import com.usb.pss.ipaservice.admin.dto.request.AuthenticationRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ForceChangePasswordRequest;
 import com.usb.pss.ipaservice.admin.dto.request.ForgotPasswordRequest;
@@ -20,12 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -40,6 +36,7 @@ import static com.usb.pss.ipaservice.common.constants.SecurityConstants.AUTHORIZ
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    private final Person person;
 
     @PostMapping("/login")
     @Operation(summary = "User log-in", parameters = {@Parameter(name = "X-TENANT-ID", description = "Tenant ID Header",
@@ -112,5 +109,10 @@ public class AuthenticationController {
             })
     public AuthenticationResponse resend2faOtp(@RequestBody @Validated OtpResendRequest request) {
         return authenticationService.resend2faOtp(request);
+    }
+
+    @GetMapping("/person-name")
+    public String getPersonName() {
+        return person.getName();
     }
 }

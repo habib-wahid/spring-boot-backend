@@ -37,7 +37,8 @@ import com.usb.pss.ipaservice.admin.service.iservice.UserService;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
 import com.usb.pss.ipaservice.exception.RuleViolationException;
 import com.usb.pss.ipaservice.utils.LoggedUserHelper;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -69,6 +70,7 @@ import static com.usb.pss.ipaservice.common.constants.ExceptionConstant.USER_NOT
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    @Lazy
     private final ModuleService moduleService;
     private final GroupService groupService;
     private final ActionService actionService;
@@ -97,39 +99,39 @@ public class UserServiceImpl implements UserService {
         Set<Currency> currencies = new HashSet<>(currencyService.findAllCurrenciesByIds(request.currencyIds()));
         Set<Airport> airports = new HashSet<>(airportService.findAllAirportsByIds(request.airportIds()));
         Set<AccessLevel> accessLevels =
-            new HashSet<>(accessLevelService.findAccessLevelsByIds(request.accessLevelIds()));
+                new HashSet<>(accessLevelService.findAccessLevelsByIds(request.accessLevelIds()));
 
         User user = User
-            .builder()
-            .email(request.personalInfoRequest().email())
-            .username(request.username())
-            .password(passwordEncoder.encode(request.password()))
-            .userCode(request.userCode())
-            .userType(userTypeService.findUserTypeById(request.userTypeId()))
-            .allowedCurrencies(currencies)
-            .pointOfSale(pointOfSale)
-            .accessLevels(accessLevels)
-            .airports(airports)
-            .active(true)
-            .is2faEnabled(request.is2faEnabled())
-            .passwordExpiryDate(LocalDateTime.now())
-            .build();
+                .builder()
+                .email(request.personalInfoRequest().email())
+                .username(request.username())
+                .password(passwordEncoder.encode(request.password()))
+                .userCode(request.userCode())
+                .userType(userTypeService.findUserTypeById(request.userTypeId()))
+                .allowedCurrencies(currencies)
+                .pointOfSale(pointOfSale)
+                .accessLevels(accessLevels)
+                .airports(airports)
+                .active(true)
+                .is2faEnabled(request.is2faEnabled())
+                .passwordExpiryDate(LocalDateTime.now())
+                .build();
 
         Department department = departmentService.findDepartmentById(request.personalInfoRequest().departmentId());
         Designation designation = designationService.findDesignationById(request.personalInfoRequest().designationId());
 
 
         PersonalInfo userPersonalInfo = PersonalInfo
-            .builder()
-            .firstName(request.personalInfoRequest().firstName())
-            .lastName(request.personalInfoRequest().lastName())
-            .emailOfficial(request.personalInfoRequest().email())
-            .emailOther(request.personalInfoRequest().emailOther())
-            .telephoneNumber(request.personalInfoRequest().telephoneNumber())
-            .mobileNumber(request.personalInfoRequest().mobileNumber())
-            .department(department)
-            .designation(designation)
-            .build();
+                .builder()
+                .firstName(request.personalInfoRequest().firstName())
+                .lastName(request.personalInfoRequest().lastName())
+                .emailOfficial(request.personalInfoRequest().email())
+                .emailOther(request.personalInfoRequest().emailOther())
+                .telephoneNumber(request.personalInfoRequest().telephoneNumber())
+                .mobileNumber(request.personalInfoRequest().mobileNumber())
+                .department(department)
+                .designation(designation)
+                .build();
         user.setPersonalInfo(userPersonalInfo);
         userRepository.save(user);
     }
@@ -138,23 +140,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(
-            () -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID)
+                () -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID)
         );
     }
 
     @Override
     public User getUserByUsername(String username) {
         return userRepository.findUserByUsername(username).orElseThrow(
-            () -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME)
+                () -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME)
         );
     }
 
     public List<UserGroupResponse> getAllUserWithGroupInfo() {
 
         return userRepository.findAllWithGroupByIdIsNotNull()
-            .stream()
-            .map(this::getUserGroupResponse)
-            .toList();
+                .stream()
+                .map(this::getUserGroupResponse)
+                .toList();
     }
 
     @Override
@@ -162,21 +164,21 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(DEFAULT_DIRECTION, DEFAULT_SORT_BY));
         Page<User> userPage = userRepository.findAllWithPointOfSaleAndGroupAndAccessLevelByIdIsNotNull(pageable);
         return new PaginationResponse<>(
-            userPage.getPageable().getPageNumber(),
-            userPage.getPageable().getPageSize(),
-            userPage.getTotalElements(),
-            userPage.getContent()
-                .stream()
-                .map(this::prepareUserResponse)
-                .toList(),
-            Map.of(
-                "userName", "User Name",
-                "group", "Group Name",
-                "email", "Email",
-                "pointOfSale", "Point of Sale",
-                "accessLevels", "Access Level",
-                "status", "Status"
-            )
+                userPage.getPageable().getPageNumber(),
+                userPage.getPageable().getPageSize(),
+                userPage.getTotalElements(),
+                userPage.getContent()
+                        .stream()
+                        .map(this::prepareUserResponse)
+                        .toList(),
+                Map.of(
+                        "userName", "User Name",
+                        "group", "Group Name",
+                        "email", "Email",
+                        "pointOfSale", "Point of Sale",
+                        "accessLevels", "Access Level",
+                        "status", "Status"
+                )
         );
     }
 
@@ -194,20 +196,20 @@ public class UserServiceImpl implements UserService {
 
     private UserResponse prepareUserResponse(User user) {
         String accessLevels = String
-            .join(", ", user
-                .getAccessLevels()
-                .stream()
-                .map(AccessLevel::getName)
-                .toList());
+                .join(", ", user
+                        .getAccessLevels()
+                        .stream()
+                        .map(AccessLevel::getName)
+                        .toList());
         UserResponse userResponse = UserResponse
-            .builder()
-            .id(user.getId())
-            .userName(user.getUsername())
-            .email(user.getEmail())
-            .accessLevels(accessLevels)
-            .pointOfSale(user.getPointOfSale().getName())
-            .status(user.isActive())
-            .build();
+                .builder()
+                .id(user.getId())
+                .userName(user.getUsername())
+                .email(user.getEmail())
+                .accessLevels(accessLevels)
+                .pointOfSale(user.getPointOfSale().getName())
+                .status(user.isActive())
+                .build();
         userResponse.setGroup(Objects.nonNull(user.getGroup()) ? user.getGroup().getName() : "");
         return userResponse;
     }
@@ -215,7 +217,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addAdditionalAction(UserActionRequest userActionRequest) {
         User user = userRepository.findUserFetchAdditionalActionsById(userActionRequest.userId())
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
 
         List<Action> actions = actionService.getActionsByIds(userActionRequest.actionIds());
 
@@ -281,7 +283,7 @@ public class UserServiceImpl implements UserService {
 
     private User findUserById(Long userId) {
         return userRepository.findById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
     @Override
@@ -289,40 +291,58 @@ public class UserServiceImpl implements UserService {
         User user = getUserWithAllInfoById(userId);
         PersonalInfo personalInfo = user.getPersonalInfo();
         PersonalInfoResponse personalInfoResponse = PersonalInfoResponse.builder()
-            .firstName(personalInfo.getFirstName())
-            .lastName(personalInfo.getLastName())
-            .emailOfficial(personalInfo.getEmailOfficial())
-            .emailOther(personalInfo.getEmailOther())
-            .department(departmentService.getDepartmentResponse(personalInfo.getDepartment()))
-            .designation(designationService.getDesignationResponse(personalInfo.getDesignation()))
-            .mobileNumber(personalInfo.getMobileNumber())
-            .telephoneNumber(personalInfo.getTelephoneNumber())
-            .build();
+                .firstName(personalInfo.getFirstName())
+                .lastName(personalInfo.getLastName())
+                .emailOfficial(personalInfo.getEmailOfficial())
+                .emailOther(personalInfo.getEmailOther())
+                .department(departmentService.getDepartmentResponse(personalInfo.getDepartment()))
+                .designation(designationService.getDesignationResponse(personalInfo.getDesignation()))
+                .mobileNumber(personalInfo.getMobileNumber())
+                .telephoneNumber(personalInfo.getTelephoneNumber())
+                .build();
         return UserProfileResponse.builder()
-            .id(user.getId())
-            .userCode(user.getUserCode())
-            .userName(user.getUsername())
-            .personalInfoResponse(personalInfoResponse)
-            .accessLevels(accessLevelService.getAccessLevelResponses(user.getAccessLevels()))
-            .is2faEnabled(user.is2faEnabled())
-            .userType(userTypeService.getUserTypeResponse(user.getUserType()))
-            .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))
-            .allowedCurrencies(currencyService.getAllCurrencyResponses(user.getAllowedCurrencies()))
-            .airports(airportService.getAirportResponses(user.getAirports()))
-            .build();
+                .id(user.getId())
+                .userCode(user.getUserCode())
+                .userName(user.getUsername())
+                .personalInfoResponse(personalInfoResponse)
+                .accessLevels(accessLevelService.getAccessLevelResponses(user.getAccessLevels()))
+                .is2faEnabled(user.is2faEnabled())
+                .userType(userTypeService.getUserTypeResponse(user.getUserType()))
+                .pointOfSale(pointOfSalesService.getPointOfSaleResponse(user.getPointOfSale()))
+                .allowedCurrencies(currencyService.getAllCurrencyResponses(user.getAllowedCurrencies()))
+                .airports(airportService.getAirportResponses(user.getAirports()))
+                .build();
     }
 
 
     private User getUserWithAllInfoById(Long userId) {
         return userRepository.findUserWithAllInfoById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
 
     @Override
     public User findUserByUsernameOrEmail(String usernameOrEmail) {
         return userRepository
-            .findUserByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-            .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME_OR_EMAIL));
+                .findUserByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_BY_USERNAME_OR_EMAIL));
     }
+
+    public UserDto getUserDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setName(user.getUsername());
+        userDto.setUserCode(userDto.getUserCode());
+        return userDto;
+    }
+}
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+class UserDto {
+    private Long id;
+    private String name;
+    private String userCode;
 }

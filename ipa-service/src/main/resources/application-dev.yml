@@ -4,14 +4,16 @@ spring:
     default-schema: ${tenant.default.schema}
     change-log: classpath:db/changelog/db.changelog-master.xml
   datasource:
-    url: jdbc:postgresql://localhost:5432/pss_ipa
-    username: admin
-    password: admin
+    url: jdbc:postgresql://localhost:5432/pss_inventory
+    username: postgres
+    password: password
     data:
       redis:
         host: localhost
         port: 7001
         hashkey: pss2023Technonext
+  main:
+    lazy-initialization: true
 
   jpa:
     show-sql: true

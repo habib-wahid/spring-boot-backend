@@ -20,7 +20,8 @@ import com.usb.pss.ipaservice.admin.repository.UserRepository;
 import com.usb.pss.ipaservice.admin.service.iservice.ModuleService;
 import com.usb.pss.ipaservice.common.constants.ExceptionConstant;
 import com.usb.pss.ipaservice.exception.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,7 @@ public class ModuleServiceImpl implements ModuleService {
     private final ModuleRepository moduleRepository;
     private final UserRepository userRepository;
     private final ActionRepository actionRepository;
+   // private final UserServiceImpl userService;
 
     @Override
     public List<ModuleActionResponse> getModuleWiseActions() {
@@ -106,6 +108,7 @@ public class ModuleServiceImpl implements ModuleService {
                 .orElseThrow(() -> new ResourceNotFoundException(ExceptionConstant.USER_NOT_FOUND_BY_ID));
         List<Action> actions = moduleRepository.
                 findUserAdditionalActionsByModule(user.getAdditionalActions(), additionalActionPermissionRequest.moduleId());
+       // UserDto userDto = userService.getUserDto(user);
         List<Action> newAssignedActions = actionRepository.findByIdIn(additionalActionPermissionRequest.actionIds());
         List<Action> actionsToBeDeleted = actions.stream().filter(action -> !newAssignedActions.contains(action)).toList();
         user.getAdditionalActions().removeAll(actionsToBeDeleted);
@@ -289,3 +292,4 @@ public class ModuleServiceImpl implements ModuleService {
                 .sortOrder(module.getSortOrder());
     }
 }
+
